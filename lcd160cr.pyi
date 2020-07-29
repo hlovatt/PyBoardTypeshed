@@ -57,21 +57,21 @@ LANDSCAPE_UPSIDEDOWN: str = ...
 
 
 
-STARTUP_DECO_NONE: str = ...
+STARTUP_DECO_NONE: int = ...
 """
    Types of start-up decoration, can be OR'ed together, used by
    :meth:`LCD160CR.set_startup_deco`.
 """
 
 
-STARTUP_DECO_MLOGO: str = ...
+STARTUP_DECO_MLOGO: int = ...
 """
    Types of start-up decoration, can be OR'ed together, used by
    :meth:`LCD160CR.set_startup_deco`.
 """
 
 
-STARTUP_DECO_INFO: str = ...
+STARTUP_DECO_INFO: int = ...
 """
    Types of start-up decoration, can be OR'ed together, used by
    :meth:`LCD160CR.set_startup_deco`.
