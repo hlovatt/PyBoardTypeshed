@@ -5,16 +5,16 @@ Descriptions taken from
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/pyb.rst`, etc.
 """
 
-__author__      = "Howard C Lovatt"
-__copyright__   = "Howard C Lovatt, 2020 onwards."
-__license__     = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__     = "0.0.0"
+__author__ = "Howard C Lovatt"
+__copyright__ = "Howard C Lovatt, 2020 onwards."
+__license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
+__version__ = "Use `git tag` to obtain version numbers, then `git show <version>` for details."
 
 
 
 from abc import ABC, abstractmethod
 from typing import NoReturn, overload, Tuple, Sequence, runtime_checkable, Protocol
-from typing import Optional, Union, TypeVar, List, Callable, Dict, Any
+from typing import Optional, Union, TypeVar, List, Callable, Dict, Any, ClassVar
 
 from uarray import array
 
@@ -82,11 +82,10 @@ Keyboard human interface device (hid), see `hid` argument of `usb_mode`.
 """
 
 
-_AnyArray = TypeVar('_AnyArray', bytearray, array, memoryview)
+_AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows either bytearray or array but not mixture of both; exclusively one or the other.
 """
-
 
 
 def delay(ms: int, /) -> None:
@@ -94,12 +93,10 @@ def delay(ms: int, /) -> None:
    Delay for the given number of milliseconds.
    """
 
-
 def udelay(us: int, /) -> None:
    """
    Delay for the given number of microseconds.
    """
-
 
 def millis() -> int:
    """
@@ -114,7 +111,6 @@ def millis() -> int:
    will affect the outcome of :meth:`pyb.elapsed_millis()`.
    """
 
-
 def micros() -> int:
    """
    Returns the number of microseconds since the board was last reset.
@@ -127,7 +123,6 @@ def micros() -> int:
    function will pause for the duration of the "sleeping" state. This
    will affect the outcome of :meth:`pyb.elapsed_micros()`.
    """
-
 
 def elapsed_millis(start: int, /) -> int:
    """
@@ -142,7 +137,6 @@ def elapsed_millis(start: int, /) -> int:
        while pyb.elapsed_millis(start) < 1000:
            # Perform some operation
    """
-
 
 def elapsed_micros(start: int, /) -> int:
    """
@@ -159,19 +153,16 @@ def elapsed_micros(start: int, /) -> int:
            pass
    """
 
-
 def hard_reset() -> NoReturn:
    """
    Resets the pyboard in a manner similar to pushing the external RESET
    button.
    """
 
-
 def bootloader() -> NoReturn:
    """
    Activate the bootloader without BOOT\* pins.
    """
-
 
 def fault_debug(value: bool = False) -> None:
    """
@@ -187,7 +178,6 @@ def fault_debug(value: bool = False) -> None:
    The default value is disabled, i.e. to automatically reset.
    """
 
-
 def disable_irq() -> bool:
    """
    Disable interrupt requests.
@@ -195,7 +185,6 @@ def disable_irq() -> bool:
    respectively.  This return value can be passed to enable_irq to restore
    the IRQ to its original state.
    """
-
 
 def enable_irq(state: bool = True, /) -> None:
    """
@@ -206,16 +195,166 @@ def enable_irq(state: bool = True, /) -> None:
    exit a critical section.
    """
 
+@overload
+def freq() -> Tuple[int, int, int, int]:
+   """
+   If given no arguments, returns a tuple of clock frequencies:
+   (sysclk, hclk, pclk1, pclk2).
+   These correspond to:
 
+    - sysclk: frequency of the CPU
+    - hclk: frequency of the AHB bus, core memory and DMA
+    - pclk1: frequency of the APB1 bus
+    - pclk2: frequency of the APB2 bus
+
+   If given any arguments then the function sets the frequency of the CPU,
+   and the busses if additional arguments are given.  Frequencies are given in
+   Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
+   not all values are supported and the largest supported frequency not greater
+   than the given value will be selected.
+
+   Supported sysclk frequencies are (in MHz): 8, 16, 24, 30, 32, 36, 40, 42, 48,
+   54, 56, 60, 64, 72, 84, 96, 108, 120, 144, 168.
+
+   The maximum frequency of hclk is 168MHz, of pclk1 is 42MHz, and of pclk2 is
+   84MHz.  Be sure not to set frequencies above these values.
+
+   The hclk, pclk1 and pclk2 frequencies are derived from the sysclk frequency
+   using a prescaler (divider).  Supported prescalers for hclk are: 1, 2, 4, 8,
+   16, 64, 128, 256, 512.  Supported prescalers for pclk1 and pclk2 are: 1, 2,
+   4, 8.  A prescaler will be chosen to best match the requested frequency.
+
+   A sysclk frequency of
+   8MHz uses the HSE (external crystal) directly and 16MHz uses the HSI
+   (internal oscillator) directly.  The higher frequencies use the HSE to
+   drive the PLL (phase locked loop), and then use the output of the PLL.
+
+   Note that if you change the frequency while the USB is enabled then
+   the USB may become unreliable.  It is best to change the frequency
+   in boot.py, before the USB peripheral is started.  Also note that sysclk
+   frequencies below 36MHz do not allow the USB to function correctly.
+   """
 
 @overload
-def freq() -> Tuple[int, int, int, int]: ...
+def freq(sysclk: int, /) -> None:
+   """
+   If given no arguments, returns a tuple of clock frequencies:
+   (sysclk, hclk, pclk1, pclk2).
+   These correspond to:
+
+    - sysclk: frequency of the CPU
+    - hclk: frequency of the AHB bus, core memory and DMA
+    - pclk1: frequency of the APB1 bus
+    - pclk2: frequency of the APB2 bus
+
+   If given any arguments then the function sets the frequency of the CPU,
+   and the busses if additional arguments are given.  Frequencies are given in
+   Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
+   not all values are supported and the largest supported frequency not greater
+   than the given value will be selected.
+
+   Supported sysclk frequencies are (in MHz): 8, 16, 24, 30, 32, 36, 40, 42, 48,
+   54, 56, 60, 64, 72, 84, 96, 108, 120, 144, 168.
+
+   The maximum frequency of hclk is 168MHz, of pclk1 is 42MHz, and of pclk2 is
+   84MHz.  Be sure not to set frequencies above these values.
+
+   The hclk, pclk1 and pclk2 frequencies are derived from the sysclk frequency
+   using a prescaler (divider).  Supported prescalers for hclk are: 1, 2, 4, 8,
+   16, 64, 128, 256, 512.  Supported prescalers for pclk1 and pclk2 are: 1, 2,
+   4, 8.  A prescaler will be chosen to best match the requested frequency.
+
+   A sysclk frequency of
+   8MHz uses the HSE (external crystal) directly and 16MHz uses the HSI
+   (internal oscillator) directly.  The higher frequencies use the HSE to
+   drive the PLL (phase locked loop), and then use the output of the PLL.
+
+   Note that if you change the frequency while the USB is enabled then
+   the USB may become unreliable.  It is best to change the frequency
+   in boot.py, before the USB peripheral is started.  Also note that sysclk
+   frequencies below 36MHz do not allow the USB to function correctly.
+   """
+
 @overload
-def freq(sysclk: int, /) -> None: ...
+def freq(sysclk: int, hclk: int, /) -> None:
+   """
+   If given no arguments, returns a tuple of clock frequencies:
+   (sysclk, hclk, pclk1, pclk2).
+   These correspond to:
+
+    - sysclk: frequency of the CPU
+    - hclk: frequency of the AHB bus, core memory and DMA
+    - pclk1: frequency of the APB1 bus
+    - pclk2: frequency of the APB2 bus
+
+   If given any arguments then the function sets the frequency of the CPU,
+   and the busses if additional arguments are given.  Frequencies are given in
+   Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
+   not all values are supported and the largest supported frequency not greater
+   than the given value will be selected.
+
+   Supported sysclk frequencies are (in MHz): 8, 16, 24, 30, 32, 36, 40, 42, 48,
+   54, 56, 60, 64, 72, 84, 96, 108, 120, 144, 168.
+
+   The maximum frequency of hclk is 168MHz, of pclk1 is 42MHz, and of pclk2 is
+   84MHz.  Be sure not to set frequencies above these values.
+
+   The hclk, pclk1 and pclk2 frequencies are derived from the sysclk frequency
+   using a prescaler (divider).  Supported prescalers for hclk are: 1, 2, 4, 8,
+   16, 64, 128, 256, 512.  Supported prescalers for pclk1 and pclk2 are: 1, 2,
+   4, 8.  A prescaler will be chosen to best match the requested frequency.
+
+   A sysclk frequency of
+   8MHz uses the HSE (external crystal) directly and 16MHz uses the HSI
+   (internal oscillator) directly.  The higher frequencies use the HSE to
+   drive the PLL (phase locked loop), and then use the output of the PLL.
+
+   Note that if you change the frequency while the USB is enabled then
+   the USB may become unreliable.  It is best to change the frequency
+   in boot.py, before the USB peripheral is started.  Also note that sysclk
+   frequencies below 36MHz do not allow the USB to function correctly.
+   """
+
 @overload
-def freq(sysclk: int, hclk: int, /) -> None: ...
-@overload
-def freq(sysclk: int, hclk: int, pclk1: int, /) -> None: ...
+def freq(sysclk: int, hclk: int, pclk1: int, /) -> None:
+   """
+   If given no arguments, returns a tuple of clock frequencies:
+   (sysclk, hclk, pclk1, pclk2).
+   These correspond to:
+
+    - sysclk: frequency of the CPU
+    - hclk: frequency of the AHB bus, core memory and DMA
+    - pclk1: frequency of the APB1 bus
+    - pclk2: frequency of the APB2 bus
+
+   If given any arguments then the function sets the frequency of the CPU,
+   and the busses if additional arguments are given.  Frequencies are given in
+   Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
+   not all values are supported and the largest supported frequency not greater
+   than the given value will be selected.
+
+   Supported sysclk frequencies are (in MHz): 8, 16, 24, 30, 32, 36, 40, 42, 48,
+   54, 56, 60, 64, 72, 84, 96, 108, 120, 144, 168.
+
+   The maximum frequency of hclk is 168MHz, of pclk1 is 42MHz, and of pclk2 is
+   84MHz.  Be sure not to set frequencies above these values.
+
+   The hclk, pclk1 and pclk2 frequencies are derived from the sysclk frequency
+   using a prescaler (divider).  Supported prescalers for hclk are: 1, 2, 4, 8,
+   16, 64, 128, 256, 512.  Supported prescalers for pclk1 and pclk2 are: 1, 2,
+   4, 8.  A prescaler will be chosen to best match the requested frequency.
+
+   A sysclk frequency of
+   8MHz uses the HSE (external crystal) directly and 16MHz uses the HSI
+   (internal oscillator) directly.  The higher frequencies use the HSE to
+   drive the PLL (phase locked loop), and then use the output of the PLL.
+
+   Note that if you change the frequency while the USB is enabled then
+   the USB may become unreliable.  It is best to change the frequency
+   in boot.py, before the USB peripheral is started.  Also note that sysclk
+   frequencies below 36MHz do not allow the USB to function correctly.
+   """
+
 @overload
 def freq(sysclk: int, hclk: int, pclk1: int, pclk2: int, /) -> None:
    """
@@ -256,7 +395,6 @@ def freq(sysclk: int, hclk: int, pclk1: int, pclk2: int, /) -> None:
    frequencies below 36MHz do not allow the USB to function correctly.
    """
 
-
 def wfi() -> None:
    """
    Wait for an internal or external interrupt.
@@ -268,7 +406,6 @@ def wfi() -> None:
    at most 1ms.
    """
 
-
 def stop() -> None:
    """
    Put the pyboard in a "sleeping" state.
@@ -279,7 +416,6 @@ def stop() -> None:
 
    See :meth:`rtc.wakeup` to configure a real-time-clock wakeup event.
    """
-
 
 def standby() -> None:
    """
@@ -293,7 +429,6 @@ def standby() -> None:
    See :meth:`rtc.wakeup` to configure a real-time-clock wakeup event.
    """
 
-
 def have_cdc() -> bool:
    """
    Return True if USB is connected as a serial device, False otherwise.
@@ -301,10 +436,15 @@ def have_cdc() -> bool:
    .. note:: This function is deprecated.  Use pyb.USB_VCP().isconnected() instead.
    """
 
-
-
 @overload
-def hid(data: Tuple[int, int, int, int], /) -> None: ...
+def hid(data: Tuple[int, int, int, int], /) -> None:
+   """
+   Takes a 4-tuple (or list) and sends it to the USB host (the PC) to
+   signal a HID mouse-motion event.
+
+   .. note:: This function is deprecated.  Use :meth:`pyb.USB_HID.send()` instead.
+   """
+
 @overload
 def hid(data: Sequence[int], /) -> None:
    """
@@ -314,16 +454,17 @@ def hid(data: Sequence[int], /) -> None:
    .. note:: This function is deprecated.  Use :meth:`pyb.USB_HID.send()` instead.
    """
 
-
-
 @overload
-def info() -> None: ...
+def info() -> None:
+   """
+   Print out lots of information about the board.
+   """
+
 @overload
 def info(dump_alloc_table: bytes, /) -> None:
    """
    Print out lots of information about the board.
    """
-
 
 def main(filename: str, /) -> None:
    """
@@ -333,8 +474,6 @@ def main(filename: str, /) -> None:
    It only makes sense to call this function from within boot.py.
    """
 
-
-
 @overload
 def mount(
    device: _OldAbstractReadOnlyBlockDev, 
@@ -343,7 +482,40 @@ def mount(
    *, 
    readonly: bool = False, 
    mkfs: bool = False
-) -> None: ...
+) -> None:
+   """
+   .. note:: This function is deprecated. Mounting and unmounting devices should
+      be performed by :meth:`uos.mount` and :meth:`uos.umount` instead.
+
+   Mount a block device and make it available as part of the filesystem.
+   ``device`` must be an object that provides the block protocol. (The
+   following is also deprecated. See :class:`uos.AbstractBlockDev` for the
+   correct way to create a block device.)
+
+    - ``readblocks(self, blocknum, buf)``
+    - ``writeblocks(self, blocknum, buf)`` (optional)
+    - ``count(self)``
+    - ``sync(self)`` (optional)
+
+   ``readblocks`` and ``writeblocks`` should copy data between ``buf`` and
+   the block device, starting from block number ``blocknum`` on the device.
+   ``buf`` will be a bytearray with length a multiple of 512.  If
+   ``writeblocks`` is not defined then the device is mounted read-only.
+   The return value of these two functions is ignored.
+
+   ``count`` should return the number of blocks available on the device.
+   ``sync``, if implemented, should sync the data on the device.
+
+   The parameter ``mountpoint`` is the location in the root of the filesystem
+   to mount the device.  It must begin with a forward-slash.
+
+   If ``readonly`` is ``True``, then the device is mounted read-only,
+   otherwise it is mounted read-write.
+
+   If ``mkfs`` is ``True``, then a new filesystem is created if one does not
+   already exist.
+   """
+
 @overload
 def mount(
    device: _OldAbstractBlockDev, 
@@ -386,38 +558,74 @@ def mount(
    already exist.
    """
 
-
-
 @overload
-def repl_uart() -> Optional['UART']: ...
-@overload
-def repl_uart(uart: 'UART', /) -> None:
+def repl_uart() -> Optional["UART"]:
    """
    Get or set the UART object where the REPL is repeated on.
    """
 
+@overload
+def repl_uart(uart: "UART", /) -> None:
+   """
+   Get or set the UART object where the REPL is repeated on.
+   """
 
 def rng() -> int:
    """
    Return a 30-bit hardware generated random number.
    """
 
-
 def sync() -> None:
    """
    Sync all file systems.
    """
-
 
 def unique_id() -> bytes:
    """
    Returns a string of 12 bytes (96 bits), which is the unique ID of the MCU.
    """
 
-
-
 @overload
-def usb_mode() -> str: ...
+def usb_mode() -> str:
+   """
+   If called with no arguments, return the current USB mode as a string.
+
+   If called with *modestr* provided, attempts to configure the USB mode.
+   The following values of *modestr* are understood:
+
+   - ``None``: disables USB
+   - ``'VCP'``: enable with VCP (Virtual COM Port) interface
+   - ``'MSC'``: enable with MSC (mass storage device class) interface
+   - ``'VCP+MSC'``: enable with VCP and MSC
+   - ``'VCP+HID'``: enable with VCP and HID (human interface device)
+   - ``'VCP+MSC+HID'``: enabled with VCP, MSC and HID (only available on PYBD boards)
+
+   For backwards compatibility, ``'CDC'`` is understood to mean
+   ``'VCP'`` (and similarly for ``'CDC+MSC'`` and ``'CDC+HID'``).
+
+   The *port* parameter should be an integer (0, 1, ...) and selects which
+   USB port to use if the board supports multiple ports.  A value of -1 uses
+   the default or automatically selected port.
+
+   The *vid* and *pid* parameters allow you to specify the VID (vendor id)
+   and PID (product id).  A *pid* value of -1 will select a PID based on the
+   value of *modestr*.
+
+   If enabling MSC mode, the *msc* parameter can be used to specify a list
+   of SCSI LUNs to expose on the mass storage interface.  For example
+   ``msc=(pyb.Flash(), pyb.SDCard())``.
+
+   If enabling HID mode, you may also specify the HID details by
+   passing the *hid* keyword parameter.  It takes a tuple of
+   (subclass, protocol, max packet length, polling interval, report
+   descriptor).  By default it will set appropriate values for a USB
+   mouse.  There is also a ``pyb.hid_keyboard`` constant, which is an
+   appropriate tuple for a USB keyboard.
+
+   The *high_speed* parameter, when set to ``True``, enables USB HS mode if
+   it is supported by the hardware.
+   """
+
 @overload
 def usb_mode(
    modestr: str, 
@@ -489,12 +697,10 @@ class Accel:
    concurrently, are UART 1 and Timer 4 channels 1 and 2.
    """
 
-
    def __init__(self):
       """
       Create and return an accelerometer object.
       """
-
 
    def filtered_xyz(self) -> Tuple[int, int, int]:
       """
@@ -506,24 +712,20 @@ class Accel:
       times the size of what they would be from the raw x(), y() and z() calls.
       """
 
-
    def tilt(self) -> int:
       """
       Get the tilt register.
       """
-
 
    def x(self) -> int:
       """
       Get the x-axis value.
       """
 
-
    def y(self) -> int:
       """
       Get the y-axis value.
       """
-
 
    def z(self) -> int:
       """
@@ -549,13 +751,11 @@ class ADC:
        val = adc.read_vref()               # read MCU supply voltage
    """
 
-
    def __init__(self, pin: Union[int, "Pin"], /):
       """
       Create an ADC object associated with the given pin.
       This allows you to then read analog values on that pin.
       """
-
 
    def read(self) -> int:
       """
@@ -563,8 +763,7 @@ class ADC:
       will be between 0 and 4095.
       """
 
-
-   def read_timed(self, buf: _AnyArray, timer: Union["Timer", int], /) -> None:
+   def read_timed(self, buf: _AnyWritableBuf, timer: Union["Timer", int], /) -> None:
       """
       Read analog values into ``buf`` at a rate set by the ``timer`` object.
    
@@ -601,12 +800,11 @@ class ADC:
       it does not return to the calling program until the buffer is full.
       """
 
-
    
    @staticmethod
    def read_timed_multi(
       adcs: Tuple['ADC', ...], 
-      bufs: Tuple[_AnyArray, ...], 
+      bufs: Tuple[_AnyWritableBuf, ...], 
       timer: "Timer", 
       /
    ) -> bool:
@@ -763,25 +961,25 @@ class CAN:
    """
 
 
-   LIST16: int = ...
+   LIST16: ClassVar[int] = ...
    """
    The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
-   MASK16: int = ...
+   MASK16: ClassVar[int] = ...
    """
    The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
-   LIST32: int = ...
+   LIST32: ClassVar[int] = ...
    """
    The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
-   MASK32: int = ...
+   MASK32: ClassVar[int] = ...
    """
    The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
@@ -789,31 +987,31 @@ class CAN:
 
 
 
-   STOPPED: int = ...
+   STOPPED: ClassVar[int] = ...
    """
    Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
-   ERROR_ACTIVE: int = ...
+   ERROR_ACTIVE: ClassVar[int] = ...
    """
    Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
-   ERROR_WARNING: int = ...
+   ERROR_WARNING: ClassVar[int] = ...
    """
    Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
-   ERROR_PASSIVE: int = ...
+   ERROR_PASSIVE: ClassVar[int] = ...
    """
    Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
-   BUS_OFF: int = ...
+   BUS_OFF: ClassVar[int] = ...
    """
    Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
@@ -821,29 +1019,28 @@ class CAN:
 
 
 
-   NORMAL: int = ...
+   NORMAL: ClassVar[int] = ...
    """
    The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
-   LOOPBACK: int = ...
+   LOOPBACK: ClassVar[int] = ...
    """
    The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
-   SILENT: int = ...
+   SILENT: ClassVar[int] = ...
    """
    The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
-   SILENT_LOOPBACK: int = ...
+   SILENT_LOOPBACK: ClassVar[int] = ...
    """
    The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
-
 
 
 
@@ -874,7 +1071,6 @@ class CAN:
         - ``CAN(2)`` is on ``YB``: ``(RX, TX) = (Y5, Y6) = (PB12, PB13)``
       """
 
-
    
    @staticmethod
    def initfilterbanks(nr: int, /) -> None:
@@ -886,7 +1082,6 @@ class CAN:
       that will be assigned to CAN(1), the rest of the 28 are assigned to CAN(2).
       At boot, 14 banks are assigned to each controller.
       """
-
 
    
    def init(
@@ -936,12 +1131,10 @@ class CAN:
       See page 680 of the STM32F405 datasheet for more details.
       """
 
-
    def deinit(self) -> None:
       """
       Turn off the CAN bus.
       """
-
 
    def restart(self) -> None:
       """
@@ -954,7 +1147,6 @@ class CAN:
       and the controller will follow the CAN protocol to leave the bus-off state and
       go into the error active state.
       """
-
 
    def state(self) -> int:
       """
@@ -971,10 +1163,30 @@ class CAN:
         (TEC overflowed beyond 255).
       """
 
-
-   
    @overload
-   def info(self) -> List[int]: ...
+   def info(self) -> List[int]:
+      """
+      Get information about the controller's error states and TX and RX buffers.
+      If *list* is provided then it should be a list object with at least 8 entries,
+      which will be filled in with the information.  Otherwise a new list will be
+      created and filled in.  In both cases the return value of the method is the
+      populated list.
+   
+      The values in the list are:
+   
+      - TEC value
+      - REC value
+      - number of times the controller enterted the Error Warning state (wrapped
+        around to 0 after 65535)
+      - number of times the controller enterted the Error Passive state (wrapped
+        around to 0 after 65535)
+      - number of times the controller enterted the Bus Off state (wrapped
+        around to 0 after 65535)
+      - number of pending TX messages
+      - number of pending RX messages on fifo 0
+      - number of pending RX messages on fifo 1
+      """
+
    @overload
    def info(self, list: List[int], /) -> List[int]:
       """
@@ -999,10 +1211,50 @@ class CAN:
       - number of pending RX messages on fifo 1
       """
 
-
-   
    @overload
-   def setfilter(self, bank: int, mode: int, fifo: int, params: Sequence[int], /) -> None: ...
+   def setfilter(self, bank: int, mode: int, fifo: int, params: Sequence[int], /) -> None:
+      """
+      Configure a filter bank:
+   
+      - *bank* is the filter bank that is to be configured.
+      - *mode* is the mode the filter should operate in.
+      - *fifo* is which fifo (0 or 1) a message should be stored in, if it is accepted by this filter.
+      - *params* is an array of values the defines the filter. The contents of the array depends on the *mode* argument.
+   
+      +-----------+---------------------------------------------------------+
+      |*mode*     |contents of *params* array                               |
+      +===========+=========================================================+
+      |CAN.LIST16 |Four 16 bit ids that will be accepted                    |
+      +-----------+---------------------------------------------------------+
+      |CAN.LIST32 |Two 32 bit ids that will be accepted                     |
+      +-----------+---------------------------------------------------------+
+      |CAN.MASK16 |Two 16 bit id/mask pairs. E.g. (1, 3, 4, 4)              |
+      |           | | The first pair, 1 and 3 will accept all ids           |
+      |           | | that have bit 0 = 1 and bit 1 = 0.                    |
+      |           | | The second pair, 4 and 4, will accept all ids         |
+      |           | | that have bit 2 = 1.                                  |
+      +-----------+---------------------------------------------------------+
+      |CAN.MASK32 |As with CAN.MASK16 but with only one 32 bit id/mask pair.|
+      +-----------+---------------------------------------------------------+
+   
+      - *rtr* is an array of booleans that states if a filter should accept a
+        remote transmission request message.  If this argument is not given
+        then it defaults to ``False`` for all entries.  The length of the array
+        depends on the *mode* argument.
+   
+      +-----------+----------------------+
+      |*mode*     |length of *rtr* array |
+      +===========+======================+
+      |CAN.LIST16 |4                     |
+      +-----------+----------------------+
+      |CAN.LIST32 |2                     |
+      +-----------+----------------------+
+      |CAN.MASK16 |2                     |
+      +-----------+----------------------+
+      |CAN.MASK32 |1                     |
+      +-----------+----------------------+
+      """
+
    @overload
    def setfilter(
       self, 
@@ -1056,7 +1308,6 @@ class CAN:
       +-----------+----------------------+
       """
 
-
    def clearfilter(self, bank: int, /) -> None:
       """
       Clear and disables a filter bank:
@@ -1064,18 +1315,81 @@ class CAN:
       - *bank* is the filter bank that is to be cleared.
       """
 
-
    def any(self, fifo: int, /) -> bool:
       """
       Return ``True`` if any message waiting on the FIFO, else ``False``.
       """
 
-
+   @overload
+   def recv(self, fifo: int, /, *, timeout: int = 5000) -> Tuple[int, bool, int, memoryview]:
+      """
+      Receive data on the bus:
    
+        - *fifo* is an integer, which is the FIFO to receive on
+        - *list* is an optional list object to be used as the return value
+        - *timeout* is the timeout in milliseconds to wait for the receive.
+   
+      Return value: A tuple containing four values.
+   
+        - The id of the message.
+        - A boolean that indicates if the message is an RTR message.
+        - The FMI (Filter Match Index) value.
+        - An array containing the data.
+   
+      If *list* is ``None`` then a new tuple will be allocated, as well as a new
+      bytes object to contain the data (as the fourth element in the tuple).
+   
+      If *list* is not ``None`` then it should be a list object with a least four
+      elements.  The fourth element should be a memoryview object which is created
+      from either a bytearray or an array of type 'B' or 'b', and this array must
+      have enough room for at least 8 bytes.  The list object will then be
+      populated with the first three return values above, and the memoryview object
+      will be resized inplace to the size of the data and filled in with that data.
+      The same list and memoryview objects can be reused in subsequent calls to
+      this method, providing a way of receiving data without using the heap.
+      For example::
+   
+           buf = bytearray(8)
+           lst = [0, 0, 0, memoryview(buf)]
+           # No heap memory is allocated in the following call
+           can.recv(0, lst)
+      """
+
    @overload
-   def recv(self, fifo: int, /, *, timeout: int = 5000) -> Tuple[int, bool, int, memoryview]: ...
-   @overload
-   def recv(self, fifo: int, list: None, /, *, timeout: int = 5000) -> Tuple[int, bool, int, memoryview]: ...
+   def recv(self, fifo: int, list: None, /, *, timeout: int = 5000) -> Tuple[int, bool, int, memoryview]:
+      """
+      Receive data on the bus:
+   
+        - *fifo* is an integer, which is the FIFO to receive on
+        - *list* is an optional list object to be used as the return value
+        - *timeout* is the timeout in milliseconds to wait for the receive.
+   
+      Return value: A tuple containing four values.
+   
+        - The id of the message.
+        - A boolean that indicates if the message is an RTR message.
+        - The FMI (Filter Match Index) value.
+        - An array containing the data.
+   
+      If *list* is ``None`` then a new tuple will be allocated, as well as a new
+      bytes object to contain the data (as the fourth element in the tuple).
+   
+      If *list* is not ``None`` then it should be a list object with a least four
+      elements.  The fourth element should be a memoryview object which is created
+      from either a bytearray or an array of type 'B' or 'b', and this array must
+      have enough room for at least 8 bytes.  The list object will then be
+      populated with the first three return values above, and the memoryview object
+      will be resized inplace to the size of the data and filled in with that data.
+      The same list and memoryview objects can be reused in subsequent calls to
+      this method, providing a way of receiving data without using the heap.
+      For example::
+   
+           buf = bytearray(8)
+           lst = [0, 0, 0, memoryview(buf)]
+           # No heap memory is allocated in the following call
+           can.recv(0, lst)
+      """
+
    @overload
    def recv(self, fifo: int, list: List[Union[int, bool, memoryview]], /, *, timeout: int = 5000) -> None:
       """
@@ -1111,8 +1425,8 @@ class CAN:
            can.recv(0, lst)
       """
 
-
-   def send(self, data: Union[int, _AnyArray], id: int, /, *, timeout: int = 0, rtr: bool = False) -> None:
+   
+   def send(self, data: Union[int, _AnyWritableBuf], id: int, /, *, timeout: int = 0, rtr: bool = False) -> None:
       """
       Send a message on the bus:
    
@@ -1132,7 +1446,6 @@ class CAN:
    
       Return value: ``None``.
       """
-
 
    def rxcallback(self, fifo: int, fun: Callable[["CAN"], None], /) -> None:
       """
@@ -1215,16 +1528,15 @@ class DAC:
        dac.write_timed(buf, 400 * len(buf), mode=DAC.CIRCULAR)
    """
       
-   NORMAL: int = ...
+   NORMAL: ClassVar[int] = ...
    """
    Normal mode (output buffer once) for `mode` argument of `write_timed`.
    """
    
-   CIRCULAR: int = ...
+   CIRCULAR: ClassVar[int] = ...
    """
    Circular mode (output buffer continuously) for `mode` argument of `write_timed`.
    """
-
 
 
    def __init__(self, port: Union[int, "Pin"], /, bits: int = 8, *, buffering: Optional[bool] = None):
@@ -1252,7 +1564,6 @@ class DAC:
       especially near the extremes of range.
       """
 
-
    def init(self, bits: int = 8, *, buffering: Optional[bool] = None) -> None:
       """
       Reinitialise the DAC.  *bits* can be 8 or 12.  *buffering* can be
@@ -1260,19 +1571,16 @@ class DAC:
       of this parameter.
       """
 
-
    def deinit(self) -> None:
       """
       De-initialise the DAC making its pin available for other uses.
       """
-
 
    def noise(self, freq: int, /) -> None:
       """
       Generate a pseudo-random noise signal.  A new random sample is written
       to the DAC output at the given frequency.
       """
-
 
    def triangle(self, freq: int, /) -> None:
       """
@@ -1281,7 +1589,6 @@ class DAC:
       the frequency of the repeating triangle wave itself is 8192 times smaller.
       """
 
-
    def write(self, value: int, /) -> None:
       """
       Direct access to the DAC output.  The minimum value is 0.  The maximum
@@ -1289,8 +1596,7 @@ class DAC:
       object or by using the ``init`` method.
       """
 
-
-   def write_timed(self, data: _AnyArray, freq: Union[int, "Timer"], /, *, mode: int = NORMAL) -> None:
+   def write_timed(self, data: _AnyWritableBuf, freq: Union[int, "Timer"], /, *, mode: int = NORMAL) -> None:
       """
       Initiates a burst of RAM to DAC using a DMA transfer.
       The input data is treated as an array of bytes in 8-bit mode, and
@@ -1359,7 +1665,7 @@ class ExtInt:
    """
 
 
-   IRQ_RISING_FALLING: int = ...
+   IRQ_RISING_FALLING: ClassVar[int] = ...
    """
    interrupt on a rising or falling edge
    """
@@ -1367,7 +1673,7 @@ class ExtInt:
 
 
 
-   IRQ_RISING: int = ...
+   IRQ_RISING: ClassVar[int] = ...
    """
    interrupt on a rising edge
    """
@@ -1375,11 +1681,10 @@ class ExtInt:
 
 
 
-   IRQ_FALLING: int = ...
+   IRQ_FALLING: ClassVar[int] = ...
    """
    interrupt on a falling edge
    """
-
 
 
 
@@ -1401,7 +1706,6 @@ class ExtInt:
           triggered the interrupt.
       """
 
-
    
    @staticmethod
    def regs() -> None:
@@ -1409,25 +1713,21 @@ class ExtInt:
       Dump the values of the EXTI registers.
       """
 
-
    def disable(self) -> None:
       """
       Disable the interrupt associated with the ExtInt object.
       This could be useful for debouncing.
       """
 
-
    def enable(self) -> None:
       """
       Enable a disabled interrupt.
       """
 
-
    def line(self) -> int:
       """
       Return the line number that the pin is mapped to.
       """
-
 
    def swint(self) -> None:
       """
@@ -1453,7 +1753,6 @@ class Flash:
    internal flash inside the :term:`MCU` will be used.
    """
 
-
    
    @overload
    def __init__(self):
@@ -1466,7 +1765,6 @@ class Flash:
    
       This constructor is deprecated and will be removed in a future version of MicroPython.
       """
-
 
    
    @overload
@@ -1551,7 +1849,6 @@ class I2C:
                                                    # starting at address 2 in the slave, timeout after 1 second
    """
 
-
    
    def __init__(
       self, 
@@ -1585,12 +1882,10 @@ class I2C:
       types.
       """
 
-
    def deinit(self) -> None:
       """
       Turn off the I2C bus.
       """
-
 
    
    def init(
@@ -1616,17 +1911,15 @@ class I2C:
           errors properly)
       """
 
-
    def is_ready(self, addr: int, /) -> bool:
       """
       Check if an I2C device responds to the given address.  Only valid when in master mode.
       """
 
-
    
    def mem_read(
       self, 
-      data: Union[int, _AnyArray], 
+      data: Union[int, _AnyWritableBuf], 
       addr: int, 
       memaddr: int,
       /, 
@@ -1684,13 +1977,11 @@ class LCD:
            pyb.delay(50)               # pause for 50ms
    """
 
-
    def __init__(self, skin_position: str, /):
       """
       Construct an LCD object in the given skin position.  ``skin_position`` can be 'X' or 'Y', and
       should match the position where the LCD pyskin is plugged in.
       """
-
 
    def command(self, inst_data: int, buf: bytes, /) -> None:
       """
@@ -1699,12 +1990,10 @@ class LCD:
       instructions/data to send.
       """
 
-
    def contrast(self, value: int, /) -> None:
       """
       Set the contrast of the LCD.  Valid values are between 0 and 47.
       """
-
 
    def fill(self, colour: int, /) -> None:
       """
@@ -1713,7 +2002,6 @@ class LCD:
       This method writes to the hidden buffer.  Use ``show()`` to show the buffer.
       """
 
-
    def get(self, x: int, y: int, /) -> int:
       """
       Get the pixel at the position ``(x, y)``.  Returns 0 or 1.
@@ -1721,12 +2009,10 @@ class LCD:
       This method reads from the visible buffer.
       """
 
-
    def light(self, value: Union[bool, int], /) -> None:
       """
       Turn the backlight on/off.  True or 1 turns it on, False or 0 turns it off.
       """
-
 
    def pixel(self, x: int, y: int, colour: int, /) -> None:
       """
@@ -1735,12 +2021,10 @@ class LCD:
       This method writes to the hidden buffer.  Use ``show()`` to show the buffer.
       """
 
-
    def show(self) -> None:
       """
       Show the hidden buffer on the screen.
       """
-
 
    def text(self, str: str, x: int, y: int, colour: int, /) -> None:
       """
@@ -1748,7 +2032,6 @@ class LCD:
    
       This method writes to the hidden buffer.  Use ``show()`` to show the buffer.
       """
-
 
    def write(self, str: str, /) -> None:
       """
@@ -1761,7 +2044,6 @@ class LED:
    The LED object controls an individual LED (Light Emitting Diode).
    """
 
-
    def __init__(self, id: int, /):
       """
       Create an LED object associated with the given LED:
@@ -1769,10 +2051,20 @@ class LED:
         - ``id`` is the LED number, 1-4.
       """
 
-
-   
    @overload
-   def intensity(self) -> int: ...
+   def intensity(self) -> int:
+      """
+      Get or set the LED intensity.  Intensity ranges between 0 (off) and 255 (full on).
+      If no argument is given, return the LED intensity.
+      If an argument is given, set the LED intensity and return ``None``.
+   
+      *Note:* Only LED(3) and LED(4) can have a smoothly varying intensity, and
+      they use timer PWM to implement it.  LED(3) uses Timer(2) and LED(4) uses
+      Timer(3).  These timers are only configured for PWM if the intensity of the
+      relevant LED is set to a value between 1 and 254.  Otherwise the timers are
+      free for general purpose use.
+      """
+
    @overload
    def intensity(self, value: int, /) -> None:
       """
@@ -1787,18 +2079,15 @@ class LED:
       free for general purpose use.
       """
 
-
    def off(self) -> None:
       """
       Turn the LED off.
       """
 
-
    def on(self) -> None:
       """
       Turn the LED on, to maximum intensity.
       """
-
 
    def toggle(self) -> None:
       """
@@ -1877,634 +2166,642 @@ class Pin:
    gpio pins.
    """
    
-   AF1_TIM1: "PinAF" = ...
+   AF1_TIM1: ClassVar["PinAF"] = ...
    """
    Alternate def_ 1, timer 1.
    """
    
-   AF1_TIM2: "PinAF" = ...
+   AF1_TIM2: ClassVar["PinAF"] = ...
    """
    Alternate def_ 1, timer 2.
    """
 
-   AF2_TIM3: "PinAF" = ...
+   AF2_TIM3: ClassVar["PinAF"] = ...
    """
    Alternate def_ 2, timer 3.
    """
 
-   AF2_TIM4: "PinAF" = ...
+   AF2_TIM4: ClassVar["PinAF"] = ...
    """
    Alternate def_ 2, timer 4.
    """
 
-   AF2_TIM5: "PinAF" = ...
+   AF2_TIM5: ClassVar["PinAF"] = ...
    """
    Alternate def_ 2, timer 5.
    """
 
-   AF3_TIM10: "PinAF" = ...
+   AF3_TIM10: ClassVar["PinAF"] = ...
    """
    Alternate def_ 3, timer 10.
    """
 
-   AF3_TIM11: "PinAF" = ...
+   AF3_TIM11: ClassVar["PinAF"] = ...
    """
    Alternate def_ 3, timer 11.
    """
 
-   AF3_TIM8: "PinAF" = ...
+   AF3_TIM8: ClassVar["PinAF"] = ...
    """
    Alternate def_ 3, timer 8.
    """
 
-   AF3_TIM9: "PinAF" = ...
+   AF3_TIM9: ClassVar["PinAF"] = ...
    """
    Alternate def_ 3, timer 9.
    """
 
-   AF4_I2C1: "PinAF" = ...
+   AF4_I2C1: ClassVar["PinAF"] = ...
    """
    Alternate def_ 4, I2C 1.
    """
 
-   AF4_I2C2: "PinAF" = ...
+   AF4_I2C2: ClassVar["PinAF"] = ...
    """
    Alternate def_ 4, I2C 2.
    """
 
-   AF5_SPI1: "PinAF" = ...
+   AF5_SPI1: ClassVar["PinAF"] = ...
    """
    Alternate def_ 5, SPI 1.
    """
 
-   AF5_SPI2: "PinAF" = ...
+   AF5_SPI2: ClassVar["PinAF"] = ...
    """
    Alternate def_ 5, SPI 2.
    """
 
-   AF7_USART1: "PinAF" = ...
+   AF7_USART1: ClassVar["PinAF"] = ...
    """
    Alternate def_ 7, USART 1.
    """
 
-   AF7_USART2: "PinAF" = ...
+   AF7_USART2: ClassVar["PinAF"] = ...
    """
    Alternate def_ 7, USART 2.
    """
 
-   AF7_USART3: "PinAF" = ...
+   AF7_USART3: ClassVar["PinAF"] = ...
    """
    Alternate def_ 7, USART 3.
    """
 
-   AF8_UART4: "PinAF" = ...
+   AF8_UART4: ClassVar["PinAF"] = ...
    """
    Alternate def_ 8, USART 4.
    """
 
-   AF8_USART6: "PinAF" = ...
+   AF8_USART6: ClassVar["PinAF"] = ...
    """
    Alternate def_ 8, USART 6.
    """
 
-   AF9_CAN1: "PinAF" = ...
+   AF9_CAN1: ClassVar["PinAF"] = ...
    """
    Alternate def_ 9, CAN 1.
    """
 
-   AF9_CAN2: "PinAF" = ...
+   AF9_CAN2: ClassVar["PinAF"] = ...
    """
    Alternate def_ 9, CAN 2.
    """
 
-   AF9_TIM12: "PinAF" = ...
+   AF9_TIM12: ClassVar["PinAF"] = ...
    """
    Alternate def_ 9, timer 12.
    """
 
-   AF9_TIM13: "PinAF" = ...
+   AF9_TIM13: ClassVar["PinAF"] = ...
    """
    Alternate def_ 9, timer 13.
    """
 
-   AF9_TIM14: "PinAF" = ...
+   AF9_TIM14: ClassVar["PinAF"] = ...
    """
    Alternate def_ 9, timer 14.
    """
 
 
-   ALT: int = ...
+   ALT: ClassVar[int] = ...
    """
    Initialise the pin to alternate-def_ mode with a push-pull drive (same as `AF_PP`).
    """
 
-   ALT_OPEN_DRAIN: int = ...
+   ALT_OPEN_DRAIN: ClassVar[int] = ...
    """
    Initialise the pin to alternate-def_ mode with an open-drain drive (same as `AF_OD`).
    """
 
-   IRQ_FALLING: int = ...
+   IRQ_FALLING: ClassVar[int] = ...
    """
    Initialise the pin to generate an interrupt on a falling edge.
    """
 
-   IRQ_RISING: int = ...
+   IRQ_RISING: ClassVar[int] = ...
    """
    Initialise the pin to generate an interrupt on a rising edge.
    """
 
-   OPEN_DRAIN: int = ...
+   OPEN_DRAIN: ClassVar[int] = ...
    """
    Initialise the pin to output mode with an open-drain drive (same as `OUT_OD`).
    """
    
    
    class board:
-      LED_BLUE: "Pin" = ...
+      """
+      The board pins (board nomenclature, e.g. `X1`) that are bought out onto pads on a PyBoard.
+      """
+
+      LED_BLUE: ClassVar["Pin"] = ...
       """
       The blue LED.
       """
       
-      LED_GREEN: "Pin" = ...
+      LED_GREEN: ClassVar["Pin"] = ...
       """
       The green LED.
       """
       
-      LED_RED: "Pin" = ...
+      LED_RED: ClassVar["Pin"] = ...
       """
       The red LED.
       """
       
-      LED_YELLOW: "Pin" = ...
+      LED_YELLOW: ClassVar["Pin"] = ...
       """
       The yellow LED.
       """
       
-      MMA_AVDD: "Pin" = ...
+      MMA_AVDD: ClassVar["Pin"] = ...
       """
       Accelerometer (MMA7660) analogue power (AVDD) pin.
       """
       
-      MMA_INT: "Pin" = ...
+      MMA_INT: ClassVar["Pin"] = ...
       """
       Accelerometer (MMA7660) interrupt (\INT) pin.
       """
       
-      SD: "Pin" = ...
+      SD: ClassVar["Pin"] = ...
       """
       SD card present switch (0 for card inserted, 1 for no card) (same as SD_SW).
       """
 
-      SD_CK: "Pin" = ...
+      SD_CK: ClassVar["Pin"] = ...
       """
       SD card clock.
       """
 
-      SD_CMD: "Pin" = ...
+      SD_CMD: ClassVar["Pin"] = ...
       """
       SD card command.
       """
 
-      SD_D0: "Pin" = ...
+      SD_D0: ClassVar["Pin"] = ...
       """
       SD card serial data 0.
       """
 
-      SD_D1: "Pin" = ...
+      SD_D1: ClassVar["Pin"] = ...
       """
       SD card serial data 1.
       """
 
-      SD_D2: "Pin" = ...
+      SD_D2: ClassVar["Pin"] = ...
       """
       SD card serial data 2.
       """
 
-      SD_D3: "Pin" = ...
+      SD_D3: ClassVar["Pin"] = ...
       """
       SD card serial data 3.
       """
 
-      SD_SW: "Pin" = ...
+      SD_SW: ClassVar["Pin"] = ...
       """
       SD card present switch (0 for card inserted, 1 for no card) (same as SD).
       """
 
-      SW: "Pin" = ...
+      SW: ClassVar["Pin"] = ...
       """
       Usr switch (0 = pressed, 1 = not pressed).
       """
 
-      USB_DM: "Pin" = ...
+      USB_DM: ClassVar["Pin"] = ...
       """
       USB data -.
       """
 
-      USB_DP: "Pin" = ...
+      USB_DP: ClassVar["Pin"] = ...
       """
       USB data +.
       """
 
-      USB_ID: "Pin" = ...
+      USB_ID: ClassVar["Pin"] = ...
       """
       USB OTG (on-the-go) ID.
       """
 
-      USB_VBUS: "Pin" = ...
+      USB_VBUS: ClassVar["Pin"] = ...
       """
       USB VBUS (power) monitoring pin.
       """
 
-      X1: "Pin" = ...
+      X1: ClassVar["Pin"] = ...
       """
       X1 pin.
       """
 
-      X10: "Pin" = ...
+      X10: ClassVar["Pin"] = ...
       """
       X10 pin.
       """
 
-      X11: "Pin" = ...
+      X11: ClassVar["Pin"] = ...
       """
       X11 pin.
       """
 
-      X12: "Pin" = ...
+      X12: ClassVar["Pin"] = ...
       """
       X12 pin.
       """
 
-      X17: "Pin" = ...
+      X17: ClassVar["Pin"] = ...
       """
       X17 pin.
       """
 
-      X18: "Pin" = ...
+      X18: ClassVar["Pin"] = ...
       """
       X18 pin.
       """
 
-      X19: "Pin" = ...
+      X19: ClassVar["Pin"] = ...
       """
       X19 pin.
       """
 
-      X2: "Pin" = ...
+      X2: ClassVar["Pin"] = ...
       """
       X2 pin.
       """
 
-      X20: "Pin" = ...
+      X20: ClassVar["Pin"] = ...
       """
       X20 pin.
       """
 
-      X21: "Pin" = ...
+      X21: ClassVar["Pin"] = ...
       """
       X21 pin.
       """
              
-      X22: "Pin" = ...
+      X22: ClassVar["Pin"] = ...
       """
       X22 pin.
       """
 
-      X3: "Pin" = ...
+      X3: ClassVar["Pin"] = ...
       """
       X3 pin.
       """
 
-      X4: "Pin" = ...
+      X4: ClassVar["Pin"] = ...
       """
       X4 pin.
       """
 
-      X5: "Pin" = ...
+      X5: ClassVar["Pin"] = ...
       """
       X5 pin.
       """
 
-      X6: "Pin" = ...
+      X6: ClassVar["Pin"] = ...
       """
       X6 pin.
       """
 
-      X7: "Pin" = ...
+      X7: ClassVar["Pin"] = ...
       """
       X7 pin.
       """
 
-      X8: "Pin" = ...
+      X8: ClassVar["Pin"] = ...
       """
       X8 pin.
       """
 
-      X9: "Pin" = ...
+      X9: ClassVar["Pin"] = ...
       """
       X9 pin.
       """
 
-      Y1: "Pin" = ...
+      Y1: ClassVar["Pin"] = ...
       """
       Y1 pin.
       """
 
-      Y10: "Pin" = ...
+      Y10: ClassVar["Pin"] = ...
       """
       Y10 pin.
       """
 
-      Y11: "Pin" = ...
+      Y11: ClassVar["Pin"] = ...
       """
       Y11 pin.
       """
 
-      Y12: "Pin" = ...
+      Y12: ClassVar["Pin"] = ...
       """
       Y12 pin.
       """
 
-      Y2: "Pin" = ...
+      Y2: ClassVar["Pin"] = ...
       """
       Y2 pin.
       """
 
-      Y3: "Pin" = ...
+      Y3: ClassVar["Pin"] = ...
       """
       Y3 pin.
       """
 
-      Y4: "Pin" = ...
+      Y4: ClassVar["Pin"] = ...
       """
       Y4 pin.
       """
 
-      Y5: "Pin" = ...
+      Y5: ClassVar["Pin"] = ...
       """
       Y5 pin.
       """
 
-      Y6: "Pin" = ...
+      Y6: ClassVar["Pin"] = ...
       """
       Y6 pin.
       """
 
-      Y7: "Pin" = ...
+      Y7: ClassVar["Pin"] = ...
       """
       Y7 pin.
       """
 
-      Y8: "Pin" = ...
+      Y8: ClassVar["Pin"] = ...
       """
       Y8 pin.
       """
 
-      Y9: "Pin" = ...
+      Y9: ClassVar["Pin"] = ...
       """
       Y9 pin.
       """
    
    
    class cpu:
-      A0: "Pin" = ...
+      """
+      The CPU pins (CPU nomenclature, e.g. `A0`) that are bought out onto pads on a PyBoard.
+      """
+      
+      A0: ClassVar["Pin"] = ...
       """
       A0 pin.
       """
       
-      A1: "Pin" = ...
+      A1: ClassVar["Pin"] = ...
       """
       A1 pin.
       """
 
-      A10: "Pin" = ...
+      A10: ClassVar["Pin"] = ...
       """
       A10 pin.
       """
 
-      A11: "Pin" = ...
+      A11: ClassVar["Pin"] = ...
       """
       A11 pin.
       """
 
-      A12: "Pin" = ...
+      A12: ClassVar["Pin"] = ...
       """
       A12 pin.
       """
 
-      A13: "Pin" = ...
+      A13: ClassVar["Pin"] = ...
       """
       A13 pin.
       """
 
-      A14: "Pin" = ...
+      A14: ClassVar["Pin"] = ...
       """
       A14 pin.
       """
 
-      A15: "Pin" = ...
+      A15: ClassVar["Pin"] = ...
       """
       A15 pin.
       """
 
-      A2: "Pin" = ...
+      A2: ClassVar["Pin"] = ...
       """
       A2 pin.
       """
 
-      A3: "Pin" = ...
+      A3: ClassVar["Pin"] = ...
       """
       A3 pin.
       """
 
-      A4: "Pin" = ...
+      A4: ClassVar["Pin"] = ...
       """
       A4 pin.
       """
 
-      A5: "Pin" = ...
+      A5: ClassVar["Pin"] = ...
       """
       A5 pin.
       """
 
-      A6: "Pin" = ...
+      A6: ClassVar["Pin"] = ...
       """
       A6 pin.
       """
 
-      A7: "Pin" = ...
+      A7: ClassVar["Pin"] = ...
       """
       A7 pin.
       """
 
-      A8: "Pin" = ...
+      A8: ClassVar["Pin"] = ...
       """
       A8 pin.
       """
 
-      A9: "Pin" = ...
+      A9: ClassVar["Pin"] = ...
       """
       A9 pin.
       """
 
-      B0: "Pin" = ...
+      B0: ClassVar["Pin"] = ...
       """
       B0 pin.
       """
 
-      B1: "Pin" = ...
+      B1: ClassVar["Pin"] = ...
       """
       B1 pin.
       """
 
-      B10: "Pin" = ...
+      B10: ClassVar["Pin"] = ...
       """
       B10 pin.
       """
 
-      B11: "Pin" = ...
+      B11: ClassVar["Pin"] = ...
       """
       B11 pin.
       """
 
-      B12: "Pin" = ...
+      B12: ClassVar["Pin"] = ...
       """
       B12 pin.
       """
 
-      B13: "Pin" = ...
+      B13: ClassVar["Pin"] = ...
       """
       B13 pin.
       """
 
-      B14: "Pin" = ...
+      B14: ClassVar["Pin"] = ...
       """
       B14 pin.
       """
 
-      B15: "Pin" = ...
+      B15: ClassVar["Pin"] = ...
       """
       B15 pin.
       """
 
-      B2: "Pin" = ...
+      B2: ClassVar["Pin"] = ...
       """
       B2 pin.
       """
 
-      B3: "Pin" = ...
+      B3: ClassVar["Pin"] = ...
       """
       B3 pin.
       """
 
-      B4: "Pin" = ...
+      B4: ClassVar["Pin"] = ...
       """
       B4 pin.
       """
 
-      B5: "Pin" = ...
+      B5: ClassVar["Pin"] = ...
       """
       B5 pin.
       """
 
-      B6: "Pin" = ...
+      B6: ClassVar["Pin"] = ...
       """
       B6 pin.
       """
 
-      B7: "Pin" = ...
+      B7: ClassVar["Pin"] = ...
       """
       B7 pin.
       """
 
-      B8: "Pin" = ...
+      B8: ClassVar["Pin"] = ...
       """
       B8 pin.
       """
 
-      B9: "Pin" = ...
+      B9: ClassVar["Pin"] = ...
       """
       B9 pin.
       """
 
-      C0: "Pin" = ...
+      C0: ClassVar["Pin"] = ...
       """
       C0 pin.
       """
 
-      C1: "Pin" = ...
+      C1: ClassVar["Pin"] = ...
       """
       C1 pin.
       """
 
-      C10: "Pin" = ...
+      C10: ClassVar["Pin"] = ...
       """
       C10 pin.
       """
 
-      C11: "Pin" = ...
+      C11: ClassVar["Pin"] = ...
       """
       C11 pin.
       """
 
-      C12: "Pin" = ...
+      C12: ClassVar["Pin"] = ...
       """
       C12 pin.
       """
 
-      C13: "Pin" = ...
+      C13: ClassVar["Pin"] = ...
       """
       C13 pin.
       """
 
-      C2: "Pin" = ...
+      C2: ClassVar["Pin"] = ...
       """
       C2 pin.
       """
 
-      C3: "Pin" = ...
+      C3: ClassVar["Pin"] = ...
       """
       C3 pin.
       """
 
-      C4: "Pin" = ...
+      C4: ClassVar["Pin"] = ...
       """
       C4 pin.
       """
 
-      C5: "Pin" = ...
+      C5: ClassVar["Pin"] = ...
       """
       C5 pin.
       """
 
-      C6: "Pin" = ...
+      C6: ClassVar["Pin"] = ...
       """
       C6 pin.
       """
 
-      C7: "Pin" = ...
+      C7: ClassVar["Pin"] = ...
       """
       C7 pin.
       """
 
-      C8: "Pin" = ...
+      C8: ClassVar["Pin"] = ...
       """
       C8 pin.
       """
 
-      C9: "Pin" = ...
+      C9: ClassVar["Pin"] = ...
       """
       C9 pin.
       """
 
-      D2: "Pin" = ...
+      D2: ClassVar["Pin"] = ...
       """
       D2 pin.
       """
 
 
 
-   PULL_UP: int = ...
+   PULL_UP: ClassVar[int] = ...
    """
    enable the pull-up resistor on the pin
    """
@@ -2512,7 +2809,7 @@ class Pin:
 
 
 
-   PULL_NONE: int = ...
+   PULL_NONE: ClassVar[int] = ...
    """
    don't enable any pull up or down resistors on the pin
    """
@@ -2520,7 +2817,7 @@ class Pin:
 
 
 
-   PULL_DOWN: int = ...
+   PULL_DOWN: ClassVar[int] = ...
    """
    enable the pull-down resistor on the pin
    """
@@ -2528,7 +2825,7 @@ class Pin:
 
 
 
-   OUT_PP: int = ...
+   OUT_PP: ClassVar[int] = ...
    """
    initialise the pin to output mode with a push-pull drive
    """
@@ -2536,7 +2833,7 @@ class Pin:
 
 
 
-   OUT_OD: int = ...
+   OUT_OD: ClassVar[int] = ...
    """
    initialise the pin to output mode with an open-drain drive
    """
@@ -2544,7 +2841,7 @@ class Pin:
 
 
 
-   IN: int = ...
+   IN: ClassVar[int] = ...
    """
    initialise the pin to input mode
    """
@@ -2552,7 +2849,7 @@ class Pin:
 
 
 
-   ANALOG: int = ...
+   ANALOG: ClassVar[int] = ...
    """
    initialise the pin to analog mode
    """
@@ -2560,7 +2857,7 @@ class Pin:
 
 
 
-   AF_PP: int = ...
+   AF_PP: ClassVar[int] = ...
    """
    initialise the pin to alternate-function mode with a push-pull drive
    """
@@ -2568,11 +2865,10 @@ class Pin:
 
 
 
-   AF_OD: int = ...
+   AF_OD: ClassVar[int] = ...
    """
    initialise the pin to alternate-function mode with an open-drain drive
    """
-
 
 
 
@@ -2582,42 +2878,47 @@ class Pin:
       they are used to initialise the pin.  See :meth:`pin.init`.
       """
 
+   @overload
+   @staticmethod
+   def debug() -> bool:
+      """
+      Get or set the debugging state (``True`` or ``False`` for on or off).
+      """
 
-   
-   @staticmethod
    @overload
-   def debug() -> bool: ...
    @staticmethod
-   @overload
    def debug(state: bool, /) -> None:
       """
       Get or set the debugging state (``True`` or ``False`` for on or off).
       """
 
+   @overload
+   @staticmethod
+   def dict() -> Dict[str, "Pin"]:
+      """
+      Get or set the pin mapper dictionary.
+      """
 
-   
-   @staticmethod
    @overload
-   def dict() -> Dict[str, "Pin"]: ...
    @staticmethod
-   @overload
    def dict(dict: Dict[str, "Pin"], /) -> None:
       """
       Get or set the pin mapper dictionary.
       """
 
-
-   
-   @staticmethod
    @overload
-   def mapper() -> Callable[[str], "Pin"]: ...
    @staticmethod
-   @overload
-   def mapper(fun: Callable[[str], "Pin"], /) -> None:
+   def mapper() -> Callable[[str], "Pin"]:
       """
       Get or set the pin mapper function.
       """
 
+   @overload
+   @staticmethod
+   def mapper(fun: Callable[[str], "Pin"], /) -> None:
+      """
+      Get or set the pin mapper function.
+      """
 
    def init(self, mode: int = IN, pull: int = PULL_NONE, af: Union[str, int] = -1) -> None:
       """
@@ -2644,10 +2945,17 @@ class Pin:
       Returns: ``None``.
       """
 
-
-   
    @overload
-   def value(self) -> int: ...
+   def value(self) -> int:
+      """
+      Get or set the digital logic level of the pin:
+   
+        - With no argument, return 0 or 1 depending on the logic level of the pin.
+        - With ``value`` given, set the logic level of the pin.  ``value`` can be
+          anything that converts to a boolean.  If it converts to ``True``, the pin
+          is set high, otherwise it is set low.
+      """
+
    @overload
    def value(self, value: Any, /) -> None:
       """
@@ -2659,12 +2967,10 @@ class Pin:
           is set high, otherwise it is set low.
       """
 
-
    def __str__(self) -> str:
       """
       Return a string describing the pin object.
       """
-
 
    def af(self) -> int:
       """
@@ -2673,18 +2979,15 @@ class Pin:
       argument to the init function.
       """
 
-
    def af_list(self) -> List["PinAF"]:
       """
       Returns an array of alternate functions available for this pin.
       """
 
-
    def gpio(self) -> int:
       """
       Returns the base address of the GPIO block associated with this pin.
       """
-
 
    def mode(self) -> int:
       """
@@ -2693,30 +2996,25 @@ class Pin:
       function.
       """
 
-
    def name(self) -> str:
       """
       Get the pin name.
       """
-
 
    def names(self) -> List[str]:
       """
       Returns the cpu and board names for this pin.
       """
 
-
    def pin(self) -> int:
       """
       Get the pin number.
       """
 
-
    def port(self) -> int:
       """
       Get the pin port.
       """
-
 
    def pull(self) -> int:
       """
@@ -2758,14 +3056,12 @@ class PinAF(ABC):
 
    __slots__ = ()
 
-
    
    @abstractmethod
    def __str__(self) -> str:
       """
       Return a string describing the alternate function.
       """
-
 
    
    @abstractmethod
@@ -2774,14 +3070,12 @@ class PinAF(ABC):
       Return the alternate function index.
       """
 
-
    
    @abstractmethod
    def name(self) -> str:
       """
       Return the name of the alternate function.
       """
-
 
    
    @abstractmethod
@@ -2805,12 +3099,10 @@ class RTC:
        print(rtc.datetime())
    """
 
-
    def __init__(self):
       """
       Create an RTC object.
       """
-
 
    def datetime(self, datetimetuple: Tuple[int, int, int, int, int, int, int, int], /) -> None:
       """
@@ -2829,7 +3121,6 @@ class RTC:
       ``subseconds`` counts down from 255 to 0
       """
 
-
    def wakeup(self, timeout: Optional[Callable[["RTC"], None]] = None, /) -> None:
       """
       Set the RTC wakeup timer to trigger repeatedly at every ``timeout``
@@ -2842,7 +3133,6 @@ class RTC:
       wakeup timer.  ``callback`` must take exactly one argument.
       """
 
-
    def info(self) -> int:
       """
       Get information about the startup time and reset source.
@@ -2853,10 +3143,24 @@ class RTC:
        - Bit 0x20000 is set if an external reset occurred
       """
 
-
-   
    @overload
-   def calibration(self) -> int: ...
+   def calibration(self) -> int:
+      """
+      Get or set RTC calibration.
+   
+      With no arguments, ``calibration()`` returns the current calibration
+      value, which is an integer in the range [-511 : 512].  With one
+      argument it sets the RTC calibration.
+   
+      The RTC Smooth Calibration mechanism adjusts the RTC clock rate by
+      adding or subtracting the given number of ticks from the 32768 Hz
+      clock over a 32 second period (corresponding to 2^20 clock ticks.)
+      Each tick added will speed up the clock by 1 part in 2^20, or 0.954
+      ppm; likewise the RTC clock it slowed by negative values. The
+      usable calibration range is:
+      (-511 * 0.954) ~= -487.5 ppm up to (512 * 0.954) ~= 488.5 ppm
+      """
+
    @overload
    def calibration(self, cal: int, /) -> None:
       """
@@ -2902,16 +3206,24 @@ class Servo:
       same time.
    """
 
-
    def __init__(self, id: int, /):
       """
       Create a servo object.  ``id`` is 1-4, and corresponds to pins X1 through X4.
       """
 
-
-   
    @overload
-   def angle(self) -> int: ...
+   def angle(self) -> int:
+      """
+      If no arguments are given, this function returns the current angle.
+   
+      If arguments are given, this function sets the angle of the servo:
+   
+        - ``angle`` is the angle to move to in degrees.
+        - ``time`` is the number of milliseconds to take to get to the specified
+          angle.  If omitted, then the servo moves as quickly as possible to its
+          new position.
+      """
+
    @overload
    def angle(self, angle: int, time: int = 0, /) -> None:
       """
@@ -2925,10 +3237,18 @@ class Servo:
           new position.
       """
 
-
-   
    @overload
-   def speed(self) -> int: ...
+   def speed(self) -> int:
+      """
+      If no arguments are given, this function returns the current speed.
+   
+      If arguments are given, this function sets the speed of the servo:
+   
+        - ``speed`` is the speed to change to, between -100 and 100.
+        - ``time`` is the number of milliseconds to take to get to the specified
+          speed.  If omitted, then the servo accelerates as quickly as possible.
+      """
+
    @overload
    def speed(self, speed: int, time: int = 0, /) -> None:
       """
@@ -2941,10 +3261,15 @@ class Servo:
           speed.  If omitted, then the servo accelerates as quickly as possible.
       """
 
-
-   
    @overload
-   def speed(self) -> int: ...
+   def speed(self) -> int:
+      """
+      If no arguments are given, this function returns the current raw pulse-width
+      value.
+   
+      If an argument is given, this function sets the raw pulse-width value.
+      """
+
    @overload
    def speed(self, value: int, /) -> None:
       """
@@ -2954,12 +3279,23 @@ class Servo:
       If an argument is given, this function sets the raw pulse-width value.
       """
 
-
-   
    @overload
    def calibration(
       self
-   ) -> Tuple[int, int, int, int, int]: ...
+   ) -> Tuple[int, int, int, int, int]:
+      """
+      If no arguments are given, this function returns the current calibration
+      data, as a 5-tuple.
+   
+      If arguments are given, this function sets the timing calibration:
+   
+        - ``pulse_min`` is the minimum allowed pulse width.
+        - ``pulse_max`` is the maximum allowed pulse width.
+        - ``pulse_centre`` is the pulse width corresponding to the centre/zero position.
+        - ``pulse_angle_90`` is the pulse width corresponding to 90 degrees.
+        - ``pulse_speed_100`` is the pulse width corresponding to a speed of 100.
+      """
+
    @overload
    def calibration(
       self, 
@@ -2967,7 +3303,20 @@ class Servo:
       pulse_max: int, 
       pulse_centre: int, 
       /
-   ) -> None: ...
+   ) -> None:
+      """
+      If no arguments are given, this function returns the current calibration
+      data, as a 5-tuple.
+   
+      If arguments are given, this function sets the timing calibration:
+   
+        - ``pulse_min`` is the minimum allowed pulse width.
+        - ``pulse_max`` is the maximum allowed pulse width.
+        - ``pulse_centre`` is the pulse width corresponding to the centre/zero position.
+        - ``pulse_angle_90`` is the pulse width corresponding to 90 degrees.
+        - ``pulse_speed_100`` is the pulse width corresponding to a speed of 100.
+      """
+
    @overload
    def calibration(
       self, 
@@ -3017,13 +3366,13 @@ class SPI:
    """
 
 
-   LSB: int = ...
+   LSB: ClassVar[int] = ...
    """
    set the first bit to be the least or most significant bit
    """
 
 
-   MSB: int = ...
+   MSB: ClassVar[int] = ...
    """
    set the first bit to be the least or most significant bit
    """
@@ -3031,23 +3380,37 @@ class SPI:
 
 
 
-   MASTER: int = ...
+   MASTER: ClassVar[int] = ...
    """
    for initialising the SPI bus to master or slave mode
    """
 
 
-   SLAVE: int = ...
+   SLAVE: ClassVar[int] = ...
    """
    for initialising the SPI bus to master or slave mode
    """
 
 
 
-
-   
    @overload
-   def __init__(self, bus: int, /): ...
+   def __init__(self, bus: int, /):
+      """
+      Construct an SPI object on the given bus.  ``bus`` can be 1 or 2, or
+      'X' or 'Y'. With no additional parameters, the SPI object is created but
+      not initialised (it has the settings from the last initialisation of
+      the bus, if any).  If extra arguments are given, the bus is initialised.
+      See ``init`` for parameters of initialisation.
+   
+      The physical pins of the SPI busses are:
+   
+        - ``SPI(1)`` is on the X position: ``(NSS, SCK, MISO, MOSI) = (X5, X6, X7, X8) = (PA4, PA5, PA6, PA7)``
+        - ``SPI(2)`` is on the Y position: ``(NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)``
+   
+      At the moment, the NSS pin is not used by the SPI driver and is free
+      for other use.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3062,7 +3425,23 @@ class SPI:
       firstbit: int = MSB, 
       ti: bool = False, 
       crc: Optional[int] = None
-   ): ...
+   ):
+      """
+      Construct an SPI object on the given bus.  ``bus`` can be 1 or 2, or
+      'X' or 'Y'. With no additional parameters, the SPI object is created but
+      not initialised (it has the settings from the last initialisation of
+      the bus, if any).  If extra arguments are given, the bus is initialised.
+      See ``init`` for parameters of initialisation.
+   
+      The physical pins of the SPI busses are:
+   
+        - ``SPI(1)`` is on the X position: ``(NSS, SCK, MISO, MOSI) = (X5, X6, X7, X8) = (PA4, PA5, PA6, PA7)``
+        - ``SPI(2)`` is on the Y position: ``(NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)``
+   
+      At the moment, the NSS pin is not used by the SPI driver and is free
+      for other use.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3094,14 +3473,11 @@ class SPI:
       for other use.
       """
 
-
    def deinit(self) -> None:
       """
       Turn off the SPI bus.
       """
 
-
-   
    @overload
    def init(
       self, 
@@ -3114,7 +3490,33 @@ class SPI:
       firstbit: int = MSB, 
       ti: bool = False, 
       crc: Optional[int] = None
-   ): ...
+   ):
+      """
+      Initialise the SPI bus with the given parameters:
+   
+        - ``mode`` must be either ``SPI.MASTER`` or ``SPI.SLAVE``.
+        - ``baudrate`` is the SCK clock rate (only sensible for a master).
+        - ``prescaler`` is the prescaler to use to derive SCK from the APB bus frequency;
+          use of ``prescaler`` overrides ``baudrate``.
+        - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
+        - ``phase`` can be 0 or 1 to sample data on the first or second clock edge
+          respectively.
+        - ``bits`` can be 8 or 16, and is the number of bits in each transferred word.
+        - ``firstbit`` can be ``SPI.MSB`` or ``SPI.LSB``.
+        - ``ti`` True indicates Texas Instruments, as opposed to Motorola, signal conventions.
+        - ``crc`` can be None for no CRC, or a polynomial specifier.
+   
+      Note that the SPI clock frequency will not always be the requested baudrate.
+      The hardware only supports baudrates that are the APB bus frequency
+      (see :meth:`pyb.freq`) divided by a prescaler, which can be 2, 4, 8, 16, 32,
+      64, 128 or 256.  SPI(1) is on AHB2, and SPI(2) is on AHB1.  For precise
+      control over the SPI clock frequency, specify ``prescaler`` instead of
+      ``baudrate``.
+   
+      Printing the SPI object will show you the computed baudrate and the chosen
+      prescaler.
+      """
+
    @overload
    def init(
       self, 
@@ -3154,8 +3556,7 @@ class SPI:
       prescaler.
       """
 
-
-   def recv(self, recv: Union[int, _AnyArray], /, *, timeout: int = 5000) -> _AnyArray:
+   def recv(self, recv: Union[int, _AnyWritableBuf], /, *, timeout: int = 5000) -> _AnyWritableBuf:
       """
       Receive data on the bus:
    
@@ -3167,8 +3568,7 @@ class SPI:
       otherwise the same buffer that was passed in to ``recv``.
       """
 
-
-   def send(self, send: Union[int, _AnyArray, bytes], /, *, timeout: int = 5000) -> None:
+   def send(self, send: Union[int, _AnyWritableBuf, bytes], /, *, timeout: int = 5000) -> None:
       """
       Send data on the bus:
    
@@ -3178,16 +3578,15 @@ class SPI:
       Return value: ``None``.
       """
 
-
    
    def send_recv(
       self, 
       send: Union[int, bytearray, array, bytes], 
-      recv: Optional[_AnyArray] = None, 
+      recv: Optional[_AnyWritableBuf] = None, 
       /, 
       *, 
       timeout: int = 5000
-   ) -> _AnyArray:
+   ) -> _AnyWritableBuf:
       """
       Send and receive data on the bus at the same time:
    
@@ -3219,12 +3618,10 @@ class Switch:
         pyb.Switch().callback(lambda: pyb.LED(1).toggle())
    """
 
-
    def __init__(self):
       """
       Create and return a switch object.
       """
-
 
    def __call__(self) -> bool:
       """
@@ -3232,12 +3629,10 @@ class Switch:
       ``False`` otherwise.
       """
 
-
    def value(self) -> bool:
       """
       Get the switch state.  Returns ``True`` if pressed down, otherwise ``False``.
       """
-
 
    def callback(self, fun: Optional[Callable[[], None]]) -> None:
       """
@@ -3294,121 +3689,125 @@ class Timer:
    limitation.
    """
 
-   UP: int = ...
+   UP: ClassVar[int] = ...
    """
    configures the timer to count from 0 to ARR (default).
    """
    
-   DOWN: int = ...
+   DOWN: ClassVar[int] = ...
    """
    configures the timer to count from ARR down to 0.
    """
    
-   CENTER: int = ...
+   CENTER: ClassVar[int] = ...
    """
    configures the timer to count from 0 to ARR and then back down to 0.
    """
 
 
-   PWM: int = ...
+   PWM: ClassVar[int] = ...
    """
    configure the timer in PWM mode (active high).
    """
 
-   PWM_INVERTED: int = ...
+   PWM_INVERTED: ClassVar[int] = ...
    """
    configure the timer in PWM mode (active low).
    """
    
    
-   OC_TIMING: int = ...
+   OC_TIMING: ClassVar[int] = ...
    """
    indicates that no pin is driven.
    """
    
-   OC_ACTIVE: int = ...
+   OC_ACTIVE: ClassVar[int] = ...
    """
    the pin will be made active when a compare match occurs (active is determined by polarity).
    """
    
-   OC_INACTIVE: int = ...
+   OC_INACTIVE: ClassVar[int] = ...
    """
    the pin will be made inactive when a compare match occurs.
    """
    
-   OC_TOGGLE: int = ...
+   OC_TOGGLE: ClassVar[int] = ...
    """
    the pin will be toggled when an compare match occurs.
    """
    
-   OC_FORCED_ACTIVE: int = ...
+   OC_FORCED_ACTIVE: ClassVar[int] = ...
    """
    the pin is forced active (compare match is ignored).
    """
    
-   OC_FORCED_INACTIVE: int = ...
+   OC_FORCED_INACTIVE: ClassVar[int] = ...
    """
    the pin is forced inactive (compare match is ignored).
    """
    
    
-   IC: int = ...
+   IC: ClassVar[int] = ...
    """
    configure the timer in Input Capture mode.
    """
    
    
-   ENC_A: int = ...
+   ENC_A: ClassVar[int] = ...
    """
    configure the timer in Encoder mode. The counter only changes when CH1 changes.
    """
    
-   ENC_B: int = ...
+   ENC_B: ClassVar[int] = ...
    """
    configure the timer in Encoder mode. The counter only changes when CH2 changes.
    """
    
-   ENC_AB: int = ...
+   ENC_AB: ClassVar[int] = ...
    """
    configure the timer in Encoder mode. The counter changes when CH1 or CH2 changes.
    """
    
    
-   HIGH: int = ...
+   HIGH: ClassVar[int] = ...
    """
    output is active high.
    """
    
-   LOW: int = ...
+   LOW: ClassVar[int] = ...
    """
    output is active low.
    """
    
    
-   RISING: int = ...
+   RISING: ClassVar[int] = ...
    """
    captures on rising edge.
    """
    
-   FALLING: int = ...
+   FALLING: ClassVar[int] = ...
    """
    captures on falling edge.
    """
    
-   BOTH: int = ...
+   BOTH: ClassVar[int] = ...
    """
    captures on both edges.
    """
 
 
-
-   
    @overload
    def __init__(
       self, 
       id: int, 
       /
-   ): ...
+   ):
+      """
+      Construct a new timer object of the given id.  If additional
+      arguments are given, then the timer is initialised by ``init(...)``.
+      ``id`` can be 1 to 14.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3420,7 +3819,13 @@ class Timer:
       div: int = 1, 
       callback: Optional[Callable[["Timer"], None]] = None, 
       deadtime: int = 0
-   ): ...
+   ):
+      """
+      Construct a new timer object of the given id.  If additional
+      arguments are given, then the timer is initialised by ``init(...)``.
+      ``id`` can be 1 to 14.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3433,9 +3838,21 @@ class Timer:
       div: int = 1, 
       callback: Optional[Callable[["Timer"], None]] = None, 
       deadtime: int = 0
-   ): ...
+   ):
+      """
+      Construct a new timer object of the given id.  If additional
+      arguments are given, then the timer is initialised by ``init(...)``.
+      ``id`` can be 1 to 14.
+      """
+
    @overload
-   def __init__(self, id: int, /): ...
+   def __init__(self, id: int, /):
+      """
+      Construct a new timer object of the given id.  If additional
+      arguments are given, then the timer is initialised by ``init(...)``.
+      ``id`` can be 1 to 14.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3446,7 +3863,13 @@ class Timer:
       mode: int = UP, 
       div: int = 1, 
       callback: Optional[Callable[["Timer"], None]] = None, 
-   ): ...
+   ):
+      """
+      Construct a new timer object of the given id.  If additional
+      arguments are given, then the timer is initialised by ``init(...)``.
+      ``id`` can be 1 to 14.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3465,8 +3888,6 @@ class Timer:
       ``id`` can be 1 to 14.
       """
 
-
-   
    @overload
    def init(
       self, 
@@ -3476,7 +3897,54 @@ class Timer:
       div: int = 1, 
       callback: Optional[Callable[["Timer"], None]] = None, 
       deadtime: int = 0
-   ) -> None: ...
+   ) -> None:
+      """
+      Initialise the timer.  Initialisation must be either by frequency (in Hz)
+      or by prescaler and period::
+   
+          tim.init(freq=100)                  # set the timer to trigger at 100Hz
+          tim.init(prescaler=83, period=999)  # set the prescaler and period directly
+   
+      Keyword arguments:
+   
+        - ``freq`` --- specifies the periodic frequency of the timer. You might also
+          view this as the frequency with which the timer goes through one complete cycle.
+   
+        - ``prescaler`` [0-0xffff] - specifies the value to be loaded into the
+          timer's Prescaler Register (PSC). The timer clock source is divided by
+          (``prescaler + 1``) to arrive at the timer clock. Timers 2-7 and 12-14
+          have a clock source of 84 MHz (pyb.freq()[2] \* 2), and Timers 1, and 8-11
+          have a clock source of 168 MHz (pyb.freq()[3] \* 2).
+   
+        - ``period`` [0-0xffff] for timers 1, 3, 4, and 6-15. [0-0x3fffffff] for timers 2 & 5.
+          Specifies the value to be loaded into the timer's AutoReload
+          Register (ARR). This determines the period of the timer (i.e. when the
+          counter cycles). The timer counter will roll-over after ``period + 1``
+          timer clock cycles.
+   
+        - ``mode`` can be one of:
+   
+          - ``Timer.UP`` - configures the timer to count from 0 to ARR (default)
+          - ``Timer.DOWN`` - configures the timer to count from ARR down to 0.
+          - ``Timer.CENTER`` - configures the timer to count from 0 to ARR and
+            then back down to 0.
+   
+        - ``div`` can be one of 1, 2, or 4. Divides the timer clock to determine
+          the sampling clock used by the digital filters.
+   
+        - ``callback`` - as per Timer.callback()
+   
+        - ``deadtime`` - specifies the amount of "dead" or inactive time between
+          transitions on complimentary channels (both channels will be inactive)
+          for this time). ``deadtime`` may be an integer between 0 and 1008, with
+          the following restrictions: 0-128 in steps of 1. 128-256 in steps of
+          2, 256-512 in steps of 8, and 512-1008 in steps of 16. ``deadtime``
+          measures ticks of ``source_freq`` divided by ``div`` clock ticks.
+          ``deadtime`` is only available on timers 1 and 8.
+   
+       You must either specify freq or both of period and prescaler.
+      """
+
    @overload
    def init(
       self, 
@@ -3535,7 +4003,6 @@ class Timer:
        You must either specify freq or both of period and prescaler.
       """
 
-
    def deinit(self) -> None:
       """
       Deinitialises the timer.
@@ -3546,7 +4013,6 @@ class Timer:
       Stops the timer, and disables the timer peripheral.
       """
 
-
    def callback(self, fun: Optional[Callable[["Timer"], None]], /) -> None:
       """
       Set the function to be called when the timer triggers.
@@ -3554,14 +4020,86 @@ class Timer:
       If ``fun`` is ``None`` then the callback will be disabled.
       """
 
-
-   
    @overload
    def channel(
       self, 
       channel: int, 
       /
-   ) -> Optional["TimerChannel"]: ...
+   ) -> Optional["TimerChannel"]:
+      """
+      If only a channel number is passed, then a previously initialized channel
+      object is returned (or ``None`` if there is no previous channel).
+   
+      Otherwise, a TimerChannel object is initialized and returned.
+   
+      Each channel can be configured to perform pwm, output compare, or
+      input capture. All channels share the same underlying timer, which means
+      that they share the same timer clock.
+   
+      Keyword arguments:
+   
+        - ``mode`` can be one of:
+   
+          - ``Timer.PWM`` --- configure the timer in PWM mode (active high).
+          - ``Timer.PWM_INVERTED`` --- configure the timer in PWM mode (active low).
+          - ``Timer.OC_TIMING`` --- indicates that no pin is driven.
+          - ``Timer.OC_ACTIVE`` --- the pin will be made active when a compare match occurs (active is determined by polarity)
+          - ``Timer.OC_INACTIVE`` --- the pin will be made inactive when a compare match occurs.
+          - ``Timer.OC_TOGGLE`` --- the pin will be toggled when an compare match occurs.
+          - ``Timer.OC_FORCED_ACTIVE`` --- the pin is forced active (compare match is ignored).
+          - ``Timer.OC_FORCED_INACTIVE`` --- the pin is forced inactive (compare match is ignored).
+          - ``Timer.IC`` --- configure the timer in Input Capture mode.
+          - ``Timer.ENC_A`` --- configure the timer in Encoder mode. The counter only changes when CH1 changes.
+          - ``Timer.ENC_B`` --- configure the timer in Encoder mode. The counter only changes when CH2 changes.
+          - ``Timer.ENC_AB`` --- configure the timer in Encoder mode. The counter changes when CH1 or CH2 changes.
+   
+        - ``callback`` - as per TimerChannel.callback()
+   
+        - ``pin`` None (the default) or a Pin object. If specified (and not None)
+          this will cause the alternate function of the the indicated pin
+          to be configured for this timer channel. An error will be raised if
+          the pin doesn't support any alternate functions for this timer channel.
+   
+      Keyword arguments for Timer.PWM modes:
+   
+        - ``pulse_width`` - determines the initial pulse width value to use.
+        - ``pulse_width_percent`` - determines the initial pulse width percentage to use.
+   
+      Keyword arguments for Timer.OC modes:
+   
+        - ``compare`` - determines the initial value of the compare register.
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.HIGH`` - output is active high
+          - ``Timer.LOW`` - output is active low
+   
+      Optional keyword arguments for Timer.IC modes:
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.RISING`` - captures on rising edge.
+          - ``Timer.FALLING`` - captures on falling edge.
+          - ``Timer.BOTH`` - captures on both edges.
+   
+        Note that capture only works on the primary channel, and not on the
+        complimentary channels.
+   
+      Notes for Timer.ENC modes:
+   
+        - Requires 2 pins, so one or both pins will need to be configured to use
+          the appropriate timer AF using the Pin API.
+        - Read the encoder value using the timer.counter() method.
+        - Only works on CH1 and CH2 (and not on CH1N or CH2N)
+        - The channel number is ignored when setting the encoder mode.
+   
+      PWM Example::
+   
+          timer = pyb.Timer(2, freq=1000)
+          ch2 = timer.channel(2, pyb.Timer.PWM, pin=pyb.Pin.board.X2, pulse_width=8000)
+          ch3 = timer.channel(3, pyb.Timer.PWM, pin=pyb.Pin.board.X3, pulse_width=16000)
+      """
+
    @overload
    def channel(
       self, 
@@ -3572,7 +4110,81 @@ class Timer:
       callback: Optional[Callable[["Timer"], None]] = None, 
       pin: Optional[Pin] = None,
       pulse_width: int,
-   ) -> "TimerChannel": ...
+   ) -> "TimerChannel":
+      """
+      If only a channel number is passed, then a previously initialized channel
+      object is returned (or ``None`` if there is no previous channel).
+   
+      Otherwise, a TimerChannel object is initialized and returned.
+   
+      Each channel can be configured to perform pwm, output compare, or
+      input capture. All channels share the same underlying timer, which means
+      that they share the same timer clock.
+   
+      Keyword arguments:
+   
+        - ``mode`` can be one of:
+   
+          - ``Timer.PWM`` --- configure the timer in PWM mode (active high).
+          - ``Timer.PWM_INVERTED`` --- configure the timer in PWM mode (active low).
+          - ``Timer.OC_TIMING`` --- indicates that no pin is driven.
+          - ``Timer.OC_ACTIVE`` --- the pin will be made active when a compare match occurs (active is determined by polarity)
+          - ``Timer.OC_INACTIVE`` --- the pin will be made inactive when a compare match occurs.
+          - ``Timer.OC_TOGGLE`` --- the pin will be toggled when an compare match occurs.
+          - ``Timer.OC_FORCED_ACTIVE`` --- the pin is forced active (compare match is ignored).
+          - ``Timer.OC_FORCED_INACTIVE`` --- the pin is forced inactive (compare match is ignored).
+          - ``Timer.IC`` --- configure the timer in Input Capture mode.
+          - ``Timer.ENC_A`` --- configure the timer in Encoder mode. The counter only changes when CH1 changes.
+          - ``Timer.ENC_B`` --- configure the timer in Encoder mode. The counter only changes when CH2 changes.
+          - ``Timer.ENC_AB`` --- configure the timer in Encoder mode. The counter changes when CH1 or CH2 changes.
+   
+        - ``callback`` - as per TimerChannel.callback()
+   
+        - ``pin`` None (the default) or a Pin object. If specified (and not None)
+          this will cause the alternate function of the the indicated pin
+          to be configured for this timer channel. An error will be raised if
+          the pin doesn't support any alternate functions for this timer channel.
+   
+      Keyword arguments for Timer.PWM modes:
+   
+        - ``pulse_width`` - determines the initial pulse width value to use.
+        - ``pulse_width_percent`` - determines the initial pulse width percentage to use.
+   
+      Keyword arguments for Timer.OC modes:
+   
+        - ``compare`` - determines the initial value of the compare register.
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.HIGH`` - output is active high
+          - ``Timer.LOW`` - output is active low
+   
+      Optional keyword arguments for Timer.IC modes:
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.RISING`` - captures on rising edge.
+          - ``Timer.FALLING`` - captures on falling edge.
+          - ``Timer.BOTH`` - captures on both edges.
+   
+        Note that capture only works on the primary channel, and not on the
+        complimentary channels.
+   
+      Notes for Timer.ENC modes:
+   
+        - Requires 2 pins, so one or both pins will need to be configured to use
+          the appropriate timer AF using the Pin API.
+        - Read the encoder value using the timer.counter() method.
+        - Only works on CH1 and CH2 (and not on CH1N or CH2N)
+        - The channel number is ignored when setting the encoder mode.
+   
+      PWM Example::
+   
+          timer = pyb.Timer(2, freq=1000)
+          ch2 = timer.channel(2, pyb.Timer.PWM, pin=pyb.Pin.board.X2, pulse_width=8000)
+          ch3 = timer.channel(3, pyb.Timer.PWM, pin=pyb.Pin.board.X3, pulse_width=16000)
+      """
+
    @overload
    def channel(
       self, 
@@ -3583,7 +4195,81 @@ class Timer:
       callback: Optional[Callable[["Timer"], None]] = None, 
       pin: Optional[Pin] = None,
       pulse_width_percent: Union[int, float],
-   ) -> "TimerChannel": ...
+   ) -> "TimerChannel":
+      """
+      If only a channel number is passed, then a previously initialized channel
+      object is returned (or ``None`` if there is no previous channel).
+   
+      Otherwise, a TimerChannel object is initialized and returned.
+   
+      Each channel can be configured to perform pwm, output compare, or
+      input capture. All channels share the same underlying timer, which means
+      that they share the same timer clock.
+   
+      Keyword arguments:
+   
+        - ``mode`` can be one of:
+   
+          - ``Timer.PWM`` --- configure the timer in PWM mode (active high).
+          - ``Timer.PWM_INVERTED`` --- configure the timer in PWM mode (active low).
+          - ``Timer.OC_TIMING`` --- indicates that no pin is driven.
+          - ``Timer.OC_ACTIVE`` --- the pin will be made active when a compare match occurs (active is determined by polarity)
+          - ``Timer.OC_INACTIVE`` --- the pin will be made inactive when a compare match occurs.
+          - ``Timer.OC_TOGGLE`` --- the pin will be toggled when an compare match occurs.
+          - ``Timer.OC_FORCED_ACTIVE`` --- the pin is forced active (compare match is ignored).
+          - ``Timer.OC_FORCED_INACTIVE`` --- the pin is forced inactive (compare match is ignored).
+          - ``Timer.IC`` --- configure the timer in Input Capture mode.
+          - ``Timer.ENC_A`` --- configure the timer in Encoder mode. The counter only changes when CH1 changes.
+          - ``Timer.ENC_B`` --- configure the timer in Encoder mode. The counter only changes when CH2 changes.
+          - ``Timer.ENC_AB`` --- configure the timer in Encoder mode. The counter changes when CH1 or CH2 changes.
+   
+        - ``callback`` - as per TimerChannel.callback()
+   
+        - ``pin`` None (the default) or a Pin object. If specified (and not None)
+          this will cause the alternate function of the the indicated pin
+          to be configured for this timer channel. An error will be raised if
+          the pin doesn't support any alternate functions for this timer channel.
+   
+      Keyword arguments for Timer.PWM modes:
+   
+        - ``pulse_width`` - determines the initial pulse width value to use.
+        - ``pulse_width_percent`` - determines the initial pulse width percentage to use.
+   
+      Keyword arguments for Timer.OC modes:
+   
+        - ``compare`` - determines the initial value of the compare register.
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.HIGH`` - output is active high
+          - ``Timer.LOW`` - output is active low
+   
+      Optional keyword arguments for Timer.IC modes:
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.RISING`` - captures on rising edge.
+          - ``Timer.FALLING`` - captures on falling edge.
+          - ``Timer.BOTH`` - captures on both edges.
+   
+        Note that capture only works on the primary channel, and not on the
+        complimentary channels.
+   
+      Notes for Timer.ENC modes:
+   
+        - Requires 2 pins, so one or both pins will need to be configured to use
+          the appropriate timer AF using the Pin API.
+        - Read the encoder value using the timer.counter() method.
+        - Only works on CH1 and CH2 (and not on CH1N or CH2N)
+        - The channel number is ignored when setting the encoder mode.
+   
+      PWM Example::
+   
+          timer = pyb.Timer(2, freq=1000)
+          ch2 = timer.channel(2, pyb.Timer.PWM, pin=pyb.Pin.board.X2, pulse_width=8000)
+          ch3 = timer.channel(3, pyb.Timer.PWM, pin=pyb.Pin.board.X3, pulse_width=16000)
+      """
+
    @overload
    def channel(
       self, 
@@ -3595,7 +4281,81 @@ class Timer:
       pin: Optional[Pin] = None,
       compare: int,
       polarity: int,
-   ) -> "TimerChannel": ...
+   ) -> "TimerChannel":
+      """
+      If only a channel number is passed, then a previously initialized channel
+      object is returned (or ``None`` if there is no previous channel).
+   
+      Otherwise, a TimerChannel object is initialized and returned.
+   
+      Each channel can be configured to perform pwm, output compare, or
+      input capture. All channels share the same underlying timer, which means
+      that they share the same timer clock.
+   
+      Keyword arguments:
+   
+        - ``mode`` can be one of:
+   
+          - ``Timer.PWM`` --- configure the timer in PWM mode (active high).
+          - ``Timer.PWM_INVERTED`` --- configure the timer in PWM mode (active low).
+          - ``Timer.OC_TIMING`` --- indicates that no pin is driven.
+          - ``Timer.OC_ACTIVE`` --- the pin will be made active when a compare match occurs (active is determined by polarity)
+          - ``Timer.OC_INACTIVE`` --- the pin will be made inactive when a compare match occurs.
+          - ``Timer.OC_TOGGLE`` --- the pin will be toggled when an compare match occurs.
+          - ``Timer.OC_FORCED_ACTIVE`` --- the pin is forced active (compare match is ignored).
+          - ``Timer.OC_FORCED_INACTIVE`` --- the pin is forced inactive (compare match is ignored).
+          - ``Timer.IC`` --- configure the timer in Input Capture mode.
+          - ``Timer.ENC_A`` --- configure the timer in Encoder mode. The counter only changes when CH1 changes.
+          - ``Timer.ENC_B`` --- configure the timer in Encoder mode. The counter only changes when CH2 changes.
+          - ``Timer.ENC_AB`` --- configure the timer in Encoder mode. The counter changes when CH1 or CH2 changes.
+   
+        - ``callback`` - as per TimerChannel.callback()
+   
+        - ``pin`` None (the default) or a Pin object. If specified (and not None)
+          this will cause the alternate function of the the indicated pin
+          to be configured for this timer channel. An error will be raised if
+          the pin doesn't support any alternate functions for this timer channel.
+   
+      Keyword arguments for Timer.PWM modes:
+   
+        - ``pulse_width`` - determines the initial pulse width value to use.
+        - ``pulse_width_percent`` - determines the initial pulse width percentage to use.
+   
+      Keyword arguments for Timer.OC modes:
+   
+        - ``compare`` - determines the initial value of the compare register.
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.HIGH`` - output is active high
+          - ``Timer.LOW`` - output is active low
+   
+      Optional keyword arguments for Timer.IC modes:
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.RISING`` - captures on rising edge.
+          - ``Timer.FALLING`` - captures on falling edge.
+          - ``Timer.BOTH`` - captures on both edges.
+   
+        Note that capture only works on the primary channel, and not on the
+        complimentary channels.
+   
+      Notes for Timer.ENC modes:
+   
+        - Requires 2 pins, so one or both pins will need to be configured to use
+          the appropriate timer AF using the Pin API.
+        - Read the encoder value using the timer.counter() method.
+        - Only works on CH1 and CH2 (and not on CH1N or CH2N)
+        - The channel number is ignored when setting the encoder mode.
+   
+      PWM Example::
+   
+          timer = pyb.Timer(2, freq=1000)
+          ch2 = timer.channel(2, pyb.Timer.PWM, pin=pyb.Pin.board.X2, pulse_width=8000)
+          ch3 = timer.channel(3, pyb.Timer.PWM, pin=pyb.Pin.board.X3, pulse_width=16000)
+      """
+
    @overload
    def channel(
       self, 
@@ -3606,7 +4366,81 @@ class Timer:
       callback: Optional[Callable[["Timer"], None]] = None, 
       pin: Optional[Pin] = None,
       polarity: int,
-   ) -> "TimerChannel": ...
+   ) -> "TimerChannel":
+      """
+      If only a channel number is passed, then a previously initialized channel
+      object is returned (or ``None`` if there is no previous channel).
+   
+      Otherwise, a TimerChannel object is initialized and returned.
+   
+      Each channel can be configured to perform pwm, output compare, or
+      input capture. All channels share the same underlying timer, which means
+      that they share the same timer clock.
+   
+      Keyword arguments:
+   
+        - ``mode`` can be one of:
+   
+          - ``Timer.PWM`` --- configure the timer in PWM mode (active high).
+          - ``Timer.PWM_INVERTED`` --- configure the timer in PWM mode (active low).
+          - ``Timer.OC_TIMING`` --- indicates that no pin is driven.
+          - ``Timer.OC_ACTIVE`` --- the pin will be made active when a compare match occurs (active is determined by polarity)
+          - ``Timer.OC_INACTIVE`` --- the pin will be made inactive when a compare match occurs.
+          - ``Timer.OC_TOGGLE`` --- the pin will be toggled when an compare match occurs.
+          - ``Timer.OC_FORCED_ACTIVE`` --- the pin is forced active (compare match is ignored).
+          - ``Timer.OC_FORCED_INACTIVE`` --- the pin is forced inactive (compare match is ignored).
+          - ``Timer.IC`` --- configure the timer in Input Capture mode.
+          - ``Timer.ENC_A`` --- configure the timer in Encoder mode. The counter only changes when CH1 changes.
+          - ``Timer.ENC_B`` --- configure the timer in Encoder mode. The counter only changes when CH2 changes.
+          - ``Timer.ENC_AB`` --- configure the timer in Encoder mode. The counter changes when CH1 or CH2 changes.
+   
+        - ``callback`` - as per TimerChannel.callback()
+   
+        - ``pin`` None (the default) or a Pin object. If specified (and not None)
+          this will cause the alternate function of the the indicated pin
+          to be configured for this timer channel. An error will be raised if
+          the pin doesn't support any alternate functions for this timer channel.
+   
+      Keyword arguments for Timer.PWM modes:
+   
+        - ``pulse_width`` - determines the initial pulse width value to use.
+        - ``pulse_width_percent`` - determines the initial pulse width percentage to use.
+   
+      Keyword arguments for Timer.OC modes:
+   
+        - ``compare`` - determines the initial value of the compare register.
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.HIGH`` - output is active high
+          - ``Timer.LOW`` - output is active low
+   
+      Optional keyword arguments for Timer.IC modes:
+   
+        - ``polarity`` can be one of:
+   
+          - ``Timer.RISING`` - captures on rising edge.
+          - ``Timer.FALLING`` - captures on falling edge.
+          - ``Timer.BOTH`` - captures on both edges.
+   
+        Note that capture only works on the primary channel, and not on the
+        complimentary channels.
+   
+      Notes for Timer.ENC modes:
+   
+        - Requires 2 pins, so one or both pins will need to be configured to use
+          the appropriate timer AF using the Pin API.
+        - Read the encoder value using the timer.counter() method.
+        - Only works on CH1 and CH2 (and not on CH1N or CH2N)
+        - The channel number is ignored when setting the encoder mode.
+   
+      PWM Example::
+   
+          timer = pyb.Timer(2, freq=1000)
+          ch2 = timer.channel(2, pyb.Timer.PWM, pin=pyb.Pin.board.X2, pulse_width=8000)
+          ch3 = timer.channel(3, pyb.Timer.PWM, pin=pyb.Pin.board.X3, pulse_width=16000)
+      """
+
    @overload
    def channel(
       self, 
@@ -3691,46 +4525,53 @@ class Timer:
           ch3 = timer.channel(3, pyb.Timer.PWM, pin=pyb.Pin.board.X3, pulse_width=16000)
       """
 
-
-   
    @overload
-   def counter(self) -> int: ...
+   def counter(self) -> int:
+      """
+      Get or set the timer counter.
+      """
+
    @overload
    def counter(self, value: int, /) -> None:
       """
       Get or set the timer counter.
       """
 
-
-   
    @overload
-   def freq(self) -> int: ...
+   def freq(self) -> int:
+      """
+      Get or set the frequency for the timer (changes prescaler and period if set).
+      """
+
    @overload
    def freq(self, value: int, /) -> None:
       """
       Get or set the frequency for the timer (changes prescaler and period if set).
       """
 
-
-   
    @overload
-   def period(self) -> int: ...
+   def period(self) -> int:
+      """
+      Get or set the period of the timer.
+      """
+
    @overload
    def period(self, value: int, /) -> None:
       """
       Get or set the period of the timer.
       """
 
-
-   
    @overload
-   def prescaler(self) -> int: ...
+   def prescaler(self) -> int:
+      """
+      Get or set the prescaler for the timer.
+      """
+
    @overload
    def prescaler(self, value: int, /) -> None:
       """
       Get or set the prescaler for the timer.
       """
-
 
    def source_freq(self) -> int:
       """
@@ -3745,7 +4586,6 @@ class TimerChannel(ABC):
    TimerChannel objects are created using the Timer.channel() method.
    """
 
-
    
    @abstractmethod
    def callback(self, fun: Optional[Callable[[Timer], None]], /) -> None:
@@ -3755,11 +4595,15 @@ class TimerChannel(ABC):
       If ``fun`` is ``None`` then the callback will be disabled.
       """
 
-
-   
    @overload
    @abstractmethod
-   def capture(self) -> int: ...
+   def capture(self) -> int:
+      """
+      Get or set the capture value associated with a channel.
+      capture, compare, and pulse_width are all aliases for the same function.
+      capture is the logical name to use when the channel is in input capture mode.
+      """
+
    @overload
    @abstractmethod
    def capture(self, value: int, /) -> None:
@@ -3769,11 +4613,15 @@ class TimerChannel(ABC):
       capture is the logical name to use when the channel is in input capture mode.
       """
 
-
-   
    @overload
    @abstractmethod
-   def compare(self) -> int: ...
+   def compare(self) -> int:
+      """
+      Get or set the compare value associated with a channel.
+      capture, compare, and pulse_width are all aliases for the same function.
+      compare is the logical name to use when the channel is in output compare mode.
+      """
+
    @overload
    @abstractmethod
    def compare(self, value: int, /) -> None:
@@ -3783,11 +4631,18 @@ class TimerChannel(ABC):
       compare is the logical name to use when the channel is in output compare mode.
       """
 
-
-   
    @overload
    @abstractmethod
-   def pulse_width(self) -> int: ...
+   def pulse_width(self) -> int:
+      """
+      Get or set the pulse width value associated with a channel.
+      capture, compare, and pulse_width are all aliases for the same function.
+      pulse_width is the logical name to use when the channel is in PWM mode.
+   
+      In edge aligned mode, a pulse_width of ``period + 1`` corresponds to a duty cycle of 100%
+      In center aligned mode, a pulse width of ``period`` corresponds to a duty cycle of 100%
+      """
+
    @overload
    @abstractmethod
    def pulse_width(self, value: int, /) -> None:
@@ -3800,11 +4655,17 @@ class TimerChannel(ABC):
       In center aligned mode, a pulse width of ``period`` corresponds to a duty cycle of 100%
       """
 
-
-   
    @overload
    @abstractmethod
-   def pulse_width_percent(self) -> float: ...
+   def pulse_width_percent(self) -> float:
+      """
+      Get or set the pulse width percentage associated with a channel.  The value
+      is a number between 0 and 100 and sets the percentage of the timer period
+      for which the pulse is active.  The value can be an integer or
+      floating-point number for more accuracy.  For example, a value of 25 gives
+      a duty cycle of 25%.
+      """
+
    @overload
    @abstractmethod
    def pulse_width_percent(self, value: Union[int, float], /) -> None:
@@ -3917,27 +4778,60 @@ class UART:
    """
 
 
-   RTS: int = ...
+   RTS: ClassVar[int] = ...
    """
    to select the flow control type.
    """
 
 
-   CTS: int = ...
+   CTS: ClassVar[int] = ...
    """
    to select the flow control type.
    """
 
 
 
-
-   
    @overload
    def __init__(
       self, 
       bus: Union[int, str],
       /
-   ): ...
+   ):
+      """
+      Construct a UART object on the given bus.
+      For Pyboard ``bus`` can be 1-4, 6, 'XA', 'XB', 'YA', or 'YB'.
+      For Pyboard Lite ``bus`` can be 1, 2, 6, 'XB', or 'YA'.
+      For Pyboard D ``bus`` can be 1-4, 'XA', 'YA' or 'YB'.
+      With no additional parameters, the UART object is created but not
+      initialised (it has the settings from the last initialisation of
+      the bus, if any).  If extra arguments are given, the bus is initialised.
+      See ``init`` for parameters of initialisation.
+   
+      The physical pins of the UART busses on Pyboard are:
+   
+        - ``UART(4)`` is on ``XA``: ``(TX, RX) = (X1, X2) = (PA0, PA1)``
+        - ``UART(1)`` is on ``XB``: ``(TX, RX) = (X9, X10) = (PB6, PB7)``
+        - ``UART(6)`` is on ``YA``: ``(TX, RX) = (Y1, Y2) = (PC6, PC7)``
+        - ``UART(3)`` is on ``YB``: ``(TX, RX) = (Y9, Y10) = (PB10, PB11)``
+        - ``UART(2)`` is on: ``(TX, RX) = (X3, X4) = (PA2, PA3)``
+   
+      The Pyboard Lite supports UART(1), UART(2) and UART(6) only, pins are:
+   
+        - ``UART(1)`` is on ``XB``: ``(TX, RX) = (X9, X10) = (PB6, PB7)``
+        - ``UART(6)`` is on ``YA``: ``(TX, RX) = (Y1, Y2) = (PC6, PC7)``
+        - ``UART(2)`` is on: ``(TX, RX) = (X1, X2) = (PA2, PA3)``
+   
+      The Pyboard D supports UART(1), UART(2), UART(3) and UART(4) only, pins are:
+   
+        - ``UART(4)`` is on ``XA``: ``(TX, RX) = (X1, X2) = (PA0, PA1)``
+        - ``UART(1)`` is on ``YA``: ``(TX, RX) = (Y1, Y2) = (PA9, PA10)``
+        - ``UART(3)`` is on ``YB``: ``(TX, RX) = (Y9, Y10) = (PB10, PB11)``
+        - ``UART(2)`` is on: ``(TX, RX) = (X3, X4) = (PA2, PA3)``
+   
+      *Note:* Pyboard D has ``UART(1)`` on ``YA``, unlike Pyboard and Pyboard Lite that both
+      have ``UART(1)`` on ``XB`` and ``UART(6)`` on ``YA``.
+      """
+
    @overload
    def __init__(
       self, 
@@ -3988,7 +4882,6 @@ class UART:
       have ``UART(1)`` on ``XB`` and ``UART(6)`` on ``YA``.
       """
 
-
    
    def init(
       self, 
@@ -4027,22 +4920,33 @@ class UART:
       only 7 and 8 bits are supported.
       """
 
-
    def deinit(self) -> None:
       """
       Turn off the UART bus.
       """
-
 
    def any(self) -> int:
       """
       Returns the number of bytes waiting (may be 0).
       """
 
-
-   
    @overload
-   def read(self) -> Optional[bytes]: ...
+   def read(self) -> Optional[bytes]:
+      """
+      Read characters.  If ``nbytes`` is specified then read at most that many bytes.
+      If ``nbytes`` are available in the buffer, returns immediately, otherwise returns
+      when sufficient characters arrive or the timeout elapses.
+   
+      If ``nbytes`` is not given then the method reads as much data as possible.  It
+      returns after the timeout has elapsed.
+   
+      *Note:* for 9 bit characters each character takes two bytes, ``nbytes`` must
+      be even, and the number of characters is ``nbytes/2``.
+   
+      Return value: a bytes object containing the bytes read in.  Returns ``None``
+      on timeout.
+      """
+
    @overload
    def read(self, nbytes: int, /) -> Optional[bytes]:
       """
@@ -4060,7 +4964,6 @@ class UART:
       on timeout.
       """
 
-
    def readchar(self) -> int:
       """
       Receive a single character on the bus.
@@ -4068,12 +4971,8 @@ class UART:
       Return value: The character read, as an integer.  Returns -1 on timeout.
       """
 
-
-   
    @overload
-   def readinto(self, buf: _AnyArray, /) -> Optional[int]: ...
-   @overload
-   def readinto(self, buf: _AnyArray, nbytes: int, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, /) -> Optional[int]:
       """
       Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
       that many bytes.  Otherwise, read at most ``len(buf)`` bytes.
@@ -4082,6 +4981,15 @@ class UART:
       timeout.
       """
 
+   @overload
+   def readinto(self, buf: _AnyWritableBuf, nbytes: int, /) -> Optional[int]:
+      """
+      Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
+      that many bytes.  Otherwise, read at most ``len(buf)`` bytes.
+   
+      Return value: number of bytes read and stored into ``buf`` or ``None`` on
+      timeout.
+      """
 
    def readline(self) -> Optional[str]:
       """
@@ -4092,8 +5000,7 @@ class UART:
       Return value: the line read or ``None`` on timeout if no data is available.
       """
 
-
-   def write(self, buf: _AnyArray, /) -> Optional[int]:
+   def write(self, buf: _AnyWritableBuf, /) -> Optional[int]:
       """
       Write the buffer of bytes to the bus.  If characters are 7 or 8 bits wide
       then each byte is one character.  If characters are 9 bits wide then two
@@ -4104,13 +5011,11 @@ class UART:
       were written returns ``None``.
       """
 
-
    def writechar(self, char: int, /) -> None:
       """
       Write a single character on the bus.  ``char`` is an integer to write.
       Return value: ``None``. See note below if CTS flow control is used.
       """
-
 
    def sendbreak(self) -> None:
       """
@@ -4129,18 +5034,13 @@ class USB_HID:
    Before you can use this class, you need to use :meth:`pyb.usb_mode()` to set the USB mode to include the HID interface.
    """
 
-
    def __init__(self):
       """
       Create a new USB_HID object.
       """
 
-
-   
    @overload
-   def recv(self, data: int, /, *, timeout: int = 5000) -> bytes: ...
-   @overload
-   def recv(self, data: _AnyArray, /, *, timeout: int = 5000) -> int:
+   def recv(self, data: int, /, *, timeout: int = 5000) -> bytes:
       """
       Receive data on the bus:
    
@@ -4152,6 +5052,18 @@ class USB_HID:
       otherwise the number of bytes read into ``data`` is returned.
       """
 
+   @overload
+   def recv(self, data: _AnyWritableBuf, /, *, timeout: int = 5000) -> int:
+      """
+      Receive data on the bus:
+   
+        - ``data`` can be an integer, which is the number of bytes to receive,
+          or a mutable buffer, which will be filled with received bytes.
+        - ``timeout`` is the timeout in milliseconds to wait for the receive.
+   
+      Return value: if ``data`` is an integer then a new buffer of the bytes received,
+      otherwise the number of bytes read into ``data`` is returned.
+      """
 
    def send(self, data: Sequence[int]) -> None:
       """
@@ -4170,17 +5082,16 @@ class USB_VCP:
    """
 
 
-   RTS: int = ...
+   RTS: ClassVar[int] = ...
    """
    to select the flow control type.
    """
 
 
-   CTS: int = ...
+   CTS: ClassVar[int] = ...
    """
    to select the flow control type.
    """
-
 
 
 
@@ -4190,14 +5101,12 @@ class USB_VCP:
       use.
       """
 
-
    def init(self, *, flow: int = - 1) -> int:
       """
       Configure the USB VCP port.  If the *flow* argument is not -1 then the value sets
       the flow control, which can be a bitwise-or of ``USB_VCP.RTS`` and ``USB_VCP.CTS``.
       RTS is used to control read behaviour and CTS, to control write behaviour.
       """
-
 
    def setinterrupt(self, chr: int, /) -> None:
       """
@@ -4209,18 +5118,15 @@ class USB_VCP:
       want to send raw bytes over the USB VCP port.
       """
 
-
    def isconnected(self) -> bool:
       """
       Return ``True`` if USB is connected as a serial device, else ``False``.
       """
 
-
    def any(self) -> bool:
       """
       Return ``True`` if any characters waiting, else ``False``.
       """
-
 
    def close(self) -> None:
       """
@@ -4228,10 +5134,17 @@ class USB_VCP:
       a file.
       """
 
-
-   
    @overload
-   def read(self) -> Optional[bytes]: ...
+   def read(self) -> Optional[bytes]:
+      """
+      Read at most ``nbytes`` from the serial device and return them as a
+      bytes object.  If ``nbytes`` is not specified then the method reads
+      all available bytes from the serial device.
+      USB_VCP `stream` implicitly works in non-blocking mode,
+      so if no pending data available, this method will return immediately
+      with ``None`` value.
+      """
+
    @overload
    def read(self, nbytes, /) -> Optional[bytes]:
       """
@@ -4243,12 +5156,8 @@ class USB_VCP:
       with ``None`` value.
       """
 
-
-   
    @overload
-   def readinto(self, buf: _AnyArray, /) -> Optional[int]: ...
-   @overload
-   def readinto(self, buf: _AnyArray, maxlen: int, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, /) -> Optional[int]:
       """
       Read bytes from the serial device and store them into ``buf``, which
       should be a buffer-like object.  At most ``len(buf)`` bytes are read.
@@ -4259,6 +5168,17 @@ class USB_VCP:
       if no pending data available.
       """
 
+   @overload
+   def readinto(self, buf: _AnyWritableBuf, maxlen: int, /) -> Optional[int]:
+      """
+      Read bytes from the serial device and store them into ``buf``, which
+      should be a buffer-like object.  At most ``len(buf)`` bytes are read.
+      If ``maxlen`` is given and then at most ``min(maxlen, len(buf))`` bytes
+      are read.
+   
+      Returns the number of bytes read and stored into ``buf`` or ``None``
+      if no pending data available.
+      """
 
    def readline(self) -> Optional[bytes]:
       """
@@ -4267,7 +5187,6 @@ class USB_VCP:
       Returns a bytes object containing the data, including the trailing
       newline character or ``None`` if no pending data available.
       """
-
 
    def readlines(self) -> Optional[List[bytes]]:
       """
@@ -4278,20 +5197,15 @@ class USB_VCP:
       Each line will include the newline character.
       """
 
-
-   def write(self, buf: Union[_AnyArray, bytes], /) -> int:
+   def write(self, buf: Union[_AnyWritableBuf, bytes], /) -> int:
       """
       Write the bytes from ``buf`` to the serial device.
    
       Returns the number of bytes written.
       """
 
-
-   
    @overload
-   def recv(self, data: int, /, *, timeout: int = 5000) -> Optional[bytes]: ...
-   @overload
-   def recv(self, data: _AnyArray, /, *, timeout: int = 5000) -> Optional[int]:
+   def recv(self, data: int, /, *, timeout: int = 5000) -> Optional[bytes]:
       """
       Receive data on the bus:
    
@@ -4303,8 +5217,20 @@ class USB_VCP:
       otherwise the number of bytes read into ``data`` is returned.
       """
 
+   @overload
+   def recv(self, data: _AnyWritableBuf, /, *, timeout: int = 5000) -> Optional[int]:
+      """
+      Receive data on the bus:
+   
+        - ``data`` can be an integer, which is the number of bytes to receive,
+          or a mutable buffer, which will be filled with received bytes.
+        - ``timeout`` is the timeout in milliseconds to wait for the receive.
+   
+      Return value: if ``data`` is an integer then a new buffer of the bytes received,
+      otherwise the number of bytes read into ``data`` is returned.
+      """
 
-   def send(self, buf: Union[_AnyArray, bytes, int], /, *, timeout: int = 5000) -> int:
+   def send(self, buf: Union[_AnyWritableBuf, bytes, int], /, *, timeout: int = 5000) -> int:
       """
       Send data over the USB VCP:
    
