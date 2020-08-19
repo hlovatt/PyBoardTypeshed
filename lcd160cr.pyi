@@ -21,7 +21,7 @@ __version__ = "Use `git tag` to obtain version numbers, then `git show <version>
 
 
 
-from typing import overload, Any, Union, Tuple, TypeVar, Optional, ClassVar
+from typing import overload, Any, Union, Tuple, TypeVar, Optional
 
 from pyb import Pin, I2C, SPI
 from uarray import array
