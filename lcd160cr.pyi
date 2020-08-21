@@ -28,6 +28,16 @@ from uarray import array
 
 
 _AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
+"""
+Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
+"""
+
+
+_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+"""
+Type that allows bytearray, array, memoryview, or bytes, 
+but only one of these and not a mixture in a single declaration.
+"""
 
 
 
@@ -286,7 +296,7 @@ class LCD160CR:
        will be stored.
       """
 
-   def screen_load(self, buf: Union[_AnyWritableBuf, bytes], /) -> None:
+   def screen_load(self, buf: _AnyReadableBuf, /) -> None:
       """
        Load the entire screen from the given buffer.
       """
@@ -344,78 +354,78 @@ class LCD160CR:
        Draw a single pixel at the given location using the pen line color.
       """
 
-
    def rect(self, x: int, y: int, w: int, h: int, /) -> None:
       """
-      Draw a rectangle at the given location and size using the pen line
-      color for the outline, and the pen fill color for the interior.
-      The `rect` method draws the outline and interior, while the other methods
-      just draw one or the other.
+       Draw a rectangle at the given location and size using the pen line
+       color for the outline, and the pen fill color for the interior.
+       The `rect` method draws the outline and interior, while the other methods
+       just draw one or the other.
       """
 
    def rect_outline(self, x: int, y: int, w: int, h: int, /) -> None:
       """
-      Draw a rectangle at the given location and size using the pen line
-      color for the outline, and the pen fill color for the interior.
-      The `rect` method draws the outline and interior, while the other methods
-      just draw one or the other.
+       Draw a rectangle at the given location and size using the pen line
+       color for the outline, and the pen fill color for the interior.
+       The `rect` method draws the outline and interior, while the other methods
+       just draw one or the other.
       """
 
    def rect_interior(self, x: int, y: int, w: int, h: int, /) -> None:
       """
-      Draw a rectangle at the given location and size using the pen line
-      color for the outline, and the pen fill color for the interior.
-      The `rect` method draws the outline and interior, while the other methods
-      just draw one or the other.
+       Draw a rectangle at the given location and size using the pen line
+       color for the outline, and the pen fill color for the interior.
+       The `rect` method draws the outline and interior, while the other methods
+       just draw one or the other.
       """
+
    def line(self, x1: int, y1: int, x2: int, y2: int, /) -> None:
       """
        Draw a line between the given coordinates using the pen line color.
       """
 
-
    def dot_no_clip(self, x: int, y: int, /) -> None:
       """
-      These methods are as above but don't do any clipping on the input
-      coordinates.  They are faster than the clipping versions and can be
-      used when you know that the coordinates are within the display.
+       These methods are as above but don't do any clipping on the input
+       coordinates.  They are faster than the clipping versions and can be
+       used when you know that the coordinates are within the display.
       """
 
    def rect_no_clip(self, x: int, y: int, w: int, h: int, /) -> None:
       """
-      These methods are as above but don't do any clipping on the input
-      coordinates.  They are faster than the clipping versions and can be
-      used when you know that the coordinates are within the display.
+       These methods are as above but don't do any clipping on the input
+       coordinates.  They are faster than the clipping versions and can be
+       used when you know that the coordinates are within the display.
       """
 
    def rect_outline_no_clip(self, x: int, y: int, w: int, h: int, /) -> None:
       """
-      These methods are as above but don't do any clipping on the input
-      coordinates.  They are faster than the clipping versions and can be
-      used when you know that the coordinates are within the display.
+       These methods are as above but don't do any clipping on the input
+       coordinates.  They are faster than the clipping versions and can be
+       used when you know that the coordinates are within the display.
       """
 
    def rect_interior_no_clip(self, x: int, y: int, w: int, h: int, /) -> None:
       """
-      These methods are as above but don't do any clipping on the input
-      coordinates.  They are faster than the clipping versions and can be
-      used when you know that the coordinates are within the display.
+       These methods are as above but don't do any clipping on the input
+       coordinates.  They are faster than the clipping versions and can be
+       used when you know that the coordinates are within the display.
       """
 
    def line_no_clip(self, x1: int, y1: int, x2: int, y2: int, /) -> None:
       """
-      These methods are as above but don't do any clipping on the input
-      coordinates.  They are faster than the clipping versions and can be
-      used when you know that the coordinates are within the display.
+       These methods are as above but don't do any clipping on the input
+       coordinates.  They are faster than the clipping versions and can be
+       used when you know that the coordinates are within the display.
       """
-   def poly_dot(self, data: Union[_AnyWritableBuf, bytes], /) -> None:
+
+   def poly_dot(self, data: _AnyReadableBuf, /) -> None:
       """
        Draw a sequence of dots using the pen line color.
        The *data* should be a buffer of bytes, with each successive pair of
        bytes corresponding to coordinate pairs (x, y).
       """
 
-   def poly_line(self, data: Union[_AnyWritableBuf, bytes], /) -> None:
+   def poly_line(self, data: _AnyReadableBuf, /) -> None:
       """
        Similar to :meth:`LCD160CR.poly_dot` but draws lines between the dots.
       """
@@ -466,7 +476,7 @@ class LCD160CR:
        :meth:`LCD160CR.set_spi_win` it will wrap around to the top-left corner of that window.
       """
 
-   def show_framebuf(self, buf: Union[_AnyWritableBuf, bytes], /) -> None:
+   def show_framebuf(self, buf: _AnyReadableBuf, /) -> None:
       """
        Show the given buffer on the display.  *buf* should be an array of bytes containing
        the 16-bit RGB values for the pixels, and they will be written to the area
@@ -529,7 +539,7 @@ class LCD160CR:
        with length 32 or less.
       """
 
-   def jpeg(self, buf: Union[_AnyWritableBuf, bytes], /) -> None:
+   def jpeg(self, buf: _AnyReadableBuf, /) -> None:
       """
        Display a JPEG.  *buf* should contain the entire JPEG data. JPEG data should
        not include EXIF information. The following encodings are supported: Baseline
@@ -537,22 +547,22 @@ class LCD160CR:
        The origin of the JPEG is set by :meth:`LCD160CR.set_pos`.
       """
 
-
    def jpeg_start(self, total_len: int, /) -> None:
       """
-      Display a JPEG with the data split across multiple buffers.  There must be
-      a single call to `jpeg_start` to begin with, specifying the total number of
-      bytes in the JPEG.  Then this number of bytes must be transferred to the
-      display using one or more calls to the `jpeg_data` command.
+       Display a JPEG with the data split across multiple buffers.  There must be
+       a single call to `jpeg_start` to begin with, specifying the total number of
+       bytes in the JPEG.  Then this number of bytes must be transferred to the
+       display using one or more calls to the `jpeg_data` command.
       """
 
-   def jpeg_data(self, buf: Union[_AnyWritableBuf, bytes], /) -> None:
+   def jpeg_data(self, buf: _AnyReadableBuf, /) -> None:
       """
-      Display a JPEG with the data split across multiple buffers.  There must be
-      a single call to `jpeg_start` to begin with, specifying the total number of
-      bytes in the JPEG.  Then this number of bytes must be transferred to the
-      display using one or more calls to the `jpeg_data` command.
+       Display a JPEG with the data split across multiple buffers.  There must be
+       a single call to `jpeg_start` to begin with, specifying the total number of
+       bytes in the JPEG.  Then this number of bytes must be transferred to the
+       display using one or more calls to the `jpeg_data` command.
       """
+
    def feed_wdt(self) -> None:
       """
        The first call to this method will start the display's internal watchdog

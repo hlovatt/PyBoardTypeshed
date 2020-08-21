@@ -84,7 +84,14 @@ Keyboard human interface device (hid), see `hid` argument of `usb_mode`.
 
 _AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
-Type that allows either bytearray or array but not mixture of both; exclusively one or the other.
+Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
+"""
+
+
+_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+"""
+Type that allows bytearray, array, memoryview, or bytes, 
+but only one of these and not a mixture in a single declaration.
 """
 
 
@@ -626,6 +633,8 @@ def usb_mode() -> str:
    it is supported by the hardware.
    """
 
+
+# noinspection PyShadowingNames
 @overload
 def usb_mode(
    modestr: str, 
@@ -1483,7 +1492,8 @@ class CAN:
       """
 
 
-class DAC: 
+# noinspection PyShadowingNames
+class DAC:
    """
    The DAC is used to output analog values (a specific voltage) on pin X5 or pin X6.
    The voltage will be between 0 and 3.3V.
@@ -1576,6 +1586,7 @@ class DAC:
       De-initialise the DAC making its pin available for other uses.
       """
 
+   # noinspection PyShadowingNames
    def noise(self, freq: int, /) -> None:
       """
       Generate a pseudo-random noise signal.  A new random sample is written
@@ -1775,27 +1786,27 @@ class Flash:
       The *start* and *len* offsets are in bytes, and must be a multiple of the block size (typically 512 for internal flash).
       """
 
-
    def readblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None:
       """
-      These methods implement the simple and :ref:`extended
-      <block-device-interface>` block protocol defined by
-      :class:`uos.AbstractBlockDev`.
+       These methods implement the simple and :ref:`extended
+       <block-device-interface>` block protocol defined by
+       :class:`uos.AbstractBlockDev`.
       """
 
    def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None:
       """
-      These methods implement the simple and :ref:`extended
-      <block-device-interface>` block protocol defined by
-      :class:`uos.AbstractBlockDev`.
+       These methods implement the simple and :ref:`extended
+       <block-device-interface>` block protocol defined by
+       :class:`uos.AbstractBlockDev`.
       """
 
    def ioctl(self, op: int, arg: int) -> Optional[int]:
       """
-      These methods implement the simple and :ref:`extended
-      <block-device-interface>` block protocol defined by
-      :class:`uos.AbstractBlockDev`.
+       These methods implement the simple and :ref:`extended
+       <block-device-interface>` block protocol defined by
+       :class:`uos.AbstractBlockDev`.
       """
+
 
 class I2C: 
    """
@@ -1857,7 +1868,7 @@ class I2C:
       /, 
       *, 
       addr: int = 0x12, 
-      baudrate: int = 400000, 
+      baudrate: int = 400_000, 
       gencall: bool = False, 
       dma: bool = False
    ):
@@ -1895,7 +1906,7 @@ class I2C:
       /, 
       *, 
       addr: int = 0x12, 
-      baudrate: int = 400000, 
+      baudrate: int = 400_000, 
       gencall: bool = False, 
       dma: bool = False
    ) -> None:
@@ -2096,7 +2107,8 @@ class LED:
       """
 
 
-class Pin: 
+# noinspection PyNestedDecorators
+class Pin:
    """
    A pin is the basic object to control I/O pins.  It has methods to set
    the mode of the pin (input, output, etc) and methods to get and set the
@@ -2872,7 +2884,8 @@ class Pin:
 
 
 
-   def __init__(self, id: str, /, mode: int = IN, pull: int = PULL_NONE, af: Union[str, int] = -1):
+   
+   def __init__(self, id: Union["Pin", str], /, mode: int = IN, pull: int = PULL_NONE, af: Union[str, int] = -1):
       """
       Create a new Pin object associated with the id.  If additional arguments are given,
       they are used to initialise the pin.  See :meth:`pin.init`.
@@ -3641,7 +3654,8 @@ class Switch:
       """
 
 
-class Timer: 
+# noinspection PyShadowingNames
+class Timer:
    """
    Timers can be used for a great variety of tasks.  At the moment, only
    the simplest case is implemented: that of calling a function periodically.
@@ -4678,7 +4692,8 @@ class TimerChannel(ABC):
       """
 
 
-class UART: 
+# noinspection PyShadowingNames
+class UART:
    """
    UART implements the standard UART/USART duplex serial communications protocol.  At
    the physical level it consists of 2 lines: RX and TX.  The unit of communication
@@ -5074,7 +5089,8 @@ class USB_HID:
       """
 
 
-class USB_VCP: 
+# noinspection PyShadowingBuiltins
+class USB_VCP:
    """
    The USB_VCP class allows creation of a `stream`-like object representing the USB
    virtual comm port.  It can be used to read and write data over USB to
@@ -5197,7 +5213,7 @@ class USB_VCP:
       Each line will include the newline character.
       """
 
-   def write(self, buf: Union[_AnyWritableBuf, bytes], /) -> int:
+   def write(self, buf: _AnyReadableBuf, /) -> int:
       """
       Write the bytes from ``buf`` to the serial device.
    
