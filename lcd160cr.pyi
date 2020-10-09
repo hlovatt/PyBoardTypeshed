@@ -3,6 +3,13 @@ control of LCD160CR display
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/lcd160cr.rst`, etc.
+
+===============================================
+   
+   .. module:: lcd160cr
+      :synopsis: control of LCD160CR display
+   
+   This module provides control of the MicroPython LCD160CR display.
    
    .. image:: http://micropython.org/resources/LCD160CRv10-persp.jpg
        :alt: LCD160CRv1.0 picture
@@ -17,7 +24,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "Use `git tag` to obtain version numbers, then `git show <version>` for details."
+__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -27,10 +34,13 @@ from pyb import Pin, I2C, SPI
 from uarray import array
 
 
+
 _AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
+
+
 
 
 _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
@@ -38,6 +48,7 @@ _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
+
 
 
 

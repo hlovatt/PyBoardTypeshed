@@ -3,12 +3,14 @@ efficient arrays of numeric data
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/uarray.rst`, etc.
+
+
 """
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "Use `git tag` to obtain version numbers, then `git show <version>` for details."
+__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 

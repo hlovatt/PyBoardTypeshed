@@ -3,12 +3,14 @@ functions related to the board
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/pyb.rst`, etc.
+
+=============================================
 """
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "Use `git tag` to obtain version numbers, then `git show <version>` for details."
+__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -51,6 +53,7 @@ class _OldAbstractBlockDev(_OldAbstractReadOnlyBlockDev, Protocol):
     def sync(self) -> None: ...
 
 
+
 @runtime_checkable
 class _AbstractBlockDev(Protocol):
     """
@@ -70,6 +73,7 @@ class _AbstractBlockDev(Protocol):
     def ioctl(self, op: int, arg: int) -> Optional[int]: ...
 
 
+
 hid_mouse: Tuple[int, int, int, int, bytes] = ...
 """
 Mouse human interface device (hid), see `hid` argument of `usb_mode`.
@@ -82,10 +86,13 @@ Keyboard human interface device (hid), see `hid` argument of `usb_mode`.
 """
 
 
+
 _AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
+
+
 
 
 _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
@@ -93,6 +100,7 @@ _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
+
 
 
 def delay(ms: int, /) -> None:
@@ -633,8 +641,6 @@ def usb_mode() -> str:
    it is supported by the hardware.
    """
 
-
-# noinspection PyShadowingNames
 @overload
 def usb_mode(
    modestr: str, 
@@ -1492,8 +1498,7 @@ class CAN:
       """
 
 
-# noinspection PyShadowingNames
-class DAC:
+class DAC: 
    """
    The DAC is used to output analog values (a specific voltage) on pin X5 or pin X6.
    The voltage will be between 0 and 3.3V.
@@ -1586,7 +1591,6 @@ class DAC:
       De-initialise the DAC making its pin available for other uses.
       """
 
-   # noinspection PyShadowingNames
    def noise(self, freq: int, /) -> None:
       """
       Generate a pseudo-random noise signal.  A new random sample is written
@@ -2107,8 +2111,7 @@ class LED:
       """
 
 
-# noinspection PyNestedDecorators
-class Pin:
+class Pin: 
    """
    A pin is the basic object to control I/O pins.  It has methods to set
    the mode of the pin (input, output, etc) and methods to get and set the
@@ -3654,8 +3657,7 @@ class Switch:
       """
 
 
-# noinspection PyShadowingNames
-class Timer:
+class Timer: 
    """
    Timers can be used for a great variety of tasks.  At the moment, only
    the simplest case is implemented: that of calling a function periodically.
@@ -4692,8 +4694,7 @@ class TimerChannel(ABC):
       """
 
 
-# noinspection PyShadowingNames
-class UART:
+class UART: 
    """
    UART implements the standard UART/USART duplex serial communications protocol.  At
    the physical level it consists of 2 lines: RX and TX.  The unit of communication
@@ -5089,8 +5090,7 @@ class USB_HID:
       """
 
 
-# noinspection PyShadowingBuiltins
-class USB_VCP:
+class USB_VCP: 
    """
    The USB_VCP class allows creation of a `stream`-like object representing the USB
    virtual comm port.  It can be used to read and write data over USB to

@@ -3,6 +3,11 @@ functions related to the hardware
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/machine.rst`, etc.
+
+====================================================
+
+.. module:: machine
+   :synopsis: functions related to the hardware
    
    The ``machine`` module contains specific functions related to the hardware
    on a particular board. Most functions in this module allow to achieve direct
@@ -23,7 +28,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "Use `git tag` to obtain version numbers, then `git show <version>` for details."
+__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -32,6 +37,7 @@ from typing import Type, Sequence, runtime_checkable, Protocol, ClassVar
 
 import pyb
 from uarray import array
+
 
 
 @runtime_checkable
@@ -43,11 +49,16 @@ class _AbstractBlockDev(Protocol):
 
     __slots__ = ()
 
+    @abstractmethod
     def readblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ... 
 
+    @abstractmethod
     def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
 
+    @abstractmethod
     def ioctl(self, op: int, arg: int) -> Optional[int]: ...
+
+
 
 
 _AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
@@ -56,11 +67,14 @@ Type that allows bytearray, array, or memoryview, but only one of these and not 
 """
 
 
+
+
 _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
+
 
 
 def reset() -> NoReturn:
@@ -540,6 +554,14 @@ class SPI:
    SS (Slave Select), to select a particular device on a bus with which
    communication takes place. Management of an SS signal should happen in
    user code (via machine.Pin class).
+   
+   Both hardware and software SPI implementations exist via the
+   :ref:`machine.SPI <machine.SPI>` and `machine.SoftSPI` classes.  Hardware SPI uses underlying
+   hardware support of the system to perform the reads/writes and is usually
+   efficient and fast but may have restrictions on which pins can be used.
+   Software SPI is implemented by bit-banging and can be used on any pin but
+   is not as efficient.  These classes have the same methods available and
+   differ primarily in the way they are constructed.
    """
 
 
@@ -569,10 +591,9 @@ class SPI:
    @overload
    def __init__(self, id: int, /):
       """
-      Construct an SPI object on the given bus, ``id``. Values of ``id`` depend
+      Construct an SPI object on the given bus, *id*. Values of *id* depend
       on a particular port and its hardware. Values 0, 1, etc. are commonly used
-      to select hardware SPI block #0, #1, etc. Value -1 can be used for
-      bitbanging (software) implementation of SPI (if supported by a port).
+      to select hardware SPI block #0, #1, etc.
    
       With no additional parameters, the SPI object is created but not
       initialised (it has the settings from the last initialisation of
@@ -596,10 +617,9 @@ class SPI:
       miso: Optional[Pin] = None, 
    ):
       """
-      Construct an SPI object on the given bus, ``id``. Values of ``id`` depend
+      Construct an SPI object on the given bus, *id*. Values of *id* depend
       on a particular port and its hardware. Values 0, 1, etc. are commonly used
-      to select hardware SPI block #0, #1, etc. Value -1 can be used for
-      bitbanging (software) implementation of SPI (if supported by a port).
+      to select hardware SPI block #0, #1, etc.
    
       With no additional parameters, the SPI object is created but not
       initialised (it has the settings from the last initialisation of
@@ -621,10 +641,9 @@ class SPI:
       pins: Optional[Tuple[Pin, Pin, Pin]] = None, 
    ):
       """
-      Construct an SPI object on the given bus, ``id``. Values of ``id`` depend
+      Construct an SPI object on the given bus, *id*. Values of *id* depend
       on a particular port and its hardware. Values 0, 1, etc. are commonly used
-      to select hardware SPI block #0, #1, etc. Value -1 can be used for
-      bitbanging (software) implementation of SPI (if supported by a port).
+      to select hardware SPI block #0, #1, etc.
    
       With no additional parameters, the SPI object is created but not
       initialised (it has the settings from the last initialisation of
@@ -750,6 +769,14 @@ class I2C:
    
    Printing the I2C object gives you information about its configuration.
    
+   Both hardware and software I2C implementations exist via the
+   :ref:`machine.I2C <machine.I2C>` and `machine.SoftI2C` classes.  Hardware I2C uses
+   underlying hardware support of the system to perform the reads/writes and is
+   usually efficient and fast but may have restrictions on which pins can be used.
+   Software I2C is implemented by bit-banging and can be used on any pin but is not
+   as efficient.  These classes have the same methods available and differ primarily
+   in the way they are constructed.
+   
    Example usage::
    
        from machine import I2C
@@ -770,39 +797,37 @@ class I2C:
    """
 
    @overload
-   def __init__(self, id: int = -1, /, *, freq: int = 400_000):
+   def __init__(self, id: int, /, *, freq: int = 400_000):
       """
       Construct and return a new I2C object using the following parameters:
    
-         - *id* identifies a particular I2C peripheral.  The default
-           value of -1 selects a software implementation of I2C which can
-           work (in most cases) with arbitrary pins for SCL and SDA.
-           If *id* is -1 then *scl* and *sda* must be specified.  Other
-           allowed values for *id* depend on the particular port/board,
-           and specifying *scl* and *sda* may or may not be required or
-           allowed in this case.
+         - *id* identifies a particular I2C peripheral.  Allowed values for
+           depend on the particular port/board
          - *scl* should be a pin object specifying the pin to use for SCL.
          - *sda* should be a pin object specifying the pin to use for SDA.
          - *freq* should be an integer which sets the maximum frequency
            for SCL.
+   
+      Note that some ports/boards will have default values of *scl* and *sda*
+      that can be changed in this constructor.  Others will have fixed values
+      of *scl* and *sda* that cannot be changed.
       """
 
    @overload
-   def __init__(self, id: int = -1, /, *, scl: Pin, sda: Pin, freq: int = 400_000):
+   def __init__(self, id: int, /, *, scl: Pin, sda: Pin, freq: int = 400_000):
       """
       Construct and return a new I2C object using the following parameters:
    
-         - *id* identifies a particular I2C peripheral.  The default
-           value of -1 selects a software implementation of I2C which can
-           work (in most cases) with arbitrary pins for SCL and SDA.
-           If *id* is -1 then *scl* and *sda* must be specified.  Other
-           allowed values for *id* depend on the particular port/board,
-           and specifying *scl* and *sda* may or may not be required or
-           allowed in this case.
+         - *id* identifies a particular I2C peripheral.  Allowed values for
+           depend on the particular port/board
          - *scl* should be a pin object specifying the pin to use for SCL.
          - *sda* should be a pin object specifying the pin to use for SDA.
          - *freq* should be an integer which sets the maximum frequency
            for SCL.
+   
+      Note that some ports/boards will have default values of *scl* and *sda*
+      that can be changed in this constructor.  Others will have fixed values
+      of *scl* and *sda* that cannot be changed.
       """
 
    @overload
@@ -850,7 +875,7 @@ class I2C:
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
-      These methods are available on software I2C only.
+      These methods are only available on the `machine.SoftI2C` class.
       """
 
    def stop(self) -> None:
@@ -864,7 +889,7 @@ class I2C:
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
-      These methods are available on software I2C only.
+      These methods are only available on the `machine.SoftI2C` class.
       """
 
    def readinto(self, buf: _AnyWritableBuf, nack: bool = True, /) -> None:
@@ -882,7 +907,7 @@ class I2C:
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
-      These methods are available on software I2C only.
+      These methods are only available on the `machine.SoftI2C` class.
       """
 
    def write(self, buf: _AnyReadableBuf, /) -> int:
@@ -898,7 +923,7 @@ class I2C:
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
-      These methods are available on software I2C only.
+      These methods are only available on the `machine.SoftI2C` class.
       """
 
    def readfrom(self, addr: int, nbytes: int, stop: bool = True, /) -> bytes:
