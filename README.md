@@ -30,7 +30,7 @@ Once installed, see next section, the typesheds offer:
 
 There are three ways of installing the Typesheds: 
 hopefully in the future via plugins, 
-manually install in IDE, and copy the `.pyi` files into a project.
+manually install into the IDE, and copy the `.pyi` files into a project.
 
 ### Via an IDE plugin
 
@@ -73,7 +73,7 @@ will pick up the typesheds:
   6. Drag (or copy and past) the `.pyi` (only) files into the 
   Micropython Plugin 
   (`.pyi` files normally go into `Micropython -> micropython` but the files
-  who's name begin with `u` go into `Micropython -> stdlib`):\
+  whose name begin with `u` go into `Micropython -> stdlib`):\
   ![Drag `.pyi` files into Plugin](media/typesheds.png "`.pyi` files in Micropython plugin")
 
   7. Disable and re-enable plugin by 
@@ -82,7 +82,7 @@ will pick up the typesheds:
   (so that it picks up the changes):\
   ![Re-enable MicroPython plugin](media/enable_pt2.png "Un-tick and OK back into preferences re-tick MicroPython support and OK")
   
-  8. Plugin now has typesheds from this repository and those provided 
+  8. Plugin now has typesheds from this repository, and those provided 
   by the Micropython plugin:\
   ![Typesheds in MicroPython plugin](media/typesheds.png "End result")
 

@@ -1,16 +1,95 @@
 """
+
 functions related to the board
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/pyb.rst`, etc.
 
 =============================================
+
+   
+
+   Hardware Note
+   -------------
+   
+   The accelerometer uses I2C bus 1 to communicate with the processor. Consequently
+   when readings are being taken pins X9 and X10 should be unused (other than for
+   I2C). Other devices using those pins, and which therefore cannot be used
+   concurrently, are UART 1 and Timer 4 channels 1 and 2.
+   
+
+   Hardware Note
+   -------------
+   
+   On boards with external spiflash (e.g. Pyboard D), the MicroPython firmware will
+   be configured to use that as the primary flash storage. On all other boards, the
+   internal flash inside the :term:`MCU` will be used.
+   
+
+   Flow Control
+   ------------
+   
+   On Pyboards V1 and V1.1 ``UART(2)`` and ``UART(3)`` support RTS/CTS hardware flow control
+   using the following pins:
+   
+       - ``UART(2)`` is on: ``(TX, RX, nRTS, nCTS) = (X3, X4, X2, X1) = (PA2, PA3, PA1, PA0)``
+       - ``UART(3)`` is on :``(TX, RX, nRTS, nCTS) = (Y9, Y10, Y7, Y6) = (PB10, PB11, PB14, PB13)``
+   
+   On the Pyboard Lite only ``UART(2)`` supports flow control on these pins:
+   
+       ``(TX, RX, nRTS, nCTS) = (X1, X2, X4, X3) = (PA2, PA3, PA1, PA0)``
+   
+   In the following paragraphs the term "target" refers to the device connected to
+   the UART.
+   
+   When the UART's ``init()`` method is called with ``flow`` set to one or both of
+   ``UART.RTS`` and ``UART.CTS`` the relevant flow control pins are configured.
+   ``nRTS`` is an active low output, ``nCTS`` is an active low input with pullup
+   enabled. To achieve flow control the Pyboard's ``nCTS`` signal should be connected
+   to the target's ``nRTS`` and the Pyboard's ``nRTS`` to the target's ``nCTS``.
+   
+   CTS: target controls Pyboard transmitter
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+   If CTS flow control is enabled the write behaviour is as follows:
+   
+   If the Pyboard's ``UART.write(buf)`` method is called, transmission will stall for
+   any periods when ``nCTS`` is ``False``. This will result in a timeout if the entire
+   buffer was not transmitted in the timeout period. The method returns the number of
+   bytes written, enabling the user to write the remainder of the data if required. In
+   the event of a timeout, a character will remain in the UART pending ``nCTS``. The
+   number of bytes composing this character will be included in the return value.
+   
+   If ``UART.writechar()`` is called when ``nCTS`` is ``False`` the method will time
+   out unless the target asserts ``nCTS`` in time. If it times out ``OSError 116``
+   will be raised. The character will be transmitted as soon as the target asserts ``nCTS``.
+   
+   RTS: Pyboard controls target's transmitter
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+   If RTS flow control is enabled, behaviour is as follows:
+   
+   If buffered input is used (``read_buf_len`` > 0), incoming characters are buffered.
+   If the buffer becomes full, the next character to arrive will cause ``nRTS`` to go
+   ``False``: the target should cease transmission. ``nRTS`` will go ``True`` when
+   characters are read from the buffer.
+   
+   Note that the ``any()`` method returns the number of bytes in the buffer. Assume a
+   buffer length of ``N`` bytes. If the buffer becomes full, and another character arrives,
+   ``nRTS`` will be set False, and ``any()`` will return the count ``N``. When
+   characters are read the additional character will be placed in the buffer and will
+   be included in the result of a subsequent ``any()`` call.
+   
+   If buffered input is not used (``read_buf_len`` == 0) the arrival of a character will
+   cause ``nRTS`` to go ``False`` until the character is read.
 """
+
+
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = ""
 
 
 
@@ -100,6 +179,7 @@ _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
+
 
 
 
@@ -702,15 +782,10 @@ class Accel:
            print(accel.x(), accel.y(), accel.z())
    
    Raw values are between -32 and 31.
-   
-   Hardware Note
-   -------------
-   
-   The accelerometer uses I2C bus 1 to communicate with the processor. Consequently
-   when readings are being taken pins X9 and X10 should be unused (other than for
-   I2C). Other devices using those pins, and which therefore cannot be used
-   concurrently, are UART 1 and Timer 4 channels 1 and 2.
    """
+
+
+
 
    def __init__(self):
       """
@@ -765,6 +840,9 @@ class ADC:
        val = adc.read_core_vref()          # read MCU VREF
        val = adc.read_vref()               # read MCU supply voltage
    """
+
+
+
 
    def __init__(self, pin: Union[int, "Pin"], /):
       """
@@ -922,7 +1000,7 @@ class ADCAll:
       """
       Create a multi-channel ADC instance.
 
-      ``resolution`` is the number of bits for all the ADC's (even those not enabled); one of: 
+      ``resolution`` is the number of bits for all the ADCs (even those not enabled); one of: 
       14, 12, 10, or 8 bits.
 
       To avoid unwanted activation of analog inputs (channel 0..15) a second parameter, ``mask``, 
@@ -958,6 +1036,10 @@ class ADCAll:
       """
 
 
+
+
+
+
 class CAN: 
    """
    CAN implements the standard CAN communications protocol.  At
@@ -976,27 +1058,28 @@ class CAN:
    """
 
 
-   LIST16: ClassVar[int] = ...
+
+   NORMAL: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+   The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
-   MASK16: ClassVar[int] = ...
+   LOOPBACK: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
-   """
-
-
-   LIST32: ClassVar[int] = ...
-   """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+   The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
-   MASK32: ClassVar[int] = ...
+   SILENT: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+   The mode of the CAN bus used in :meth:`~CAN.init()`.
+   """
+
+
+   SILENT_LOOPBACK: ClassVar[int] = ...
+   """
+   The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
@@ -1034,28 +1117,29 @@ class CAN:
 
 
 
-   NORMAL: ClassVar[int] = ...
+   LIST16: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
-   """
-
-
-   LOOPBACK: ClassVar[int] = ...
-   """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
-   SILENT: ClassVar[int] = ...
+   MASK16: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
-   SILENT_LOOPBACK: ClassVar[int] = ...
+   LIST32: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
+
+
+   MASK32: ClassVar[int] = ...
+   """
+   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+   """
+
 
 
 
@@ -1109,7 +1193,9 @@ class CAN:
       sjw: int = 1, 
       bs1: int = 6, 
       bs2: int = 8, 
-      auto_restart: bool = False
+      auto_restart: bool = False,
+      baudrate: int = 0,
+      sample_point: int = 75
    ) -> None:
       """
       Initialise the CAN bus with the given parameters:
@@ -1128,6 +1214,11 @@ class CAN:
         - *auto_restart* sets whether the controller will automatically try and restart
           communications after entering the bus-off state; if this is disabled then
           :meth:`~CAN.restart()` can be used to leave the bus-off state
+        - *baudrate* if a baudrate other than 0 is provided, this function will try to automatically
+          calculate a CAN bit-timing (overriding *prescaler*, *bs1* and *bs2*) that satisfies both
+          the baudrate and the desired *sample_point*.
+        - *sample_point* given in a percentage of the bit time, the *sample_point* specifies the position
+          of the last bit sample with respect to the whole bit time. The default *sample_point* is 75%.
    
       The time quanta tq is the basic unit of time for the CAN bus.  tq is the CAN
       prescaler value divided by PCLK1 (the frequency of internal peripheral bus 1);
@@ -1554,6 +1645,9 @@ class DAC:
    """
 
 
+
+
+
    def __init__(self, port: Union[int, "Pin"], /, bits: int = 8, *, buffering: Optional[bool] = None):
       """
       Construct a new DAC object.
@@ -1680,9 +1774,10 @@ class ExtInt:
    """
 
 
-   IRQ_RISING_FALLING: ClassVar[int] = ...
+
+   IRQ_FALLING: ClassVar[int] = ...
    """
-   interrupt on a rising or falling edge
+   interrupt on a falling edge
    """
 
 
@@ -1696,10 +1791,11 @@ class ExtInt:
 
 
 
-   IRQ_FALLING: ClassVar[int] = ...
+   IRQ_RISING_FALLING: ClassVar[int] = ...
    """
-   interrupt on a falling edge
+   interrupt on a rising or falling edge
    """
+
 
 
 
@@ -1759,14 +1855,10 @@ class Flash:
    API, but this interface is useful to :ref:`customise the filesystem
    configuration <filesystem>` or implement a low-level storage system for your
    application.
-   
-   Hardware Note
-   -------------
-   
-   On boards with external spiflash (e.g. Pyboard D), the MicroPython firmware will
-   be configured to use that as the primary flash storage. On all other boards, the
-   internal flash inside the :term:`MCU` will be used.
    """
+
+
+
 
    
    @overload
@@ -1863,6 +1955,9 @@ class I2C:
        i2c.mem_write('abc', 0x42, 2, timeout=1000) # write 'abc' (3 bytes) to memory of slave 0x42
                                                    # starting at address 2 in the slave, timeout after 1 second
    """
+
+
+
 
    
    def __init__(
@@ -1992,6 +2087,9 @@ class LCD:
            pyb.delay(50)               # pause for 50ms
    """
 
+
+
+
    def __init__(self, skin_position: str, /):
       """
       Construct an LCD object in the given skin position.  ``skin_position`` can be 'X' or 'Y', and
@@ -2058,6 +2156,9 @@ class LED:
    """
    The LED object controls an individual LED (Light Emitting Diode).
    """
+
+
+
 
    def __init__(self, id: int, /):
       """
@@ -2816,57 +2917,10 @@ class Pin:
 
 
 
-   PULL_UP: ClassVar[int] = ...
+
+   AF_OD: ClassVar[int] = ...
    """
-   enable the pull-up resistor on the pin
-   """
-
-
-
-
-   PULL_NONE: ClassVar[int] = ...
-   """
-   don't enable any pull up or down resistors on the pin
-   """
-
-
-
-
-   PULL_DOWN: ClassVar[int] = ...
-   """
-   enable the pull-down resistor on the pin
-   """
-
-
-
-
-   OUT_PP: ClassVar[int] = ...
-   """
-   initialise the pin to output mode with a push-pull drive
-   """
-
-
-
-
-   OUT_OD: ClassVar[int] = ...
-   """
-   initialise the pin to output mode with an open-drain drive
-   """
-
-
-
-
-   IN: ClassVar[int] = ...
-   """
-   initialise the pin to input mode
-   """
-
-
-
-
-   ANALOG: ClassVar[int] = ...
-   """
-   initialise the pin to analog mode
+   initialise the pin to alternate-function mode with an open-drain drive
    """
 
 
@@ -2880,10 +2934,59 @@ class Pin:
 
 
 
-   AF_OD: ClassVar[int] = ...
+   ANALOG: ClassVar[int] = ...
    """
-   initialise the pin to alternate-function mode with an open-drain drive
+   initialise the pin to analog mode
    """
+
+
+
+
+   IN: ClassVar[int] = ...
+   """
+   initialise the pin to input mode
+   """
+
+
+
+
+   OUT_OD: ClassVar[int] = ...
+   """
+   initialise the pin to output mode with an open-drain drive
+   """
+
+
+
+
+   OUT_PP: ClassVar[int] = ...
+   """
+   initialise the pin to output mode with a push-pull drive
+   """
+
+
+
+
+   PULL_DOWN: ClassVar[int] = ...
+   """
+   enable the pull-down resistor on the pin
+   """
+
+
+
+
+   PULL_NONE: ClassVar[int] = ...
+   """
+   don't enable any pull up or down resistors on the pin
+   """
+
+
+
+
+   PULL_UP: ClassVar[int] = ...
+   """
+   enable the pull-up resistor on the pin
+   """
+
 
 
 
@@ -3072,6 +3175,9 @@ class PinAF(ABC):
 
    __slots__ = ()
 
+
+
+
    
    @abstractmethod
    def __str__(self) -> str:
@@ -3114,6 +3220,9 @@ class RTC:
        rtc.datetime((2014, 5, 1, 4, 13, 0, 0, 0))
        print(rtc.datetime())
    """
+
+
+
 
    def __init__(self):
       """
@@ -3221,6 +3330,9 @@ class Servo:
       use Timer(5) for Servo control, or your own purposes, but not both at the
       same time.
    """
+
+
+
 
    def __init__(self, id: int, /):
       """
@@ -3382,19 +3494,6 @@ class SPI:
    """
 
 
-   LSB: ClassVar[int] = ...
-   """
-   set the first bit to be the least or most significant bit
-   """
-
-
-   MSB: ClassVar[int] = ...
-   """
-   set the first bit to be the least or most significant bit
-   """
-
-
-
 
    MASTER: ClassVar[int] = ...
    """
@@ -3406,6 +3505,21 @@ class SPI:
    """
    for initialising the SPI bus to master or slave mode
    """
+
+
+
+
+   LSB: ClassVar[int] = ...
+   """
+   set the first bit to be the least or most significant bit
+   """
+
+
+   MSB: ClassVar[int] = ...
+   """
+   set the first bit to be the least or most significant bit
+   """
+
 
 
 
@@ -3634,6 +3748,9 @@ class Switch:
         pyb.Switch().callback(lambda: pyb.LED(1).toggle())
    """
 
+
+
+
    def __init__(self):
       """
       Create and return a switch object.
@@ -3810,6 +3927,9 @@ class Timer:
    """
    captures on both edges.
    """
+
+
+
 
 
    @overload
@@ -4602,6 +4722,9 @@ class TimerChannel(ABC):
    TimerChannel objects are created using the Timer.channel() method.
    """
 
+
+
+
    
    @abstractmethod
    def callback(self, fun: Optional[Callable[[Timer], None]], /) -> None:
@@ -4734,64 +4857,8 @@ class UART:
    
    *Note:* The stream functions ``read``, ``write``, etc. are new in MicroPython v1.3.4.
    Earlier versions use ``uart.send`` and ``uart.recv``.
-   
-   Flow Control
-   ------------
-   
-   On Pyboards V1 and V1.1 ``UART(2)`` and ``UART(3)`` support RTS/CTS hardware flow control
-   using the following pins:
-   
-       - ``UART(2)`` is on: ``(TX, RX, nRTS, nCTS) = (X3, X4, X2, X1) = (PA2, PA3, PA1, PA0)``
-       - ``UART(3)`` is on :``(TX, RX, nRTS, nCTS) = (Y9, Y10, Y7, Y6) = (PB10, PB11, PB14, PB13)``
-   
-   On the Pyboard Lite only ``UART(2)`` supports flow control on these pins:
-   
-       ``(TX, RX, nRTS, nCTS) = (X1, X2, X4, X3) = (PA2, PA3, PA1, PA0)``
-   
-   In the following paragraphs the term "target" refers to the device connected to
-   the UART.
-   
-   When the UART's ``init()`` method is called with ``flow`` set to one or both of
-   ``UART.RTS`` and ``UART.CTS`` the relevant flow control pins are configured.
-   ``nRTS`` is an active low output, ``nCTS`` is an active low input with pullup
-   enabled. To achieve flow control the Pyboard's ``nCTS`` signal should be connected
-   to the target's ``nRTS`` and the Pyboard's ``nRTS`` to the target's ``nCTS``.
-   
-   CTS: target controls Pyboard transmitter
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
-   If CTS flow control is enabled the write behaviour is as follows:
-   
-   If the Pyboard's ``UART.write(buf)`` method is called, transmission will stall for
-   any periods when ``nCTS`` is ``False``. This will result in a timeout if the entire
-   buffer was not transmitted in the timeout period. The method returns the number of
-   bytes written, enabling the user to write the remainder of the data if required. In
-   the event of a timeout, a character will remain in the UART pending ``nCTS``. The
-   number of bytes composing this character will be included in the return value.
-   
-   If ``UART.writechar()`` is called when ``nCTS`` is ``False`` the method will time
-   out unless the target asserts ``nCTS`` in time. If it times out ``OSError 116``
-   will be raised. The character will be transmitted as soon as the target asserts ``nCTS``.
-   
-   RTS: Pyboard controls target's transmitter
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
-   If RTS flow control is enabled, behaviour is as follows:
-   
-   If buffered input is used (``read_buf_len`` > 0), incoming characters are buffered.
-   If the buffer becomes full, the next character to arrive will cause ``nRTS`` to go
-   ``False``: the target should cease transmission. ``nRTS`` will go ``True`` when
-   characters are read from the buffer.
-   
-   Note that the ``any()`` method returns the number of bytes in the buffer. Assume a
-   buffer length of ``N`` bytes. If the buffer becomes full, and another character arrives,
-   ``nRTS`` will be set False, and ``any()`` will return the count ``N``. When
-   characters are read the additional character will be placed in the buffer and will
-   be included in the result of a subsequent ``any()`` call.
-   
-   If buffered input is not used (``read_buf_len`` == 0) the arrival of a character will
-   cause ``nRTS`` to go ``False`` until the character is read.
    """
+
 
 
    RTS: ClassVar[int] = ...
@@ -4804,6 +4871,7 @@ class UART:
    """
    to select the flow control type.
    """
+
 
 
 
@@ -5050,6 +5118,9 @@ class USB_HID:
    Before you can use this class, you need to use :meth:`pyb.usb_mode()` to set the USB mode to include the HID interface.
    """
 
+
+
+
    def __init__(self):
       """
       Create a new USB_HID object.
@@ -5098,6 +5169,7 @@ class USB_VCP:
    """
 
 
+
    RTS: ClassVar[int] = ...
    """
    to select the flow control type.
@@ -5108,6 +5180,7 @@ class USB_VCP:
    """
    to select the flow control type.
    """
+
 
 
 
@@ -5255,3 +5328,5 @@ class USB_VCP:
    
       Return value: number of bytes sent.
       """
+
+

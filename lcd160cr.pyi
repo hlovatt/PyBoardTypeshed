@@ -1,11 +1,14 @@
 """
+
 control of LCD160CR display
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/lcd160cr.rst`, etc.
 
 ===============================================
+
    
+
    .. module:: lcd160cr
       :synopsis: control of LCD160CR display
    
@@ -19,12 +22,15 @@ Descriptions taken from
    
    * `LCD160CRv1.0 reference manual <http://micropython.org/resources/LCD160CRv10-refmanual.pdf>`_ (100KiB PDF)
    * `LCD160CRv1.0 schematics <http://micropython.org/resources/LCD160CRv10-schematics.pdf>`_ (1.6MiB PDF)
+   
 """
+
+
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = ""
 
 
 
@@ -101,8 +107,10 @@ STARTUP_DECO_INFO: int = ...
 
 
 
+
 class LCD160CR:
    """
+   
    The LCD160CR class provides an interface to the display.  Create an
    instance of this class and use its methods to draw to the LCD and get
    the status of the touch panel.
@@ -118,7 +126,9 @@ class LCD160CR:
        lcd.set_font(1)
        lcd.write('Hello MicroPython!')
        print('touch:', lcd.get_touch())
+   
    """
+
 
 
    w: int = ...
@@ -135,6 +145,7 @@ class LCD160CR:
     members are updated when calling :meth:`LCD160CR.set_orient` and should
     be considered read-only.
    """
+
 
 
 
@@ -585,3 +596,5 @@ class LCD160CR:
       """
        Reset the display.
       """
+
+

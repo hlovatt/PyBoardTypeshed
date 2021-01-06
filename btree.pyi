@@ -1,4 +1,5 @@
 """
+
 simple BTree database
 
 Descriptions taken from 
@@ -77,17 +78,21 @@ Example::
     # Don't forget to close the underlying stream!
     f.close()
 
+   
+
 """
+
+
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = ""
 
 
 
 from abc import abstractmethod
-from typing import Protocol, Iterator, AnyStr, runtime_checkable, Optional, TypeVar, overload
+from typing import Protocol, Iterator, AnyStr, runtime_checkable, Optional, TypeVar
 
 from uarray import array
 
@@ -152,6 +157,24 @@ but only one of these and not a mixture in a single declaration.
 
 
 
+INCL: int = ...
+"""
+   A flag for `keys()`, `values()`, `items()` methods to specify that
+   scanning should be inclusive of the end key.
+"""
+
+
+
+
+DESC: int = ...
+"""
+   A flag for `keys()`, `values()`, `items()` methods to specify that
+   scanning should be in descending direction of keys.
+"""
+
+
+
+
 def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: int = 0, minkeypage: int = 0) -> btree:
    """
    Open a database from a random-access `stream` (like an open file). All
@@ -178,28 +201,13 @@ def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: in
    """
 
 
-INCL: int = ...
-"""
-   A flag for `keys()`, `values()`, `items()` methods to specify that
-   scanning should be inclusive of the end key.
-"""
-
-
-
-
-DESC: int = ...
-"""
-   A flag for `keys()`, `values()`, `items()` methods to specify that
-   scanning should be in descending direction of keys.
-"""
-
-
-
-
 class btree:
    """
-
+   
    """
+
+
+
 
    def close(self) -> None:
       """
@@ -215,16 +223,12 @@ class btree:
       Flush any data in cache to the underlying stream.
       """
 
-   
-   @overload
    def __getitem__(self, key: bytes, /) -> bytes:
       """
       Standard dictionary methods.
       """
 
-   
-   @overload
-   def __getitem__(self, key: bytes, default: Optional[bytes] = None, /) -> bytes:
+   def get(self, key: bytes, default: Optional[bytes] = None, /) -> bytes:
       """
       Standard dictionary methods.
       """
@@ -300,3 +304,5 @@ class btree:
       by passing *flags* of `btree.DESC`. The flags values can be ORed
       together.
       """
+
+
