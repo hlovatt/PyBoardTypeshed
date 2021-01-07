@@ -89,7 +89,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.4.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "0.5.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -179,7 +179,6 @@ _AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
-
 
 
 
@@ -773,7 +772,7 @@ def usb_mode(
    """
 
 
-class Accel: 
+class Accel:
    """
    Accel is an object that controls the accelerometer.  Example usage::
    
@@ -782,8 +781,8 @@ class Accel:
            print(accel.x(), accel.y(), accel.z())
    
    Raw values are between -32 and 31.
+   
    """
-
 
 
 
@@ -823,7 +822,7 @@ class Accel:
       """
 
 
-class ADC: 
+class ADC:
    """
    Usage::
    
@@ -839,8 +838,8 @@ class ADC:
        val = adc.read_core_vbat()          # read MCU VBAT
        val = adc.read_core_vref()          # read MCU VREF
        val = adc.read_vref()               # read MCU supply voltage
+   
    """
-
 
 
 
@@ -953,48 +952,90 @@ class ADC:
       """
 
 
-class ADCAll: 
+class ADCAll:
    """
    Instantiating this changes all masked ADC pins to analog inputs. The preprocessed MCU temperature,
+
    VREF and VBAT data can be accessed on ADC channels 16, 17 and 18 respectively.
+
    Appropriate scaling is handled according to reference voltage used (usually 3.3V).
+
    The temperature sensor on the chip is factory calibrated and allows to read the die temperature
+
    to +/- 1 degree centigrade. Although this sounds pretty accurate, don't forget that the MCU's internal
+
    temperature is measured. Depending on processing loads and I/O subsystems active the die temperature
+
    may easily be tens of degrees above ambient temperature. On the other hand a pyboard woken up after a
+
    long standby period will show correct ambient temperature within limits mentioned above.
+
    
+
    The ``ADCAll`` ``read_core_vbat()``, ``read_vref()`` and ``read_core_vref()`` methods read
+
    the backup battery voltage, reference voltage and the (1.21V nominal) reference voltage using the
+
    actual supply as a reference. All results are floating point numbers giving direct voltage values.
+
    
+
    ``read_core_vbat()`` returns the voltage of the backup battery. This voltage is also adjusted according
+
    to the actual supply voltage. To avoid analog input overload the battery voltage is measured
+
    via a voltage divider and scaled according to the divider value. To prevent excessive loads
+
    to the backup battery, the voltage divider is only active during ADC conversion.
+
    
+
    ``read_vref()`` is evaluated by measuring the internal voltage reference and backscale it using
+
    factory calibration value of the internal voltage reference. In most cases the reading would be close
+
    to 3.3V. If the pyboard is operated from a battery, the supply voltage may drop to values below 3.3V.
+
    The pyboard will still operate fine as long as the operating conditions are met. With proper settings
+
    of MCU clock, flash access speed and programming mode it is possible to run the pyboard down to
+
    2 V and still get useful ADC conversion.
+
    
+
    It is very important to make sure analog input voltages never exceed actual supply voltage.
+
    
+
    Other analog input channels (0..15) will return unscaled integer values according to the selected
+
    precision.
+
    
+
    To avoid unwanted activation of analog inputs (channel 0..15) a second parameter can be specified.
+
    This parameter is a binary pattern where each requested analog input has the corresponding bit set.
+
    The default value is 0xffffffff which means all analog inputs are active. If just the internal
+
    channels (16..18) are required, the mask value should be 0x70000.
+
    
+
    Example::
+
    
+
        adcall = pyb.ADCAll(12, 0x70000) # 12 bit resolution, internal channels
+
        temp = adcall.read_core_temp()
+
    """
+
+
+
 
    def __init__(self, resolution: int, mask: int = 0xffffffff, /):
       """
@@ -1036,11 +1077,7 @@ class ADCAll:
       """
 
 
-
-
-
-
-class CAN: 
+class CAN:
    """
    CAN implements the standard CAN communications protocol.  At
    the physical level it consists of 2 lines: RX and TX.  Note that
@@ -1055,6 +1092,7 @@ class CAN:
        can.setfilter(0, CAN.LIST16, 0, (123, 124, 125, 126))  # set a filter to receive messages with id=123, 124, 125 and 126
        can.send('message!', 123)   # send a message with id 123
        can.recv(0)                 # receive message on FIFO 0
+   
    """
 
 
@@ -1589,7 +1627,7 @@ class CAN:
       """
 
 
-class DAC: 
+class DAC:
    """
    The DAC is used to output analog values (a specific voltage) on pin X5 or pin X6.
    The voltage will be between 0 and 3.3V.
@@ -1633,6 +1671,8 @@ class DAC:
        dac = DAC(1, bits=12)
        dac.write_timed(buf, 400 * len(buf), mode=DAC.CIRCULAR)
    """
+
+
       
    NORMAL: ClassVar[int] = ...
    """
@@ -1643,9 +1683,6 @@ class DAC:
    """
    Circular mode (output buffer continuously) for `mode` argument of `write_timed`.
    """
-
-
-
 
 
    def __init__(self, port: Union[int, "Pin"], /, bits: int = 8, *, buffering: Optional[bool] = None):
@@ -1727,7 +1764,7 @@ class DAC:
       """
 
 
-class ExtInt: 
+class ExtInt:
    """
    There are a total of 22 interrupt lines. 16 of these can come from GPIO pins
    and the remaining 6 are from internal sources.
@@ -1771,6 +1808,7 @@ class ExtInt:
    There is also a C API, so that drivers which require EXTI interrupt lines
    can also use this code. See extint.h for the available functions and
    usrsw.h for an example of using this.
+   
    """
 
 
@@ -1846,7 +1884,7 @@ class ExtInt:
       """
 
 
-class Flash: 
+class Flash:
    """
    The Flash class allows direct access to the primary flash device on the pyboard.
    
@@ -1856,7 +1894,6 @@ class Flash:
    configuration <filesystem>` or implement a low-level storage system for your
    application.
    """
-
 
 
 
@@ -1904,7 +1941,7 @@ class Flash:
       """
 
 
-class I2C: 
+class I2C:
    """
    I2C is a two-wire protocol for communicating between devices.  At the physical
    level it consists of 2 wires: SCL and SDA, the clock and data lines respectively.
@@ -1955,7 +1992,6 @@ class I2C:
        i2c.mem_write('abc', 0x42, 2, timeout=1000) # write 'abc' (3 bytes) to memory of slave 0x42
                                                    # starting at address 2 in the slave, timeout after 1 second
    """
-
 
 
 
@@ -2051,7 +2087,7 @@ class I2C:
       """
 
 
-class LCD: 
+class LCD:
    """
    The LCD class is used to control the LCD on the LCD touch-sensor pyskin,
    LCD32MKv1.0.  The LCD is a 128x32 pixel monochrome screen, part NHD-C12832A1Z.
@@ -2085,8 +2121,8 @@ class LCD:
            lcd.pixel(x, y, 1)          # draw the dot
            lcd.show()                  # show the buffer
            pyb.delay(50)               # pause for 50ms
+   
    """
-
 
 
 
@@ -2152,11 +2188,11 @@ class LCD:
       """
 
 
-class LED: 
+class LED:
    """
    The LED object controls an individual LED (Light Emitting Diode).
+   
    """
-
 
 
 
@@ -2212,7 +2248,7 @@ class LED:
       """
 
 
-class Pin: 
+class Pin:
    """
    A pin is the basic object to control I/O pins.  It has methods to set
    the mode of the pin (input, output, etc) and methods to get and set the
@@ -2281,6 +2317,8 @@ class Pin:
    All pin objects go through the pin mapper to come up with one of the
    gpio pins.
    """
+
+
    
    AF1_TIM1: ClassVar["PinAF"] = ...
    """
@@ -2916,8 +2954,6 @@ class Pin:
       """
 
 
-
-
    AF_OD: ClassVar[int] = ...
    """
    initialise the pin to alternate-function mode with an open-drain drive
@@ -3143,40 +3179,65 @@ class Pin:
       """
 
 
-class PinAF(ABC): 
+class PinAF(ABC):
    """
    A Pin represents a physical pin on the microprocessor. Each pin
+
    can have a variety of functions (GPIO, I2C SDA, etc). Each PinAF
+
    object represents a particular function for a pin.
+
    
+
    Usage Model::
+
    
+
        x3 = pyb.Pin.board.X3
+
        x3_af = x3.af_list()
+
    
+
    x3_af will now contain an array of PinAF objects which are available on
+
    pin X3.
+
    
+
    For the pyboard, x3_af would contain:
+
        [Pin.AF1_TIM2, Pin.AF2_TIM5, Pin.AF3_TIM9, Pin.AF7_USART2]
+
    
+
    Normally, each peripheral would configure the af automatically, but sometimes
+
    the same function is available on multiple pins, and having more control
+
    is desired.
+
    
+
    To configure X3 to expose TIM2_CH3, you could use::
+
    
+
       pin = pyb.Pin(pyb.Pin.board.X3, mode=pyb.Pin.AF_PP, af=pyb.Pin.AF1_TIM2)
+
    
+
    or::
+
    
+
       pin = pyb.Pin(pyb.Pin.board.X3, mode=pyb.Pin.AF_PP, af=1)
+
+   
+
    """
 
    __slots__ = ()
-
-
-
 
    
    @abstractmethod
@@ -3209,7 +3270,7 @@ class PinAF(ABC):
       """
 
 
-class RTC: 
+class RTC:
    """
    The RTC is and independent clock that keeps track of the date
    and time.
@@ -3219,8 +3280,8 @@ class RTC:
        rtc = pyb.RTC()
        rtc.datetime((2014, 5, 1, 4, 13, 0, 0, 0))
        print(rtc.datetime())
+   
    """
-
 
 
 
@@ -3305,7 +3366,7 @@ class RTC:
       """
 
 
-class Servo: 
+class Servo:
    """
    Servo objects control standard hobby servo motors with 3-wires (ground, power,
    signal).  There are 4 positions on the pyboard where these motors can be plugged
@@ -3330,7 +3391,6 @@ class Servo:
       use Timer(5) for Servo control, or your own purposes, but not both at the
       same time.
    """
-
 
 
 
@@ -3469,7 +3529,7 @@ class Servo:
       """
 
 
-class SPI: 
+class SPI:
    """
    SPI is a serial protocol that is driven by a master.  At the physical level
    there are 3 lines: SCK, MOSI, MISO.
@@ -3730,7 +3790,7 @@ class SPI:
       """
 
 
-class Switch: 
+class Switch:
    """
    A Switch object is used to control a push-button switch.
    
@@ -3746,8 +3806,8 @@ class Switch:
    Example::
    
         pyb.Switch().callback(lambda: pyb.LED(1).toggle())
+   
    """
-
 
 
 
@@ -3774,7 +3834,7 @@ class Switch:
       """
 
 
-class Timer: 
+class Timer:
    """
    Timers can be used for a great variety of tasks.  At the moment, only
    the simplest case is implemented: that of calling a function periodically.
@@ -3820,7 +3880,10 @@ class Timer:
    exceptions raised within a callback don't give much information.  See
    :func:`micropython.alloc_emergency_exception_buf` for how to get around this
    limitation.
+   
    """
+
+
 
    UP: ClassVar[int] = ...
    """
@@ -3927,9 +3990,6 @@ class Timer:
    """
    captures on both edges.
    """
-
-
-
 
 
    @overload
@@ -4715,13 +4775,17 @@ class Timer:
       """
 
 
-class TimerChannel(ABC): 
+class TimerChannel(ABC):
    """
    Timer channels are used to generate/capture a signal using a timer.
-   
-   TimerChannel objects are created using the Timer.channel() method.
-   """
 
+   
+
+   TimerChannel objects are created using the Timer.channel() method.
+
+   
+
+   """
 
 
 
@@ -4817,7 +4881,7 @@ class TimerChannel(ABC):
       """
 
 
-class UART: 
+class UART:
    """
    UART implements the standard UART/USART duplex serial communications protocol.  At
    the physical level it consists of 2 lines: RX and TX.  The unit of communication
@@ -5109,7 +5173,7 @@ class UART:
       """
 
 
-class USB_HID: 
+class USB_HID:
    """
    The USB_HID class allows creation of an object representing the USB
    Human Interface Device (HID) interface.  It can be used to emulate
@@ -5117,7 +5181,6 @@ class USB_HID:
    
    Before you can use this class, you need to use :meth:`pyb.usb_mode()` to set the USB mode to include the HID interface.
    """
-
 
 
 
@@ -5161,11 +5224,12 @@ class USB_HID:
       """
 
 
-class USB_VCP: 
+class USB_VCP:
    """
    The USB_VCP class allows creation of a `stream`-like object representing the USB
    virtual comm port.  It can be used to read and write data over USB to
    the connected host.
+   
    """
 
 

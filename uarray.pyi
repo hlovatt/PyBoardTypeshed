@@ -14,7 +14,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.4.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "0.5.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -22,10 +22,9 @@ from typing import overload, Sequence, Any
 
 
 
-
 class array:
    """
-   
+
    |see_cpython_module| :mod:`python:array`.
    
    Supported format codes: ``b``, ``B``, ``h``, ``H``, ``i``, ``I``, ``l``,
@@ -33,7 +32,6 @@ class array:
    floating-point support).
    
    """
-
 
 
 

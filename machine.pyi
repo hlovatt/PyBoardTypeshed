@@ -27,76 +27,6 @@ Descriptions taken from
    with negative IDs like -1 (these "virtual" devices are still thin shims on
    top of real hardware and real hardware interrupts). See :ref:`isr_rules`.
    
-
-   Implementation-specific details
-   -------------------------------
-   
-   Different implementations of the ``SDCard`` class on different hardware support
-   varying subsets of the options above.
-   
-   PyBoard
-   ```````
-   
-   The standard PyBoard has just one slot. No arguments are necessary or supported.
-   
-   ESP32
-   `````
-   
-   The ESP32 provides two channels of SD/MMC hardware and also supports
-   access to SD Cards through either of the two SPI ports that are
-   generally available to the user. As a result the *slot* argument can
-   take a value between 0 and 3, inclusive. Slots 0 and 1 use the
-   built-in SD/MMC hardware while slots 2 and 3 use the SPI ports. Slot 0
-   supports 1, 4 or 8-bit wide access while slot 1 supports 1 or 4-bit
-   access; the SPI slots only support 1-bit access.
-   
-     .. note:: Slot 0 is used to communicate with on-board flash memory
-               on most ESP32 modules and so will be unavailable to the
-               user.
-   
-     .. note:: Most ESP32 modules that provide an SD card slot using the
-               dedicated hardware only wire up 1 data pin, so the default
-               value for *width* is 1.
-   
-   The pins used by the dedicated SD/MMC hardware are fixed. The pins
-   used by the SPI hardware can be reassigned.
-   
-     .. note:: If any of the SPI signals are remapped then all of the SPI
-               signals will pass through a GPIO multiplexer unit which
-               can limit the performance of high frequency signals. Since
-               the normal operating speed for SD cards is 40MHz this can
-               cause problems on some cards.
-   
-   The default (and preferred) pin assignment are as follows:
-   
-       ====== ====== ====== ====== ======
-       Slot   0      1      2      3
-       ------ ------ ------ ------ ------
-       Signal   Pin    Pin    Pin    Pin
-       ====== ====== ====== ====== ======
-       sck       6     14     18     14
-       cmd      11     15
-       cs                      5     15
-       miso                   19     12
-       mosi                   23     13
-       D0        7      2
-       D1        8      4
-       D2        9     12
-       D3       10     13
-       D4       16
-       D5       17
-       D6        5
-       D7       18
-       ====== ====== ====== ====== ======
-   
-   cc3200
-   ``````
-   
-   You can set the pins used for SPI access by passing a tuple as the
-   *pins* argument.
-   
-   *Note:* The current cc3200 SD card implementation names the this class
-   :class:`machine.SD` rather than :class:`machine.SDCard` .
 """
 
 
@@ -104,7 +34,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.4.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "0.5.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -152,92 +82,6 @@ Type that allows bytearray, array, memoryview, or bytes,
 but only one of these and not a mixture in a single declaration.
 """
 
-
-
-
-IDLE: int = ...
-"""
-    IRQ wake values.
-"""
-
-
-SLEEP: int = ...
-"""
-    IRQ wake values.
-"""
-
-
-DEEPSLEEP: int = ...
-"""
-    IRQ wake values.
-"""
-
-
-
-
-PWRON_RESET: int = ...
-"""
-    Reset causes.
-"""
-
-
-HARD_RESET: int = ...
-"""
-    Reset causes.
-"""
-
-
-WDT_RESET: int = ...
-"""
-    Reset causes.
-"""
-
-
-DEEPSLEEP_RESET: int = ...
-"""
-    Reset causes.
-"""
-
-
-SOFT_RESET: int = ...
-"""
-    Reset causes.
-"""
-
-
-
-
-WLAN_WAKE: int = ...
-"""
-    Wake-up reasons.
-"""
-
-
-PIN_WAKE: int = ...
-"""
-    Wake-up reasons.
-"""
-
-
-RTC_WAKE: int = ...
-"""
-    Wake-up reasons.
-"""
-
-
-
-Pin: Type[pyb.Pin] = pyb.Pin
-
-UART: Type[pyb.UART] = pyb.UART
-
-RTC: Type[pyb.RTC] = pyb.RTC
-
-
-def readblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ... 
-
-def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
-
-def ioctl(self, op: int, arg: int) -> Optional[int]: ...
 
 
 def reset() -> NoReturn:
@@ -431,7 +275,85 @@ def rng() -> int:
    """
 
 
-class Signal: 
+IDLE: int = ...
+"""
+    IRQ wake values.
+"""
+
+
+SLEEP: int = ...
+"""
+    IRQ wake values.
+"""
+
+
+DEEPSLEEP: int = ...
+"""
+    IRQ wake values.
+"""
+
+
+
+
+PWRON_RESET: int = ...
+"""
+    Reset causes.
+"""
+
+
+HARD_RESET: int = ...
+"""
+    Reset causes.
+"""
+
+
+WDT_RESET: int = ...
+"""
+    Reset causes.
+"""
+
+
+DEEPSLEEP_RESET: int = ...
+"""
+    Reset causes.
+"""
+
+
+SOFT_RESET: int = ...
+"""
+    Reset causes.
+"""
+
+
+
+
+WLAN_WAKE: int = ...
+"""
+    Wake-up reasons.
+"""
+
+
+PIN_WAKE: int = ...
+"""
+    Wake-up reasons.
+"""
+
+
+RTC_WAKE: int = ...
+"""
+    Wake-up reasons.
+"""
+
+
+
+Pin: Type[pyb.Pin] = pyb.Pin
+
+UART: Type[pyb.UART] = pyb.UART
+
+RTC: Type[pyb.RTC] = pyb.RTC
+
+
+class Signal:
    """
    The Signal class is a simple extension of the `Pin` class. Unlike Pin, which
    can be only in "absolute" 0 and 1 states, a Signal can be in "asserted"
@@ -500,7 +422,6 @@ class Signal:
    work for them simply because their LEDs or relays are wired in a slightly
    different way.
    """
-
 
 
 
@@ -606,7 +527,7 @@ class Signal:
       """
 
 
-class ADC: 
+class ADC:
    """
    The ADC class provides an interface to analog-to-digital convertors, and
    represents a single endpoint that can sample a continuous voltage and
@@ -619,7 +540,6 @@ class ADC:
       adc = machine.ADC(pin)   # create an ADC object acting on a pin
       val = adc.read_u16()     # read a raw analog value in the range 0-65535
    """
-
 
 
 
@@ -639,7 +559,7 @@ class ADC:
       """
 
 
-class SPI: 
+class SPI:
    """
    SPI is a synchronous serial protocol that is driven by a master. At the
    physical level, a bus consists of 3 lines: SCK, MOSI, MISO. Multiple devices
@@ -854,7 +774,7 @@ class SPI:
       """
 
 
-class I2C: 
+class I2C:
    """
    I2C is a two-wire protocol for communicating between devices.  At the physical
    level it consists of 2 wires: SCL and SDA, the clock and data lines respectively.
@@ -890,7 +810,6 @@ class I2C:
        i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of slave 42
                                        #   starting at address 2 in the slave
    """
-
 
 
 
@@ -1168,7 +1087,7 @@ class I2C:
       """
 
 
-class Timer: 
+class Timer:
    """
    Hardware timers deal with timing of periods and events. Timers are perhaps
    the most flexible and heterogeneous kind of hardware in MCUs and SoCs,
@@ -1267,7 +1186,7 @@ class Timer:
       """
 
 
-class WDT: 
+class WDT:
    """
    The WDT is used to restart the system when the application crashes and ends
    up into a non recoverable state. Once started it cannot be stopped or
@@ -1282,7 +1201,6 @@ class WDT:
    
    Availability of this class: pyboard, WiPy, esp8266, esp32.
    """
-
 
 
 
@@ -1303,7 +1221,7 @@ class WDT:
       """
 
 
-class SD: 
+class SD:
    """
    .. warning::
    
@@ -1328,7 +1246,6 @@ class SD:
        os.mount(sd, '/sd')
        # do normal file operations
    """
-
 
 
 
@@ -1359,7 +1276,7 @@ class SD:
       """
 
 
-class SDCard(_AbstractBlockDev): 
+class SDCard(_AbstractBlockDev):
    """
    SD cards are one of the most common small form factor removable storage media.
    SD cards come in a variety of sizes and physical form factors. MMC cards are
@@ -1379,8 +1296,78 @@ class SDCard(_AbstractBlockDev):
    arguments that might need to be set in order to use either a non-standard slot
    or a non-standard pin assignment. The exact subset of arguments supported will
    vary from platform to platform.
-   """
+   
 
+   Implementation-specific details
+   -------------------------------
+   
+   Different implementations of the ``SDCard`` class on different hardware support
+   varying subsets of the options above.
+   
+   PyBoard
+   ```````
+   
+   The standard PyBoard has just one slot. No arguments are necessary or supported.
+   
+   ESP32
+   `````
+   
+   The ESP32 provides two channels of SD/MMC hardware and also supports
+   access to SD Cards through either of the two SPI ports that are
+   generally available to the user. As a result the *slot* argument can
+   take a value between 0 and 3, inclusive. Slots 0 and 1 use the
+   built-in SD/MMC hardware while slots 2 and 3 use the SPI ports. Slot 0
+   supports 1, 4 or 8-bit wide access while slot 1 supports 1 or 4-bit
+   access; the SPI slots only support 1-bit access.
+   
+     .. note:: Slot 0 is used to communicate with on-board flash memory
+               on most ESP32 modules and so will be unavailable to the
+               user.
+   
+     .. note:: Most ESP32 modules that provide an SD card slot using the
+               dedicated hardware only wire up 1 data pin, so the default
+               value for *width* is 1.
+   
+   The pins used by the dedicated SD/MMC hardware are fixed. The pins
+   used by the SPI hardware can be reassigned.
+   
+     .. note:: If any of the SPI signals are remapped then all of the SPI
+               signals will pass through a GPIO multiplexer unit which
+               can limit the performance of high frequency signals. Since
+               the normal operating speed for SD cards is 40MHz this can
+               cause problems on some cards.
+   
+   The default (and preferred) pin assignment are as follows:
+   
+       ====== ====== ====== ====== ======
+       Slot   0      1      2      3
+       ------ ------ ------ ------ ------
+       Signal   Pin    Pin    Pin    Pin
+       ====== ====== ====== ====== ======
+       sck       6     14     18     14
+       cmd      11     15
+       cs                      5     15
+       miso                   19     12
+       mosi                   23     13
+       D0        7      2
+       D1        8      4
+       D2        9     12
+       D3       10     13
+       D4       16
+       D5       17
+       D6        5
+       D7       18
+       ====== ====== ====== ====== ======
+   
+   cc3200
+   ``````
+   
+   You can set the pins used for SPI access by passing a tuple as the
+   *pins* argument.
+   
+   *Note:* The current cc3200 SD card implementation names the this class
+   :class:`machine.SD` rather than :class:`machine.SDCard` .
+   """
 
 
 
@@ -1426,5 +1413,12 @@ class SDCard(_AbstractBlockDev):
         
         - *freq* selects the SD/MMC interface frequency in Hz (only supported on the ESP32).
       """
+
+
+      def readblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ... 
+
+      def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
+
+      def ioctl(self, op: int, arg: int) -> Optional[int]: ...
 
 

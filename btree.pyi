@@ -87,7 +87,7 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.4.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "0.5.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -157,24 +157,6 @@ but only one of these and not a mixture in a single declaration.
 
 
 
-INCL: int = ...
-"""
-   A flag for `keys()`, `values()`, `items()` methods to specify that
-   scanning should be inclusive of the end key.
-"""
-
-
-
-
-DESC: int = ...
-"""
-   A flag for `keys()`, `values()`, `items()` methods to specify that
-   scanning should be in descending direction of keys.
-"""
-
-
-
-
 def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: int = 0, minkeypage: int = 0) -> btree:
    """
    Open a database from a random-access `stream` (like an open file). All
@@ -201,11 +183,28 @@ def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: in
    """
 
 
+INCL: int = ...
+"""
+   A flag for `keys()`, `values()`, `items()` methods to specify that
+   scanning should be inclusive of the end key.
+"""
+
+
+
+
+DESC: int = ...
+"""
+   A flag for `keys()`, `values()`, `items()` methods to specify that
+   scanning should be in descending direction of keys.
+"""
+
+
+
+
 class btree:
    """
-   
-   """
 
+   """
 
 
 
