@@ -89,7 +89,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "0.6.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -3272,7 +3272,7 @@ class PinAF(ABC):
 
 class RTC:
    """
-   The RTC is and independent clock that keeps track of the date
+   The RTC is an independent clock that keeps track of the date
    and time.
    
    Example usage::
@@ -4034,49 +4034,6 @@ class Timer:
       div: int = 1, 
       callback: Optional[Callable[["Timer"], None]] = None, 
       deadtime: int = 0
-   ):
-      """
-      Construct a new timer object of the given id.  If additional
-      arguments are given, then the timer is initialised by ``init(...)``.
-      ``id`` can be 1 to 14.
-      """
-
-   @overload
-   def __init__(self, id: int, /):
-      """
-      Construct a new timer object of the given id.  If additional
-      arguments are given, then the timer is initialised by ``init(...)``.
-      ``id`` can be 1 to 14.
-      """
-
-   @overload
-   def __init__(
-      self, 
-      id: int, 
-      /, 
-      *, 
-      freq: int, 
-      mode: int = UP, 
-      div: int = 1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
-   ):
-      """
-      Construct a new timer object of the given id.  If additional
-      arguments are given, then the timer is initialised by ``init(...)``.
-      ``id`` can be 1 to 14.
-      """
-
-   @overload
-   def __init__(
-      self, 
-      id: int, 
-      /, 
-      *, 
-      prescaler: int, 
-      period: int, 
-      mode: int = UP, 
-      div: int = 1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
    ):
       """
       Construct a new timer object of the given id.  If additional
