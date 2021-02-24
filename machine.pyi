@@ -34,7 +34,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.4.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -139,20 +139,20 @@ def sleep() -> None:
 def lightsleep() -> None:
    """
    Stops execution in an attempt to enter a low power state.
-
+   
    If *time_ms* is specified then this will be the maximum time in milliseconds that
    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
+   
    With or without a timeout, execution may resume at any time if there are events
    that require processing.  Such events, or wake sources, should be configured before
    sleeping, like `Pin` change or `RTC` timeout.
-
+   
    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
    highly dependent on the underlying hardware, but the general properties are:
-
+   
    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
      from the point where the sleep was requested, with all subsystems operational.
-
+   
    * A deepsleep may not retain RAM or any other state of the system (for example
      peripherals or network interfaces).  Upon wake execution is resumed from the main
      script, similar to a hard or power-on reset. The `reset_cause()` function will
@@ -164,20 +164,20 @@ def lightsleep() -> None:
 def lightsleep(time_ms: int, /) -> None:
    """
    Stops execution in an attempt to enter a low power state.
-
+   
    If *time_ms* is specified then this will be the maximum time in milliseconds that
    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
+   
    With or without a timeout, execution may resume at any time if there are events
    that require processing.  Such events, or wake sources, should be configured before
    sleeping, like `Pin` change or `RTC` timeout.
-
+   
    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
    highly dependent on the underlying hardware, but the general properties are:
-
+   
    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
      from the point where the sleep was requested, with all subsystems operational.
-
+   
    * A deepsleep may not retain RAM or any other state of the system (for example
      peripherals or network interfaces).  Upon wake execution is resumed from the main
      script, similar to a hard or power-on reset. The `reset_cause()` function will
@@ -189,20 +189,20 @@ def lightsleep(time_ms: int, /) -> None:
 def deepsleep() -> NoReturn:
    """
    Stops execution in an attempt to enter a low power state.
-
+   
    If *time_ms* is specified then this will be the maximum time in milliseconds that
    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
+   
    With or without a timeout, execution may resume at any time if there are events
    that require processing.  Such events, or wake sources, should be configured before
    sleeping, like `Pin` change or `RTC` timeout.
-
+   
    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
    highly dependent on the underlying hardware, but the general properties are:
-
+   
    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
      from the point where the sleep was requested, with all subsystems operational.
-
+   
    * A deepsleep may not retain RAM or any other state of the system (for example
      peripherals or network interfaces).  Upon wake execution is resumed from the main
      script, similar to a hard or power-on reset. The `reset_cause()` function will
@@ -214,20 +214,20 @@ def deepsleep() -> NoReturn:
 def deepsleep(time_ms: int, /) -> NoReturn:
    """
    Stops execution in an attempt to enter a low power state.
-
+   
    If *time_ms* is specified then this will be the maximum time in milliseconds that
    the sleep will last for.  Otherwise the sleep can last indefinitely.
-
+   
    With or without a timeout, execution may resume at any time if there are events
    that require processing.  Such events, or wake sources, should be configured before
    sleeping, like `Pin` change or `RTC` timeout.
-
+   
    The precise behaviour and power-saving capabilities of lightsleep and deepsleep is
    highly dependent on the underlying hardware, but the general properties are:
-
+   
    * A lightsleep has full RAM and state retention.  Upon wake execution is resumed
      from the point where the sleep was requested, with all subsystems operational.
-
+   
    * A deepsleep may not retain RAM or any other state of the system (for example
      peripherals or network interfaces).  Upon wake execution is resumed from the main
      script, similar to a hard or power-on reset. The `reset_cause()` function will
@@ -238,7 +238,7 @@ def deepsleep(time_ms: int, /) -> NoReturn:
 def wake_reason() -> int:
    """
    Get the wake reason. See :ref:`constants <machine_constants>` for the possible return values.
-
+   
    Availability: ESP32, WiPy.
    """
 
@@ -255,12 +255,12 @@ def time_pulse_us(pin: Pin, pulse_level: int, timeout_us: int = 1_000_000, /) ->
    Time a pulse on the given *pin*, and return the duration of the pulse in
    microseconds.  The *pulse_level* argument should be 0 to time a low pulse
    or 1 to time a high pulse.
-
+   
    If the current input value of the pin is different to *pulse_level*,
    the function first (*) waits until the pin input becomes equal to *pulse_level*,
    then (**) times the duration that the pin is equal to *pulse_level*.
    If the pin is already equal to *pulse_level* then timing starts straight away.
-
+   
    The function will return -2 if there was timeout waiting for condition marked
    (*) above, and -1 if there was timeout during the main measurement, marked (**)
    above. The timeout is the same for both cases and given by *timeout_us* (which
@@ -270,7 +270,7 @@ def time_pulse_us(pin: Pin, pulse_level: int, timeout_us: int = 1_000_000, /) ->
 def rng() -> int:
    """
    Return a 24-bit software generated random number.
-
+   
    Availability: WiPy.
    """
 
@@ -430,19 +430,19 @@ class Signal:
    def __init__(self, pin_obj: Pin, invert: bool = False, /):
       """
       Create a Signal object. There're two ways to create it:
-   
+      
       * By wrapping existing Pin object - universal method which works for
         any board.
       * By passing required Pin parameters directly to Signal constructor,
         skipping the need to create intermediate Pin object. Available on
         many, but not all boards.
-   
+      
       The arguments are:
-   
+      
         - ``pin_obj`` is existing Pin object.
-   
+      
         - ``pin_arguments`` are the same arguments as can be passed to Pin constructor.
-   
+      
         - ``invert`` - if True, the signal will be inverted (active low).
       """
 
@@ -460,19 +460,19 @@ class Signal:
    ):
       """
       Create a Signal object. There're two ways to create it:
-   
+      
       * By wrapping existing Pin object - universal method which works for
         any board.
       * By passing required Pin parameters directly to Signal constructor,
         skipping the need to create intermediate Pin object. Available on
         many, but not all boards.
-   
+      
       The arguments are:
-   
+      
         - ``pin_obj`` is existing Pin object.
-   
+      
         - ``pin_arguments`` are the same arguments as can be passed to Pin constructor.
-   
+      
         - ``invert`` - if True, the signal will be inverted (active low).
       """
 
@@ -481,14 +481,14 @@ class Signal:
       """
       This method allows to set and get the value of the signal, depending on whether
       the argument ``x`` is supplied or not.
-   
+      
       If the argument is omitted then this method gets the signal level, 1 meaning
       signal is asserted (active) and 0 - signal inactive.
-   
+      
       If the argument is supplied then this method sets the signal level. The
       argument ``x`` can be anything that converts to a boolean. If it converts
       to ``True``, the signal is active, otherwise it is inactive.
-   
+      
       Correspondence between signal being active and actual logic level on the
       underlying pin depends on whether signal is inverted (active-low) or not.
       For non-inverted signal, active status corresponds to logical 1, inactive -
@@ -501,14 +501,14 @@ class Signal:
       """
       This method allows to set and get the value of the signal, depending on whether
       the argument ``x`` is supplied or not.
-   
+      
       If the argument is omitted then this method gets the signal level, 1 meaning
       signal is asserted (active) and 0 - signal inactive.
-   
+      
       If the argument is supplied then this method sets the signal level. The
       argument ``x`` can be anything that converts to a boolean. If it converts
       to ``True``, the signal is active, otherwise it is inactive.
-   
+      
       Correspondence between signal being active and actual logic level on the
       underlying pin depends on whether signal is inverted (active-low) or not.
       For non-inverted signal, active status corresponds to logical 1, inactive -
@@ -609,7 +609,7 @@ class SPI:
       Construct an SPI object on the given bus, *id*. Values of *id* depend
       on a particular port and its hardware. Values 0, 1, etc. are commonly used
       to select hardware SPI block #0, #1, etc.
-   
+      
       With no additional parameters, the SPI object is created but not
       initialised (it has the settings from the last initialisation of
       the bus, if any).  If extra arguments are given, the bus is initialised.
@@ -635,7 +635,7 @@ class SPI:
       Construct an SPI object on the given bus, *id*. Values of *id* depend
       on a particular port and its hardware. Values 0, 1, etc. are commonly used
       to select hardware SPI block #0, #1, etc.
-   
+      
       With no additional parameters, the SPI object is created but not
       initialised (it has the settings from the last initialisation of
       the bus, if any).  If extra arguments are given, the bus is initialised.
@@ -659,7 +659,7 @@ class SPI:
       Construct an SPI object on the given bus, *id*. Values of *id* depend
       on a particular port and its hardware. Values 0, 1, etc. are commonly used
       to select hardware SPI block #0, #1, etc.
-   
+      
       With no additional parameters, the SPI object is created but not
       initialised (it has the settings from the last initialisation of
       the bus, if any).  If extra arguments are given, the bus is initialised.
@@ -681,7 +681,7 @@ class SPI:
    ) -> None:
       """
       Initialise the SPI bus with the given parameters:
-   
+      
         - ``baudrate`` is the SCK clock rate.
         - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
         - ``phase`` can be 0 or 1 to sample data on the first or second clock edge
@@ -695,7 +695,7 @@ class SPI:
           (``id`` = -1).
         - ``pins`` - WiPy port doesn't ``sck``, ``mosi``, ``miso`` arguments, and instead allows to
           specify them as a tuple of ``pins`` parameter.
-   
+      
       In the case of hardware SPI the actual clock frequency may be lower than the
       requested baudrate. This is dependant on the platform hardware. The actual
       rate may be determined by printing the SPI object.
@@ -714,7 +714,7 @@ class SPI:
    ) -> None:
       """
       Initialise the SPI bus with the given parameters:
-   
+      
         - ``baudrate`` is the SCK clock rate.
         - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
         - ``phase`` can be 0 or 1 to sample data on the first or second clock edge
@@ -728,7 +728,7 @@ class SPI:
           (``id`` = -1).
         - ``pins`` - WiPy port doesn't ``sck``, ``mosi``, ``miso`` arguments, and instead allows to
           specify them as a tuple of ``pins`` parameter.
-   
+      
       In the case of hardware SPI the actual clock frequency may be lower than the
       requested baudrate. This is dependant on the platform hardware. The actual
       rate may be determined by printing the SPI object.
@@ -751,7 +751,7 @@ class SPI:
        Read into the buffer specified by ``buf`` while continuously writing the
        single byte given by ``write``.
        Returns ``None``.
-   
+       
        Note: on WiPy this function returns the number of bytes read.
       """
 
@@ -759,7 +759,7 @@ class SPI:
       """
        Write the bytes contained in ``buf``.
        Returns ``None``.
-   
+       
        Note: on WiPy this function returns the number of bytes written.
       """
 
@@ -769,7 +769,7 @@ class SPI:
        buffers can be the same or different, but both buffers must have the
        same length.
        Returns ``None``.
-   
+       
        Note: on WiPy this function returns the number of bytes written.
       """
 
@@ -817,14 +817,14 @@ class I2C:
    def __init__(self, id: int, /, *, freq: int = 400_000):
       """
       Construct and return a new I2C object using the following parameters:
-   
+      
          - *id* identifies a particular I2C peripheral.  Allowed values for
            depend on the particular port/board
          - *scl* should be a pin object specifying the pin to use for SCL.
          - *sda* should be a pin object specifying the pin to use for SDA.
          - *freq* should be an integer which sets the maximum frequency
            for SCL.
-   
+      
       Note that some ports/boards will have default values of *scl* and *sda*
       that can be changed in this constructor.  Others will have fixed values
       of *scl* and *sda* that cannot be changed.
@@ -834,14 +834,14 @@ class I2C:
    def __init__(self, id: int, /, *, scl: Pin, sda: Pin, freq: int = 400_000):
       """
       Construct and return a new I2C object using the following parameters:
-   
+      
          - *id* identifies a particular I2C peripheral.  Allowed values for
            depend on the particular port/board
          - *scl* should be a pin object specifying the pin to use for SCL.
          - *sda* should be a pin object specifying the pin to use for SDA.
          - *freq* should be an integer which sets the maximum frequency
            for SCL.
-   
+      
       Note that some ports/boards will have default values of *scl* and *sda*
       that can be changed in this constructor.  Others will have fixed values
       of *scl* and *sda* that cannot be changed.
@@ -851,7 +851,7 @@ class I2C:
    def init(self, *, freq: int = 400_000) -> None:
       """
      Initialise the I2C bus with the given arguments:
-   
+     
         - *scl* is a pin object for the SCL line
         - *sda* is a pin object for the SDA line
         - *freq* is the SCL clock rate
@@ -861,7 +861,7 @@ class I2C:
    def init(self, *, scl: Pin, sda: Pin, freq: int = 400_000) -> None:
       """
      Initialise the I2C bus with the given arguments:
-   
+     
         - *scl* is a pin object for the SCL line
         - *sda* is a pin object for the SDA line
         - *freq* is the SCL clock rate
@@ -870,7 +870,7 @@ class I2C:
    def deinit(self) -> None:
       """
       Turn off the I2C bus.
-   
+      
       Availability: WiPy.
       """
 
@@ -884,8 +884,8 @@ class I2C:
    def start(self) -> None:
       """
       Generate a START condition on the bus (SDA transitions to low while SCL is high).
-   
-   
+      
+      
       Primitive I2C operations
       ------------------------
       
@@ -899,8 +899,8 @@ class I2C:
    def stop(self) -> None:
       """
       Generate a STOP condition on the bus (SDA transitions to high while SCL is high).
-   
-   
+      
+      
       Primitive I2C operations
       ------------------------
       
@@ -918,8 +918,8 @@ class I2C:
       receiving all but the last byte.  After the last byte is received, if *nack*
       is true then a NACK will be sent, otherwise an ACK will be sent (and in this
       case the slave assumes more bytes are going to be read in a later call).
-   
-   
+      
+      
       Primitive I2C operations
       ------------------------
       
@@ -935,8 +935,8 @@ class I2C:
       Write the bytes from *buf* to the bus.  Checks that an ACK is received
       after each byte and stops transmitting the remaining bytes if a NACK is
       received.  The function returns the number of ACKs that were received.
-   
-   
+      
+      
       Primitive I2C operations
       ------------------------
       
@@ -952,8 +952,8 @@ class I2C:
       Read *nbytes* from the slave specified by *addr*.
       If *stop* is true then a STOP condition is generated at the end of the transfer.
       Returns a `bytes` object with the data read.
-   
-   
+      
+      
       Standard bus operations
       -----------------------
       
@@ -966,10 +966,10 @@ class I2C:
       Read into *buf* from the slave specified by *addr*.
       The number of bytes read will be the length of *buf*.
       If *stop* is true then a STOP condition is generated at the end of the transfer.
-   
+      
       The method returns ``None``.
-   
-   
+      
+      
       Standard bus operations
       -----------------------
       
@@ -984,8 +984,8 @@ class I2C:
       remaining bytes are not sent.  If *stop* is true then a STOP condition is
       generated at the end of the transfer, even if a NACK is received.
       The function returns the number of ACKs that were received.
-   
-   
+      
+      
       Standard bus operations
       -----------------------
       
@@ -1007,14 +1007,14 @@ class I2C:
       The *addr* is sent once and then the bytes from each object in *vector*
       are written out sequentially.  The objects in *vector* may be zero bytes
       in length in which case they don't contribute to the output.
-   
+      
       If a NACK is received following the write of a byte from one of the
       objects in *vector* then the remaining bytes, and any remaining objects,
       are not sent.  If *stop* is true then a STOP condition is generated at
       the end of the transfer, even if a NACK is received.  The function
       returns the number of ACKs that were received.
-   
-   
+      
+      
       Standard bus operations
       -----------------------
       
@@ -1028,8 +1028,8 @@ class I2C:
       address specified by *memaddr*.
       The argument *addrsize* specifies the address size in bits.
       Returns a `bytes` object with the data read.
-   
-   
+      
+      
       Memory operations
       -----------------
       
@@ -1055,10 +1055,10 @@ class I2C:
       length of *buf*.
       The argument *addrsize* specifies the address size in bits (on ESP8266
       this argument is not recognised and the address size is always 8 bits).
-   
+      
       The method returns ``None``.
-   
-   
+      
+      
       Memory operations
       -----------------
       
@@ -1074,9 +1074,9 @@ class I2C:
       memory address specified by *memaddr*.
       The argument *addrsize* specifies the address size in bits (on ESP8266
       this argument is not recognised and the address size is always 8 bits).
-   
+      
       The method returns ``None``.
-   
+      
       Memory operations
       -----------------
       
@@ -1166,14 +1166,14 @@ class Timer:
    ) -> None:
       """
       Initialise the timer. Example::
-   
+      
           tim.init(period=100)                         # periodic with 100ms period
           tim.init(mode=Timer.ONE_SHOT, period=1000)   # one shot firing after 1000ms
-   
+      
       Keyword arguments:
-   
+      
         - ``mode`` can be one of:
-   
+      
           - ``Timer.ONE_SHOT`` - The timer runs once until the configured
             period of the channel expires.
           - ``Timer.PERIODIC`` - The timer runs periodically at the configured
@@ -1389,26 +1389,26 @@ class SDCard(_AbstractBlockDev):
        a dedicated SD/MMC interface hardware or through an SPI channel.
        The class implements the block protocol defined by :class:`uos.AbstractBlockDev`.
        This allows the mounting of an SD card to be as simple as::
-   
+       
          uos.mount(machine.SDCard(), "/sd")
-   
+       
        The constructor takes the following parameters:
-   
+       
         - *slot* selects which of the available interfaces to use. Leaving this
           unset will select the default interface.
-   
+       
         - *width* selects the bus width for the SD/MMC interface.
-   
+       
         - *cd* can be used to specify a card-detect pin.
-   
+       
         - *wp* can be used to specify a write-protect pin.
-   
+       
         - *sck* can be used to specify an SPI clock pin.
-   
+       
         - *miso* can be used to specify an SPI miso pin.
-   
+       
         - *mosi* can be used to specify an SPI mosi pin.
-   
+       
         - *cs* can be used to specify an SPI chip select pin.
         
         - *freq* selects the SD/MMC interface frequency in Hz (only supported on the ESP32).

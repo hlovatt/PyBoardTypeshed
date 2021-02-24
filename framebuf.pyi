@@ -15,7 +15,7 @@ bitmap images, which can then be sent to a display.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.4.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -130,7 +130,7 @@ class FrameBuffer:
    def __init__(self, buffer: _AnyWritableBuf, width: int, height: int, format: int, /):
       """
        Construct a FrameBuffer object.  The parameters are:
-   
+       
            - *buffer* is an object with a buffer protocol which must be large
              enough to contain every pixel defined by the width, height and
              format of the FrameBuffer.
@@ -147,7 +147,7 @@ class FrameBuffer:
              need adjustments when implementing a FrameBuffer within another
              larger FrameBuffer or screen. The *buffer* size must accommodate
              an increased step size.
-   
+       
        One must specify valid *buffer*, *width*, *height*, *format* and
        optionally *stride*.  Invalid *buffer* size or dimensions may lead to
        unexpected errors.
@@ -157,7 +157,7 @@ class FrameBuffer:
    def __init__(self, buffer: _AnyWritableBuf, width: int, height: int, format: int, stride: int, /):
       """
        Construct a FrameBuffer object.  The parameters are:
-   
+       
            - *buffer* is an object with a buffer protocol which must be large
              enough to contain every pixel defined by the width, height and
              format of the FrameBuffer.
@@ -174,7 +174,7 @@ class FrameBuffer:
              need adjustments when implementing a FrameBuffer within another
              larger FrameBuffer or screen. The *buffer* size must accommodate
              an increased step size.
-   
+       
        One must specify valid *buffer*, *width*, *height*, *format* and
        optionally *stride*.  Invalid *buffer* size or dimensions may lead to
        unexpected errors.
@@ -261,7 +261,7 @@ class FrameBuffer:
        If *key* is specified then it should be a color integer and the
        corresponding color will be considered transparent: all pixels with that
        color value will not be drawn.
-   
+       
        This method works between FrameBuffer instances utilising different formats,
        but the resulting colors may be unexpected due to the mismatch in color
        formats.
@@ -274,7 +274,7 @@ class FrameBuffer:
        If *key* is specified then it should be a color integer and the
        corresponding color will be considered transparent: all pixels with that
        color value will not be drawn.
-   
+       
        This method works between FrameBuffer instances utilising different formats,
        but the resulting colors may be unexpected due to the mismatch in color
        formats.

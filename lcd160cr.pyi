@@ -30,7 +30,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.4.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -151,7 +151,7 @@ class LCD160CR:
    def __init__(self, connect: str, /):
       """
        Construct an LCD160CR object.  The parameters are:
-   
+       
            - *connect* is a string specifying the physical connection of the LCD
              display to the board; valid values are "X", "Y", "XY", "YX".
              Use "X" when the display is connected to a pyboard in the X-skin
@@ -162,15 +162,15 @@ class LCD160CR:
            - *i2c* is an I2C object connected to the LCD's I2C interface.
            - *spi* is an SPI object connected to the LCD's SPI interface.
            - *i2c_addr* is the I2C address of the display.
-   
+       
        One must specify either a valid *connect* or all of *pwr*, *i2c* and *spi*.
        If a valid *connect* is given then any of *pwr*, *i2c* or *spi* which are
        not passed as parameters (i.e. they are ``None``) will be created based on the
        value of *connect*.  This allows to override the default interface to the
        display if needed.
-   
+       
        The default values are:
-   
+       
            - "X" is for the X-skin and uses:
              ``pwr=Pin("X4")``, ``i2c=I2C("X")``, ``spi=SPI("X")``
            - "Y" is for the Y-skin and uses:
@@ -179,7 +179,7 @@ class LCD160CR:
              ``pwr=Pin("X4")``, ``i2c=I2C("Y")``, ``spi=SPI("X")``
            - "YX" is for the left-side and uses:
              ``pwr=Pin("Y4")``, ``i2c=I2C("X")``, ``spi=SPI("Y")``
-   
+       
        See `this image <http://micropython.org/resources/LCD160CRv10-positions.jpg>`_
        for how the display can be connected to the pyboard.
       """
@@ -188,7 +188,7 @@ class LCD160CR:
    def __init__(self, *, pwr: Pin, i2c: I2C, spi: SPI, i2c_addr: int = 98):
       """
        Construct an LCD160CR object.  The parameters are:
-   
+       
            - *connect* is a string specifying the physical connection of the LCD
              display to the board; valid values are "X", "Y", "XY", "YX".
              Use "X" when the display is connected to a pyboard in the X-skin
@@ -199,15 +199,15 @@ class LCD160CR:
            - *i2c* is an I2C object connected to the LCD's I2C interface.
            - *spi* is an SPI object connected to the LCD's SPI interface.
            - *i2c_addr* is the I2C address of the display.
-   
+       
        One must specify either a valid *connect* or all of *pwr*, *i2c* and *spi*.
        If a valid *connect* is given then any of *pwr*, *i2c* or *spi* which are
        not passed as parameters (i.e. they are ``None``) will be created based on the
        value of *connect*.  This allows to override the default interface to the
        display if needed.
-   
+       
        The default values are:
-   
+       
            - "X" is for the X-skin and uses:
              ``pwr=Pin("X4")``, ``i2c=I2C("X")``, ``spi=SPI("X")``
            - "Y" is for the Y-skin and uses:
@@ -216,7 +216,7 @@ class LCD160CR:
              ``pwr=Pin("X4")``, ``i2c=I2C("Y")``, ``spi=SPI("X")``
            - "YX" is for the left-side and uses:
              ``pwr=Pin("Y4")``, ``i2c=I2C("X")``, ``spi=SPI("Y")``
-   
+       
        See `this image <http://micropython.org/resources/LCD160CRv10-positions.jpg>`_
        for how the display can be connected to the pyboard.
       """
@@ -336,7 +336,7 @@ class LCD160CR:
       """
        Set the font for the text.  Subsequent calls to `write` will use the newly
        configured font.  The parameters are:
-   
+       
            - *font* is the font family to use, valid values are 0, 1, 2, 3.
            - *scale* is a scaling value for each character pixel, where the pixels
              are drawn as a square with side length equal to *scale + 1*.  The value
@@ -453,7 +453,7 @@ class LCD160CR:
    def touch_config(self, calib: bool = False, save: bool = False, irq: Optional[bool] = None, /) -> None:
       """
        Configure the touch panel:
-   
+       
            - If *calib* is ``True`` then the call will trigger a touch calibration of
              the resistive touch sensor.  This requires the user to touch various
              parts of the screen.
@@ -489,7 +489,7 @@ class LCD160CR:
        of the first byte to go to the top-left corner of the window set by
        :meth:`LCD160CR.set_spi_win`.
        The method returns an SPI object which can be used to write the pixel data.
-   
+       
        Pixels should be sent as 16-bit RGB values in the 5-6-5 format.  The destination
        counter will increase as data is sent, and data can be sent in arbitrary sized
        chunks.  Once the destination counter reaches the end of the window specified by
@@ -501,7 +501,7 @@ class LCD160CR:
        Show the given buffer on the display.  *buf* should be an array of bytes containing
        the 16-bit RGB values for the pixels, and they will be written to the area
        specified by :meth:`LCD160CR.set_spi_win`, starting from the top-left corner.
-   
+       
        The `framebuf <framebuf.html>`_ module can be used to construct frame buffers
        and provides drawing primitives. Using a frame buffer will improve 
        performance of animations when compared to drawing directly to the screen.
@@ -529,7 +529,7 @@ class LCD160CR:
    ) -> None:
       """
        Configure a window region for scrolling:
-   
+       
            - *win* is the window id to configure.  There are 0..7 standard windows for
              general purpose use.  Window 8 is the text scroll window (the ticker).
            - *x*, *y*, *w*, *h* specify the location of the window in the display.
@@ -546,7 +546,7 @@ class LCD160CR:
    def set_scroll_win_param(self, win: int, param: int, value: int, /) -> None:
       """
        Set a single parameter of a scrolling window region:
-   
+       
            - *win* is the window id, 0..8.
            - *param* is the parameter number to configure, 0..7, and corresponds
              to the parameters in the `set_scroll_win` method.

@@ -87,7 +87,7 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.4.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -162,7 +162,7 @@ def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: in
    Open a database from a random-access `stream` (like an open file). All
    other parameters are optional and keyword-only, and allow to tweak advanced
    parameters of the database operation (most users will not need them):
-
+   
    * *flags* - Currently unused.
    * *pagesize* - Page size used for the nodes in BTree. Acceptable range
      is 512-65536. If 0, a port-specific default will be used, optimized for
@@ -177,7 +177,7 @@ def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: in
      big keys and/or values). Allocated cache buffers aren't reclaimed.
    * *minkeypage* - Minimum number of keys to store per page. Default value
      of 0 equivalent to 2.
-
+   
    Returns a BTree object, which implements a dictionary protocol (set
    of methods), and some additional methods described below.
    """
