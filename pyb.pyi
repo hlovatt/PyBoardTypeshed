@@ -89,7 +89,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.6.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.6.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -679,6 +679,7 @@ def unique_id() -> bytes:
    Returns a string of 12 bytes (96 bits), which is the unique ID of the MCU.
    """
 
+# noinspection PyShadowingNames
 @overload
 def usb_mode() -> str:
    """
@@ -720,6 +721,7 @@ def usb_mode() -> str:
    it is supported by the hardware.
    """
 
+# noinspection PyShadowingNames
 @overload
 def usb_mode(
    modestr: str, 
@@ -1627,6 +1629,7 @@ class CAN:
       """
 
 
+# noinspection PyShadowingNames
 class DAC:
    """
    The DAC is used to output analog values (a specific voltage) on pin X5 or pin X6.
@@ -3834,6 +3837,7 @@ class Switch:
       """
 
 
+# noinspection PyShadowingNames
 class Timer:
    """
    Timers can be used for a great variety of tasks.  At the moment, only
@@ -4838,6 +4842,7 @@ class TimerChannel(ABC):
       """
 
 
+# noinspection PyShadowingNames
 class UART:
    """
    UART implements the standard UART/USART duplex serial communications protocol.  At

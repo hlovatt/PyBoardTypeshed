@@ -34,7 +34,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.6.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.6.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -774,6 +774,7 @@ class SPI:
       """
 
 
+# noinspection PyShadowingNames
 class I2C:
    """
    I2C is a two-wire protocol for communicating between devices.  At the physical
@@ -1276,6 +1277,7 @@ class SD:
       """
 
 
+# noinspection PyShadowingNames
 class SDCard(_AbstractBlockDev):
    """
    SD cards are one of the most common small form factor removable storage media.
