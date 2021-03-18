@@ -87,12 +87,12 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "3.7.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
 from abc import abstractmethod
-from typing import Protocol, Iterator, AnyStr, runtime_checkable, Optional, TypeVar
+from typing import Protocol, Iterable, AnyStr, runtime_checkable, Optional, TypeVar, Tuple
 
 from uarray import array
 
@@ -157,7 +157,7 @@ but only one of these and not a mixture in a single declaration.
 
 
 
-def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: int = 0, minkeypage: int = 0) -> btree:
+def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: int = 0, minkeypage: int = 0) -> "_BTree":
    """
    Open a database from a random-access `stream` (like an open file). All
    other parameters are optional and keyword-only, and allow to tweak advanced
@@ -201,7 +201,7 @@ DESC: int = ...
 
 
 
-class btree:
+class _BTree:
    """
 
    """
@@ -227,12 +227,12 @@ class btree:
       Standard dictionary methods.
       """
 
-   def get(self, key: bytes, default: Optional[bytes] = None, /) -> bytes:
+   def get(self, key: bytes, default: Optional[bytes] = None, /) -> Optional[bytes]:
       """
       Standard dictionary methods.
       """
 
-   def __setitem__(self, key: bytes, val: bytes, /) -> bytes:
+   def __setitem__(self, key: bytes, val: bytes, /) -> None:
       """
       Standard dictionary methods.
       """
@@ -247,14 +247,21 @@ class btree:
       Standard dictionary methods.
       """
 
-   def __iter__(self) -> Iterator[bytes]:
+   def __iter__(self) -> Iterable[bytes]:
       """
       A BTree object can be iterated over directly (similar to a dictionary)
       to get access to all keys in order.
       """
 
    
-   def keys(self, start_key: Optional[bytes] = None, end_key: Optional[bytes] = None, flags: int = 0, /) -> bytes:
+   def keys(
+      self, 
+      start_key: Optional[bytes] = None, 
+      end_key: Optional[bytes] = None, 
+      flags: 
+      int = 0, 
+      /
+   ) -> Iterable[bytes]:
       """
       These methods are similar to standard dictionary methods, but also can
       take optional parameters to iterate over a key sub-range, instead of
@@ -271,7 +278,13 @@ class btree:
       """
 
    
-   def values(self, start_key: Optional[bytes] = None, end_key: Optional[bytes] = None, flags: int = 0, /) -> bytes:
+   def values(
+      self, 
+      start_key: Optional[bytes] = None, 
+      end_key: Optional[bytes] = None, 
+      flags: int = 0, 
+      /
+   ) -> Iterable[bytes]:
       """
       These methods are similar to standard dictionary methods, but also can
       take optional parameters to iterate over a key sub-range, instead of
@@ -288,7 +301,13 @@ class btree:
       """
 
    
-   def items(self, start_key: Optional[bytes] = None, end_key: Optional[bytes] = None, flags: int = 0, /) -> bytes:
+   def items(
+      self, 
+      start_key: Optional[bytes] = None, 
+      end_key: Optional[bytes] = None, 
+      flags: int = 0, 
+      /
+   ) -> Iterable[Tuple[bytes, bytes]]:
       """
       These methods are similar to standard dictionary methods, but also can
       take optional parameters to iterate over a key sub-range, instead of
