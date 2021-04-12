@@ -47,7 +47,7 @@ For example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -567,13 +567,13 @@ class WLANWiPy:
 
    STA: ClassVar[int] = ...
    """
-   selects the WLAN mode
+selects the WLAN mode
    """
 
 
    AP: ClassVar[int] = ...
    """
-   selects the WLAN mode
+selects the WLAN mode
    """
 
 
@@ -581,19 +581,19 @@ class WLANWiPy:
 
    WEP: ClassVar[int] = ...
    """
-   selects the network security
+selects the network security
    """
 
 
    WPA: ClassVar[int] = ...
    """
-   selects the network security
+selects the network security
    """
 
 
    WPA2: ClassVar[int] = ...
    """
-   selects the network security
+selects the network security
    """
 
 
@@ -601,13 +601,13 @@ class WLANWiPy:
 
    INT_ANT: ClassVar[int] = ...
    """
-   selects the antenna type
+selects the antenna type
    """
 
 
    EXT_ANT: ClassVar[int] = ...
    """
-   selects the antenna type
+selects the antenna type
    """
 
 
@@ -848,19 +848,19 @@ class CC3K:
 
    WEP: ClassVar[int] = ...
    """
-   security type to use
+security type to use
    """
 
 
    WPA: ClassVar[int] = ...
    """
-   security type to use
+security type to use
    """
 
 
    WPA2: ClassVar[int] = ...
    """
-   security type to use
+security type to use
    """
 
 

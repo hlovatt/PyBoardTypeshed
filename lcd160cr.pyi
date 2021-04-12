@@ -30,11 +30,11 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import overload, Any, Union, Tuple, TypeVar, Optional
+from typing import overload, Any, Union, Tuple, TypeVar, Optional, Final
 
 from pyb import Pin, I2C, SPI
 from uarray import array
@@ -58,49 +58,49 @@ but only one of these and not a mixture in a single declaration.
 
 
 
-PORTRAIT: str = ...
+PORTRAIT: Final[str] = ...
 """
-   Orientations of the display, used by :meth:`LCD160CR.set_orient`.
-"""
-
-
-LANDSCAPE: str = ...
-"""
-   Orientations of the display, used by :meth:`LCD160CR.set_orient`.
+Orientations of the display, used by :meth:`LCD160CR.set_orient`.
 """
 
 
-PORTRAIT_UPSIDEDOWN: str = ...
+LANDSCAPE: Final[str] = ...
 """
-   Orientations of the display, used by :meth:`LCD160CR.set_orient`.
-"""
-
-
-LANDSCAPE_UPSIDEDOWN: str = ...
-"""
-   Orientations of the display, used by :meth:`LCD160CR.set_orient`.
+Orientations of the display, used by :meth:`LCD160CR.set_orient`.
 """
 
 
-
-
-STARTUP_DECO_NONE: int = ...
+PORTRAIT_UPSIDEDOWN: Final[str] = ...
 """
-   Types of start-up decoration, can be OR'ed together, used by
+Orientations of the display, used by :meth:`LCD160CR.set_orient`.
+"""
+
+
+LANDSCAPE_UPSIDEDOWN: Final[str] = ...
+"""
+Orientations of the display, used by :meth:`LCD160CR.set_orient`.
+"""
+
+
+
+
+STARTUP_DECO_NONE: Final[int] = ...
+"""
+Types of start-up decoration, can be OR'ed together, used by
    :meth:`LCD160CR.set_startup_deco`.
 """
 
 
-STARTUP_DECO_MLOGO: int = ...
+STARTUP_DECO_MLOGO: Final[int] = ...
 """
-   Types of start-up decoration, can be OR'ed together, used by
+Types of start-up decoration, can be OR'ed together, used by
    :meth:`LCD160CR.set_startup_deco`.
 """
 
 
-STARTUP_DECO_INFO: int = ...
+STARTUP_DECO_INFO: Final[int] = ...
 """
-   Types of start-up decoration, can be OR'ed together, used by
+Types of start-up decoration, can be OR'ed together, used by
    :meth:`LCD160CR.set_startup_deco`.
 """
 
@@ -129,17 +129,17 @@ class LCD160CR:
    """
 
 
-   w: int = ...
+   w: Final[int] = ...
    """
-    The width and height of the display, respectively, in pixels.  These
+The width and height of the display, respectively, in pixels.  These
     members are updated when calling :meth:`LCD160CR.set_orient` and should
     be considered read-only.
    """
 
 
-   h: int = ...
+   h: Final[int] = ...
    """
-    The width and height of the display, respectively, in pixels.  These
+The width and height of the display, respectively, in pixels.  These
     members are updated when calling :meth:`LCD160CR.set_orient` and should
     be considered read-only.
    """

@@ -87,12 +87,12 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
 from abc import abstractmethod
-from typing import Protocol, Iterable, AnyStr, runtime_checkable, Optional, TypeVar, Tuple
+from typing import Protocol, Iterable, AnyStr, runtime_checkable, Optional, TypeVar, Tuple, Final
 
 from uarray import array
 
@@ -183,18 +183,18 @@ def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: in
    """
 
 
-INCL: int = ...
+INCL: Final[int] = ...
 """
-   A flag for `keys()`, `values()`, `items()` methods to specify that
+A flag for `keys()`, `values()`, `items()` methods to specify that
    scanning should be inclusive of the end key.
 """
 
 
 
 
-DESC: int = ...
+DESC: Final[int] = ...
 """
-   A flag for `keys()`, `values()`, `items()` methods to specify that
+A flag for `keys()`, `values()`, `items()` methods to specify that
    scanning should be in descending direction of keys.
 """
 
@@ -258,8 +258,7 @@ class _BTree:
       self, 
       start_key: Optional[bytes] = None, 
       end_key: Optional[bytes] = None, 
-      flags: 
-      int = 0, 
+      flags: int = 0, 
       /
    ) -> Iterable[bytes]:
       """

@@ -190,11 +190,11 @@ Following are encoding examples for various field types:
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import Tuple, Union, TypeVar
+from typing import Tuple, Union, TypeVar, Final
 
 from uarray import array
 
@@ -217,9 +217,9 @@ _bitfield_property = int
 _property = Union[_scalar_property, _recursive_property, _array_property, _array_of_aggregate_property, _pointer_to_a_primitive_property, _pointer_to_an_aggregate_property, _bitfield_property]
 _descriptor = Tuple[str, _property]
 
-LITTLE_ENDIAN: int = ...
+LITTLE_ENDIAN: Final[int] = ...
 """
-   Layout type for a little-endian packed structure. (Packed means that every
+Layout type for a little-endian packed structure. (Packed means that every
    field occupies exactly as many bytes as defined in the descriptor, i.e.
    the alignment is 1).
 """
@@ -227,17 +227,17 @@ LITTLE_ENDIAN: int = ...
 
 
 
-BIG_ENDIAN: int = ...
+BIG_ENDIAN: Final[int] = ...
 """
-   Layout type for a big-endian packed structure.
+Layout type for a big-endian packed structure.
 """
 
 
 
 
-NATIVE: int = ...
+NATIVE: Final[int] = ...
 """
-   Layout type for a native structure - with data endianness and alignment
+Layout type for a native structure - with data endianness and alignment
    conforming to the ABI of the system on which MicroPython runs.
 """
 
@@ -275,98 +275,98 @@ def bytearray_at(addr: int, size: int, /) -> bytearray:
    """
 
 
-UINT8: int = ...
+UINT8: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-INT8: int = ...
+INT8: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-UINT16: int = ...
+UINT16: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-INT16: int = ...
+INT16: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-UINT32: int = ...
+UINT32: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-INT32: int = ...
+INT32: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-UINT64: int = ...
+UINT64: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
-INT64: int = ...
+INT64: Final[int] = ...
 """
-   Integer types for structure descriptors. Constants for 8, 16, 32,
+Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
 
 
 
-FLOAT32: int = ...
+FLOAT32: Final[int] = ...
 """
-   Floating-point types for structure descriptors.
-"""
-
-
-FLOAT64: int = ...
-"""
-   Floating-point types for structure descriptors.
+Floating-point types for structure descriptors.
 """
 
 
-
-
-VOID: int = ...
+FLOAT64: Final[int] = ...
 """
-   ``VOID`` is an alias for ``UINT8``, and is provided to conviniently define
+Floating-point types for structure descriptors.
+"""
+
+
+
+
+VOID: Final[int] = ...
+"""
+``VOID`` is an alias for ``UINT8``, and is provided to conviniently define
    C's void pointers: ``(uctypes.PTR, uctypes.VOID)``.
 """
 
 
 
 
-PTR: int = ...
+PTR: Final[int] = ...
 """
-   Type constants for pointers and arrays. Note that there is no explicit
+Type constants for pointers and arrays. Note that there is no explicit
    constant for structures, it's implicit: an aggregate type without ``PTR``
    or ``ARRAY`` flags is a structure.
 """
 
 
-ARRAY: int = ...
+ARRAY: Final[int] = ...
 """
-   Type constants for pointers and arrays. Note that there is no explicit
+Type constants for pointers and arrays. Note that there is no explicit
    constant for structures, it's implicit: an aggregate type without ``PTR``
    or ``ARRAY`` flags is a structure.
 """
@@ -374,6 +374,7 @@ ARRAY: int = ...
 
 
 
+# noinspection PyPep8Naming
 class struct:
    """
 

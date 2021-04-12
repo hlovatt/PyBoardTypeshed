@@ -17,11 +17,11 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import TypeVar, overload, Callable
+from typing import TypeVar, overload, Callable, Any
 
 _T = TypeVar('_T')
 
@@ -111,7 +111,7 @@ def mem_info() -> None:
    """
 
 @overload
-def mem_info(verbose: bool, /) -> None:
+def mem_info(verbose: Any, /) -> None:
    """
    Print information about currently used memory.  If the *verbose* argument
    is given then extra information is printed.

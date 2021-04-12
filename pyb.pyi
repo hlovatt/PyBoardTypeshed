@@ -89,7 +89,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -1101,25 +1101,25 @@ class CAN:
 
    NORMAL: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
    LOOPBACK: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
    SILENT: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
    SILENT_LOOPBACK: ClassVar[int] = ...
    """
-   The mode of the CAN bus used in :meth:`~CAN.init()`.
+The mode of the CAN bus used in :meth:`~CAN.init()`.
    """
 
 
@@ -1127,31 +1127,31 @@ class CAN:
 
    STOPPED: ClassVar[int] = ...
    """
-   Possible states of the CAN controller returned from :meth:`~CAN.state()`.
+Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
    ERROR_ACTIVE: ClassVar[int] = ...
    """
-   Possible states of the CAN controller returned from :meth:`~CAN.state()`.
+Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
    ERROR_WARNING: ClassVar[int] = ...
    """
-   Possible states of the CAN controller returned from :meth:`~CAN.state()`.
+Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
    ERROR_PASSIVE: ClassVar[int] = ...
    """
-   Possible states of the CAN controller returned from :meth:`~CAN.state()`.
+Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
    BUS_OFF: ClassVar[int] = ...
    """
-   Possible states of the CAN controller returned from :meth:`~CAN.state()`.
+Possible states of the CAN controller returned from :meth:`~CAN.state()`.
    """
 
 
@@ -1159,25 +1159,25 @@ class CAN:
 
    LIST16: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
    MASK16: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
    LIST32: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
    MASK32: ClassVar[int] = ...
    """
-   The operation mode of a filter used in :meth:`~CAN.setfilter()`.
+The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    """
 
 
@@ -1818,7 +1818,7 @@ class ExtInt:
 
    IRQ_FALLING: ClassVar[int] = ...
    """
-   interrupt on a falling edge
+interrupt on a falling edge
    """
 
 
@@ -1826,7 +1826,7 @@ class ExtInt:
 
    IRQ_RISING: ClassVar[int] = ...
    """
-   interrupt on a rising edge
+interrupt on a rising edge
    """
 
 
@@ -1834,7 +1834,7 @@ class ExtInt:
 
    IRQ_RISING_FALLING: ClassVar[int] = ...
    """
-   interrupt on a rising or falling edge
+interrupt on a rising or falling edge
    """
 
 
@@ -2466,6 +2466,7 @@ class Pin:
    """
    
    
+   # noinspection PyPep8Naming
    class board:
       """
       The board pins (board nomenclature, e.g. `X1`) that are bought out onto pads on a PyBoard.
@@ -2717,6 +2718,7 @@ class Pin:
       """
    
    
+   # noinspection PyPep8Naming
    class cpu:
       """
       The CPU pins (CPU nomenclature, e.g. `A0`) that are bought out onto pads on a PyBoard.
@@ -2960,7 +2962,7 @@ class Pin:
 
    AF_OD: ClassVar[int] = ...
    """
-   initialise the pin to alternate-function mode with an open-drain drive
+initialise the pin to alternate-function mode with an open-drain drive
    """
 
 
@@ -2968,7 +2970,7 @@ class Pin:
 
    AF_PP: ClassVar[int] = ...
    """
-   initialise the pin to alternate-function mode with a push-pull drive
+initialise the pin to alternate-function mode with a push-pull drive
    """
 
 
@@ -2976,7 +2978,7 @@ class Pin:
 
    ANALOG: ClassVar[int] = ...
    """
-   initialise the pin to analog mode
+initialise the pin to analog mode
    """
 
 
@@ -2984,7 +2986,7 @@ class Pin:
 
    IN: ClassVar[int] = ...
    """
-   initialise the pin to input mode
+initialise the pin to input mode
    """
 
 
@@ -2992,7 +2994,7 @@ class Pin:
 
    OUT_OD: ClassVar[int] = ...
    """
-   initialise the pin to output mode with an open-drain drive
+initialise the pin to output mode with an open-drain drive
    """
 
 
@@ -3000,7 +3002,7 @@ class Pin:
 
    OUT_PP: ClassVar[int] = ...
    """
-   initialise the pin to output mode with a push-pull drive
+initialise the pin to output mode with a push-pull drive
    """
 
 
@@ -3008,7 +3010,7 @@ class Pin:
 
    PULL_DOWN: ClassVar[int] = ...
    """
-   enable the pull-down resistor on the pin
+enable the pull-down resistor on the pin
    """
 
 
@@ -3016,7 +3018,7 @@ class Pin:
 
    PULL_NONE: ClassVar[int] = ...
    """
-   don't enable any pull up or down resistors on the pin
+don't enable any pull up or down resistors on the pin
    """
 
 
@@ -3024,7 +3026,7 @@ class Pin:
 
    PULL_UP: ClassVar[int] = ...
    """
-   enable the pull-up resistor on the pin
+enable the pull-up resistor on the pin
    """
 
 
@@ -3561,13 +3563,13 @@ class SPI:
 
    MASTER: ClassVar[int] = ...
    """
-   for initialising the SPI bus to master or slave mode
+for initialising the SPI bus to master or slave mode
    """
 
 
    SLAVE: ClassVar[int] = ...
    """
-   for initialising the SPI bus to master or slave mode
+for initialising the SPI bus to master or slave mode
    """
 
 
@@ -3575,13 +3577,13 @@ class SPI:
 
    LSB: ClassVar[int] = ...
    """
-   set the first bit to be the least or most significant bit
+set the first bit to be the least or most significant bit
    """
 
 
    MSB: ClassVar[int] = ...
    """
-   set the first bit to be the least or most significant bit
+set the first bit to be the least or most significant bit
    """
 
 
@@ -3838,7 +3840,7 @@ class Switch:
       """
 
 
-# noinspection PyShadowingNames
+# noinspection PyShadowingNames,PyUnresolvedReferences
 class Timer:
    """
    Timers can be used for a great variety of tasks.  At the moment, only
@@ -4890,13 +4892,13 @@ class UART:
 
    RTS: ClassVar[int] = ...
    """
-   to select the flow control type.
+to select the flow control type.
    """
 
 
    CTS: ClassVar[int] = ...
    """
-   to select the flow control type.
+to select the flow control type.
    """
 
 
@@ -5136,6 +5138,7 @@ class UART:
       """
 
 
+# noinspection PyPep8Naming
 class USB_HID:
    """
    The USB_HID class allows creation of an object representing the USB
@@ -5187,6 +5190,7 @@ class USB_HID:
       """
 
 
+# noinspection PyPep8Naming
 class USB_VCP:
    """
    The USB_VCP class allows creation of a `stream`-like object representing the USB
@@ -5199,13 +5203,13 @@ class USB_VCP:
 
    RTS: ClassVar[int] = ...
    """
-   to select the flow control type.
+to select the flow control type.
    """
 
 
    CTS: ClassVar[int] = ...
    """
-   to select the flow control type.
+to select the flow control type.
    """
 
 

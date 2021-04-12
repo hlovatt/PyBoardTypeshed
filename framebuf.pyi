@@ -15,11 +15,11 @@ bitmap images, which can then be sent to a display.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "3.7.2"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import TypeVar, overload
+from typing import TypeVar, overload, Final
 
 from uarray import array
 
@@ -32,9 +32,9 @@ Type that allows bytearray, array, or memoryview, but only one of these and not 
 
 
 
-MONO_VLSB: int = ...
+MONO_VLSB: Final[int] = ...
 """
-    Monochrome (1-bit) color format
+Monochrome (1-bit) color format
     This defines a mapping where the bits in a byte are vertically mapped with
     bit 0 being nearest the top of the screen. Consequently each byte occupies
     8 vertical pixels. Subsequent bytes appear at successive horizontal
@@ -45,9 +45,9 @@ MONO_VLSB: int = ...
 
 
 
-MONO_HLSB: int = ...
+MONO_HLSB: Final[int] = ...
 """
-    Monochrome (1-bit) color format
+Monochrome (1-bit) color format
     This defines a mapping where the bits in a byte are horizontally mapped.
     Each byte occupies 8 horizontal pixels with bit 7 being the leftmost.
     Subsequent bytes appear at successive horizontal locations until the
@@ -58,9 +58,9 @@ MONO_HLSB: int = ...
 
 
 
-MONO_HMSB: int = ...
+MONO_HMSB: Final[int] = ...
 """
-    Monochrome (1-bit) color format
+Monochrome (1-bit) color format
     This defines a mapping where the bits in a byte are horizontally mapped.
     Each byte occupies 8 horizontal pixels with bit 0 being the leftmost.
     Subsequent bytes appear at successive horizontal locations until the
@@ -71,33 +71,33 @@ MONO_HMSB: int = ...
 
 
 
-RGB565: int = ...
+RGB565: Final[int] = ...
 """
-    Red Green Blue (16-bit, 5+6+5) color format
-"""
-
-
-
-
-GS2_HMSB: int = ...
-"""
-    Grayscale (2-bit) color format
+Red Green Blue (16-bit, 5+6+5) color format
 """
 
 
 
 
-GS4_HMSB: int = ...
+GS2_HMSB: Final[int] = ...
 """
-    Grayscale (4-bit) color format
+Grayscale (2-bit) color format
 """
 
 
 
 
-GS8: int = ...
+GS4_HMSB: Final[int] = ...
 """
-    Grayscale (8-bit) color format
+Grayscale (4-bit) color format
+"""
+
+
+
+
+GS8: Final[int] = ...
+"""
+Grayscale (8-bit) color format
 """
 
 
