@@ -132,7 +132,7 @@ class AbstractNIC(Protocol):
            Activate ("up") or deactivate ("down") the network interface, if
            a boolean argument is passed. Otherwise, query current state if
            no argument is provided. Most other methods require an active
-           interface (behavior of calling them on inactive interface is
+           interface (behaviour of calling them on inactive interface is
            undefined).
       """
 
@@ -143,7 +143,7 @@ class AbstractNIC(Protocol):
            Activate ("up") or deactivate ("down") the network interface, if
            a boolean argument is passed. Otherwise, query current state if
            no argument is provided. Most other methods require an active
-           interface (behavior of calling them on inactive interface is
+           interface (behaviour of calling them on inactive interface is
            undefined).
       """
 
@@ -502,6 +502,7 @@ class WLAN:
       authmode       Authentication mode supported (enumeration, see module constants)
       password       Access password (string)
       dhcp_hostname  The DHCP hostname to use
+      reconnects     Number of reconnect attempts to make (integer, 0=none, -1=unlimited)
       =============  ===========
       """
 
@@ -535,6 +536,7 @@ class WLAN:
       authmode       Authentication mode supported (enumeration, see module constants)
       password       Access password (string)
       dhcp_hostname  The DHCP hostname to use
+      reconnects     Number of reconnect attempts to make (integer, 0=none, -1=unlimited)
       =============  ===========
       """
 
@@ -841,7 +843,7 @@ class CC3K:
        - VBEN connected to Y4
        - IRQ connected to Y3
    
-   It is possible to use other SPI busses and other pins for CS, VBEN and IRQ.
+   It is possible to use other SPI buses and other pins for CS, VBEN and IRQ.
    """
 
 
@@ -953,7 +955,7 @@ class WIZNET5K:
        - nSS connected to X5
        - nRESET connected to X4
    
-   It is possible to use other SPI busses and other pins for nSS and nRESET.
+   It is possible to use other SPI buses and other pins for nSS and nRESET.
    """
 
 

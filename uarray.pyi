@@ -34,6 +34,35 @@ class array(MutableSequence[_T], Generic[_T]):
    ``L``, ``q``, ``Q``, ``f``, ``d`` (the latter 2 depending on the
    floating-point support).
    
+
+        +-----------+--------------------+-------------------+-----------------------+
+        | Type code | C Type             | Python Type       | Minimum size in bytes |
+        +===========+====================+===================+=======================+
+        | ``'b'``   | signed char        | int               | 1                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'B'``   | unsigned char      | int               | 1                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'h'``   | signed short       | int               | 2                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'H'``   | unsigned short     | int               | 2                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'i'``   | signed int         | int               | 2                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'I'``   | unsigned int       | int               | 2                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'l'``   | signed long        | int               | 4                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'L'``   | unsigned long      | int               | 4                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'q'``   | signed long long   | int               | 8                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'Q'``   | unsigned long long | int               | 8                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'f'``   | float              | float             | 4                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        | ``'d'``   | double             | float             | 8                     |
+        +-----------+--------------------+-------------------+-----------------------+
+        
    """
 
 
@@ -77,14 +106,14 @@ class array(MutableSequence[_T], Generic[_T]):
    
    @overload
    def __delitem__(self, i: int) -> None:
-      """``array`` object does not support item deletion."""
+      """``array`` object does **not** support item deletion."""
 
    @overload
    def __delitem__(self, sl: slice) -> None:
-      """``array`` object does not support item deletion."""
+      """``array`` object does **not** support item deletion."""
    
    def insert(self, index: int, value: _T) -> None:
-      """``array`` object does not support item insertion."""
+      """``array`` object does **not** support item insertion."""
 
    @overload
    def __getitem__(self, index: int) -> _T:

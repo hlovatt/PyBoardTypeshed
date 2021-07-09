@@ -181,6 +181,14 @@ but only one of these and not a mixture in a single declaration.
 """
 
 
+@overload
+def country() -> str:
+    """Return the current ISO 3166-1, Alpha-2, country code, eg US, GB, DE, AU."""
+
+@overload
+def country(alpha_2_code: str) -> None:
+    """Set the ISO 3166-1, Alpha-2, country code, eg US, GB, DE, AU."""
+
 
 def delay(ms: int, /) -> None:
    """
@@ -302,7 +310,7 @@ def freq() -> Tuple[int, int, int, int]:
     - pclk2: frequency of the APB2 bus
    
    If given any arguments then the function sets the frequency of the CPU,
-   and the busses if additional arguments are given.  Frequencies are given in
+   and the buses if additional arguments are given.  Frequencies are given in
    Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
    not all values are supported and the largest supported frequency not greater
    than the given value will be selected.
@@ -342,7 +350,7 @@ def freq(sysclk: int, /) -> None:
     - pclk2: frequency of the APB2 bus
    
    If given any arguments then the function sets the frequency of the CPU,
-   and the busses if additional arguments are given.  Frequencies are given in
+   and the buses if additional arguments are given.  Frequencies are given in
    Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
    not all values are supported and the largest supported frequency not greater
    than the given value will be selected.
@@ -382,7 +390,7 @@ def freq(sysclk: int, hclk: int, /) -> None:
     - pclk2: frequency of the APB2 bus
    
    If given any arguments then the function sets the frequency of the CPU,
-   and the busses if additional arguments are given.  Frequencies are given in
+   and the buses if additional arguments are given.  Frequencies are given in
    Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
    not all values are supported and the largest supported frequency not greater
    than the given value will be selected.
@@ -422,7 +430,7 @@ def freq(sysclk: int, hclk: int, pclk1: int, /) -> None:
     - pclk2: frequency of the APB2 bus
    
    If given any arguments then the function sets the frequency of the CPU,
-   and the busses if additional arguments are given.  Frequencies are given in
+   and the buses if additional arguments are given.  Frequencies are given in
    Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
    not all values are supported and the largest supported frequency not greater
    than the given value will be selected.
@@ -462,7 +470,7 @@ def freq(sysclk: int, hclk: int, pclk1: int, pclk2: int, /) -> None:
     - pclk2: frequency of the APB2 bus
    
    If given any arguments then the function sets the frequency of the CPU,
-   and the busses if additional arguments are given.  Frequencies are given in
+   and the buses if additional arguments are given.  Frequencies are given in
    Hz.  Eg freq(120000000) sets sysclk (the CPU frequency) to 120MHz.  Note that
    not all values are supported and the largest supported frequency not greater
    than the given value will be selected.
@@ -1204,7 +1212,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See :meth:`CAN.init` for parameters of initialisation.
       
-      The physical pins of the CAN busses are:
+      The physical pins of the CAN buses are:
       
         - ``CAN(1)`` is on ``YA``: ``(RX, TX) = (Y3, Y4) = (PB8, PB9)``
         - ``CAN(2)`` is on ``YB``: ``(RX, TX) = (Y5, Y6) = (PB12, PB13)``
@@ -2017,7 +2025,7 @@ class I2C:
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See ``init`` for parameters of initialisation.
       
-      The physical pins of the I2C busses on Pyboards V1.0 and V1.1 are:
+      The physical pins of the I2C buses on Pyboards V1.0 and V1.1 are:
       
         - ``I2C(1)`` is on the X position: ``(SCL, SDA) = (X9, X10) = (PB6, PB7)``
         - ``I2C(2)`` is on the Y position: ``(SCL, SDA) = (Y9, Y10) = (PB10, PB11)``
@@ -3033,7 +3041,16 @@ enable the pull-up resistor on the pin
 
 
    
-   def __init__(self, id: Union["Pin", str], /, mode: int = IN, pull: int = PULL_NONE, af: Union[str, int] = -1):
+   def __init__(
+      self, 
+      id: Union["Pin", str], 
+      /, 
+      mode: int = IN, 
+      pull: int = PULL_NONE, 
+      *,
+      value: Any = None,
+      alt: Union[str, int] = -1,
+   ):
       """
       Create a new Pin object associated with the id.  If additional arguments are given,
       they are used to initialise the pin.  See :meth:`pin.init`.
@@ -3081,11 +3098,19 @@ enable the pull-up resistor on the pin
       Get or set the pin mapper function.
       """
 
-   def init(self, mode: int = IN, pull: int = PULL_NONE, af: Union[str, int] = -1) -> None:
+   
+   def init(
+      self, 
+      mode: int = IN, 
+      pull: int = PULL_NONE, 
+      *, 
+      value: Any = None, 
+      alt: Union[str, int] = -1,
+   ) -> None:
       """
       Initialise the pin:
       
-        - ``mode`` can be one of:
+        - *mode* can be one of:
       
            - ``Pin.IN`` - configure the pin for input;
            - ``Pin.OUT_PP`` - configure the pin for output, with push-pull control;
@@ -3094,14 +3119,17 @@ enable the pull-up resistor on the pin
            - ``Pin.AF_OD`` - configure the pin for alternate function, open-drain;
            - ``Pin.ANALOG`` - configure the pin for analog.
       
-        - ``pull`` can be one of:
+        - *pull* can be one of:
       
            - ``Pin.PULL_NONE`` - no pull up or down resistors;
            - ``Pin.PULL_UP`` - enable the pull-up resistor;
            - ``Pin.PULL_DOWN`` - enable the pull-down resistor.
       
-        - when mode is ``Pin.AF_PP`` or ``Pin.AF_OD``, then af can be the index or name
-          of one of the alternate functions associated with a pin.
+        - *value* if not None will set the port output value before enabling the pin.
+      
+        - *alt* can be used when mode is ``Pin.AF_PP`` or ``Pin.AF_OD`` to set the
+          index or name of one of the alternate functions associated with a pin. 
+          This arg was previously called *af* which can still be used if needed.
       
       Returns: ``None``.
       """
@@ -3598,7 +3626,7 @@ set the first bit to be the least or most significant bit
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See ``init`` for parameters of initialisation.
       
-      The physical pins of the SPI busses are:
+      The physical pins of the SPI buses are:
       
         - ``SPI(1)`` is on the X position: ``(NSS, SCK, MISO, MOSI) = (X5, X6, X7, X8) = (PA4, PA5, PA6, PA7)``
         - ``SPI(2)`` is on the Y position: ``(NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)``
@@ -3629,7 +3657,7 @@ set the first bit to be the least or most significant bit
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See ``init`` for parameters of initialisation.
       
-      The physical pins of the SPI busses are:
+      The physical pins of the SPI buses are:
       
         - ``SPI(1)`` is on the X position: ``(NSS, SCK, MISO, MOSI) = (X5, X6, X7, X8) = (PA4, PA5, PA6, PA7)``
         - ``SPI(2)`` is on the Y position: ``(NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)``
@@ -3660,7 +3688,7 @@ set the first bit to be the least or most significant bit
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See ``init`` for parameters of initialisation.
       
-      The physical pins of the SPI busses are:
+      The physical pins of the SPI buses are:
       
         - ``SPI(1)`` is on the X position: ``(NSS, SCK, MISO, MOSI) = (X5, X6, X7, X8) = (PA4, PA5, PA6, PA7)``
         - ``SPI(2)`` is on the Y position: ``(NSS, SCK, MISO, MOSI) = (Y5, Y6, Y7, Y8) = (PB12, PB13, PB14, PB15)``
@@ -4920,7 +4948,7 @@ to select the flow control type.
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See ``init`` for parameters of initialisation.
       
-      The physical pins of the UART busses on Pyboard are:
+      The physical pins of the UART buses on Pyboard are:
       
         - ``UART(4)`` is on ``XA``: ``(TX, RX) = (X1, X2) = (PA0, PA1)``
         - ``UART(1)`` is on ``XB``: ``(TX, RX) = (X9, X10) = (PB6, PB7)``
@@ -4970,7 +4998,7 @@ to select the flow control type.
       the bus, if any).  If extra arguments are given, the bus is initialised.
       See ``init`` for parameters of initialisation.
       
-      The physical pins of the UART busses on Pyboard are:
+      The physical pins of the UART buses on Pyboard are:
       
         - ``UART(4)`` is on ``XA``: ``(TX, RX) = (X1, X2) = (PA0, PA1)``
         - ``UART(1)`` is on ``XB``: ``(TX, RX) = (X9, X10) = (PB6, PB7)``
@@ -5204,12 +5232,20 @@ class USB_VCP:
    RTS: ClassVar[int] = ...
    """
 to select the flow control type.
+
+.. data:: USB_VCP.IRQ_RX
+
+   IRQ trigger values for :meth:`USB_VCP.irq`.
    """
 
 
    CTS: ClassVar[int] = ...
    """
 to select the flow control type.
+
+.. data:: USB_VCP.IRQ_RX
+
+   IRQ trigger values for :meth:`USB_VCP.irq`.
    """
 
 

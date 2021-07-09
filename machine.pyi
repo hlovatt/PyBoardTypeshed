@@ -116,9 +116,20 @@ def enable_irq(state: bool = True, /) -> None:
    recent call to the `disable_irq()` function.
    """
 
+@overload
 def freq() -> int:
    """
-    Returns CPU frequency in hertz.
+    Returns the CPU frequency in hertz.
+    
+    On some ports this can also be used to set the CPU frequency by passing in *hz*.
+   """
+
+@overload
+def freq(hz: int, /) -> None:
+   """
+    Returns the CPU frequency in hertz.
+    
+    On some ports this can also be used to set the CPU frequency by passing in *hz*.
    """
 
 def idle() -> None:
@@ -999,6 +1010,7 @@ class ADC:
       Take an analog reading and return an integer in the range 0-65535.
       The return value represents the raw reading taken by the ADC, scaled
       such that the minimum value is 0 and the maximum value is 65535.
+      machine.PWM.rst
       """
 
 
@@ -1858,6 +1870,7 @@ class I2C:
       this argument is not recognised and the address size is always 8 bits).
       
       The method returns ``None``.
+      machine.I2S.rst   
       
       Memory operations
       -----------------
@@ -1877,8 +1890,8 @@ class RTC:
    Example usage::
    
        rtc = machine.RTC()
-       rtc.init((2014, 5, 1, 4, 13, 0, 0, 0))
-       print(rtc.now())
+       rtc.datetime((2020, 1, 21, 2, 10, 32, 36, 0))
+       print(rtc.datetime())
    
    
 
@@ -2138,7 +2151,7 @@ class Timer:
    differently greatly from a model to a model. MicroPython's Timer class
    defines a baseline operation of executing a callback with a given period
    (or once after some delay), and allow specific boards to define more
-   non-standard behavior (which thus won't be portable to other boards).
+   non-standard behaviour (which thus won't be portable to other boards).
    
    See discussion of :ref:`important constraints <machine_callbacks>` on
    Timer callbacks.
