@@ -39,7 +39,7 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -153,7 +153,7 @@ def start_server(
    port: Union[str, int, None],
    backlog: int = 5, 
    /,
-) -> Awaitable["Server"]:
+) -> Awaitable[Server]:
    """
     Start a TCP server on the given *host* and *port*.  The *callback* will be
     called with incoming, accepted connections, and be passed 2 arguments: reader
@@ -164,12 +164,12 @@ def start_server(
     This is a coroutine.
    """
 
-def get_event_loop() -> "Loop":
+def get_event_loop() -> Loop:
    """
     Return the event loop used to schedule and run tasks.  See `Loop`.
    """
 
-def new_event_loop() -> "Loop":
+def new_event_loop() -> Loop:
    """
     Reset the event loop and return it.
     
@@ -446,13 +446,13 @@ class Loop:
        Close the event loop.
       """
 
-   def set_exception_handler(self, handler: Optional[Callable[["Loop", Dict[str, Any]], None]], /) -> None:
+   def set_exception_handler(self, handler: Optional[Callable[[Loop, Dict[str, Any]], None]], /) -> None:
       """
        Set the exception handler to call when a Task raises an exception that is not
        caught.  The *handler* should accept two arguments: ``(loop, context)``.
       """
 
-   def get_exception_handler(self) -> Optional[Callable[["Loop", Dict[str, Any]], None]]:
+   def get_exception_handler(self) -> Optional[Callable[[Loop, Dict[str, Any]], None]]:
       """
        Get the current exception handler.  Returns the handler, or ``None`` if no
        custom handler is set.

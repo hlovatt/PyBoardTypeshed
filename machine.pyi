@@ -34,7 +34,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -688,13 +688,13 @@ Selects the IRQ trigger type.
    def irq(
       self,
       /,
-      handler: Optional[Callable[["Pin"], None]] = None, 
+      handler: Optional[Callable[[Pin], None]] = None, 
       trigger: int = (IRQ_FALLING | IRQ_RISING), 
       *, 
       priority: int = 1, 
       wake: Optional[int] = None, 
       hard: bool = False,
-   ) -> Optional[Callable[["Pin"], None]]:
+   ) -> Optional[Callable[[Pin], None]]:
       """
       Configure an interrupt handler to be called when the trigger source of the
       pin is active.  If the pin mode is ``Pin.IN`` then the trigger source is
@@ -1142,11 +1142,22 @@ IRQ trigger sources
       
         - *tx* specifies the TX pin to use.
         - *rx* specifies the RX pin to use.
+        - *rts* specifies the RTS (output) pin to use for hardware receive flow control.
+        - *cts* specifies the CTS (input) pin to use for hardware transmit flow control.
         - *txbuf* specifies the length in characters of the TX buffer.
         - *rxbuf* specifies the length in characters of the RX buffer.
         - *timeout* specifies the time to wait for the first character (in ms).
         - *timeout_char* specifies the time to wait between characters (in ms).
         - *invert* specifies which lines to invert.
+        - *flow* specifies which hardware flow control signals to use. The value
+          is a bitmask. 
+      
+            - ``0`` will ignore hardware flow control signals.
+            - ``UART.RTS`` will enable receive flow control by using the RTS output pin to
+              signal if the receive FIFO has sufficient space to accept more data.
+            - ``UART.CTS`` will enable transmit flow control by pausing transmission when the
+              CTS input pin signals that the receiver is running low on buffer space.
+            - ``UART.RTS | UART.CTS`` will enable both, for full hardware flow control.
       
       On the WiPy only the following keyword-only parameter is supported:
       
@@ -1180,11 +1191,22 @@ IRQ trigger sources
       
         - *tx* specifies the TX pin to use.
         - *rx* specifies the RX pin to use.
+        - *rts* specifies the RTS (output) pin to use for hardware receive flow control.
+        - *cts* specifies the CTS (input) pin to use for hardware transmit flow control.
         - *txbuf* specifies the length in characters of the TX buffer.
         - *rxbuf* specifies the length in characters of the RX buffer.
         - *timeout* specifies the time to wait for the first character (in ms).
         - *timeout_char* specifies the time to wait between characters (in ms).
         - *invert* specifies which lines to invert.
+        - *flow* specifies which hardware flow control signals to use. The value
+          is a bitmask. 
+      
+            - ``0`` will ignore hardware flow control signals.
+            - ``UART.RTS`` will enable receive flow control by using the RTS output pin to
+              signal if the receive FIFO has sufficient space to accept more data.
+            - ``UART.CTS`` will enable transmit flow control by pausing transmission when the
+              CTS input pin signals that the receiver is running low on buffer space.
+            - ``UART.RTS | UART.CTS`` will enable both, for full hardware flow control.
       
       On the WiPy only the following keyword-only parameter is supported:
       
@@ -1218,11 +1240,22 @@ IRQ trigger sources
       
         - *tx* specifies the TX pin to use.
         - *rx* specifies the RX pin to use.
+        - *rts* specifies the RTS (output) pin to use for hardware receive flow control.
+        - *cts* specifies the CTS (input) pin to use for hardware transmit flow control.
         - *txbuf* specifies the length in characters of the TX buffer.
         - *rxbuf* specifies the length in characters of the RX buffer.
         - *timeout* specifies the time to wait for the first character (in ms).
         - *timeout_char* specifies the time to wait between characters (in ms).
         - *invert* specifies which lines to invert.
+        - *flow* specifies which hardware flow control signals to use. The value
+          is a bitmask. 
+      
+            - ``0`` will ignore hardware flow control signals.
+            - ``UART.RTS`` will enable receive flow control by using the RTS output pin to
+              signal if the receive FIFO has sufficient space to accept more data.
+            - ``UART.CTS`` will enable transmit flow control by pausing transmission when the
+              CTS input pin signals that the receiver is running low on buffer space.
+            - ``UART.RTS | UART.CTS`` will enable both, for full hardware flow control.
       
       On the WiPy only the following keyword-only parameter is supported:
       
@@ -1322,7 +1355,7 @@ IRQ trigger sources
       self, 
       trigger: int, 
       priority: int = 1, 
-      handler: Optional[Callable[["UART"], None]] = None, 
+      handler: Optional[Callable[[UART], None]] = None, 
       wake: int = IDLE, 
       /
    ) -> Any:
@@ -1354,11 +1387,11 @@ IRQ trigger sources
 
 class SPI:
    """
-   SPI is a synchronous serial protocol that is driven by a master. At the
+   SPI is a synchronous serial protocol that is driven by a controller. At the
    physical level, a bus consists of 3 lines: SCK, MOSI, MISO. Multiple devices
    can share the same bus. Each device should have a separate, 4th signal,
-   SS (Slave Select), to select a particular device on a bus with which
-   communication takes place. Management of an SS signal should happen in
+   CS (Chip Select), to select a particular device on a bus with which
+   communication takes place. Management of a CS signal should happen in
    user code (via machine.Pin class).
    
    Both hardware and software SPI implementations exist via the
@@ -1372,9 +1405,9 @@ class SPI:
 
 
 
-   MASTER: ClassVar[int] = ...
+   CONTROLLER: ClassVar[int] = ...
    """
-for initialising the SPI bus to master; this is only used for the WiPy
+for initialising the SPI bus to controller; this is only used for the WiPy
    """
 
 
@@ -1594,15 +1627,15 @@ class I2C:
                                        # depending on the port, extra parameters may be required
                                        # to select the peripheral and/or pins to use
    
-       i2c.scan()                      # scan for slaves, returning a list of 7-bit addresses
+       i2c.scan()                      # scan for peripherals, returning a list of 7-bit addresses
    
-       i2c.writeto(42, b'123')         # write 3 bytes to slave with 7-bit address 42
-       i2c.readfrom(42, 4)             # read 4 bytes from slave with 7-bit address 42
+       i2c.writeto(42, b'123')         # write 3 bytes to peripheral with 7-bit address 42
+       i2c.readfrom(42, 4)             # read 4 bytes from peripheral with 7-bit address 42
    
-       i2c.readfrom_mem(42, 8, 3)      # read 3 bytes from memory of slave 42,
-                                       #   starting at memory-address 8 in the slave
-       i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of slave 42
-                                       #   starting at address 2 in the slave
+       i2c.readfrom_mem(42, 8, 3)      # read 3 bytes from memory of peripheral 42,
+                                       #   starting at memory-address 8 in the peripheral
+       i2c.writeto_mem(42, 2, b'\x10') # write 1 byte to memory of peripheral 42
+                                       #   starting at address 2 in the peripheral
    """
 
 
@@ -1683,7 +1716,7 @@ class I2C:
       Primitive I2C operations
       ------------------------
       
-      The following methods implement the primitive I2C master bus operations and can
+      The following methods implement the primitive I2C controller bus operations and can
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
@@ -1698,7 +1731,7 @@ class I2C:
       Primitive I2C operations
       ------------------------
       
-      The following methods implement the primitive I2C master bus operations and can
+      The following methods implement the primitive I2C controller bus operations and can
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
@@ -1711,13 +1744,13 @@ class I2C:
       read is the length of *buf*.  An ACK will be sent on the bus after
       receiving all but the last byte.  After the last byte is received, if *nack*
       is true then a NACK will be sent, otherwise an ACK will be sent (and in this
-      case the slave assumes more bytes are going to be read in a later call).
+      case the peripheral assumes more bytes are going to be read in a later call).
       
       
       Primitive I2C operations
       ------------------------
       
-      The following methods implement the primitive I2C master bus operations and can
+      The following methods implement the primitive I2C controller bus operations and can
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
@@ -1734,7 +1767,7 @@ class I2C:
       Primitive I2C operations
       ------------------------
       
-      The following methods implement the primitive I2C master bus operations and can
+      The following methods implement the primitive I2C controller bus operations and can
       be combined to make any I2C transaction.  They are provided if you need more
       control over the bus, otherwise the standard methods (see below) can be used.
       
@@ -1743,7 +1776,7 @@ class I2C:
 
    def readfrom(self, addr: int, nbytes: int, stop: bool = True, /) -> bytes:
       """
-      Read *nbytes* from the slave specified by *addr*.
+      Read *nbytes* from the peripheral specified by *addr*.
       If *stop* is true then a STOP condition is generated at the end of the transfer.
       Returns a `bytes` object with the data read.
       
@@ -1751,13 +1784,13 @@ class I2C:
       Standard bus operations
       -----------------------
       
-      The following methods implement the standard I2C master read and write
-      operations that target a given slave device.
+      The following methods implement the standard I2C controller read and write
+      operations that target a given peripheral device.
       """
 
    def readfrom_into(self, addr: int, buf: _AnyWritableBuf, stop: bool = True, /) -> None:
       """
-      Read into *buf* from the slave specified by *addr*.
+      Read into *buf* from the peripheral specified by *addr*.
       The number of bytes read will be the length of *buf*.
       If *stop* is true then a STOP condition is generated at the end of the transfer.
       
@@ -1767,13 +1800,13 @@ class I2C:
       Standard bus operations
       -----------------------
       
-      The following methods implement the standard I2C master read and write
-      operations that target a given slave device.
+      The following methods implement the standard I2C controller read and write
+      operations that target a given peripheral device.
       """
 
    def writeto(self, addr: int, buf: _AnyReadableBuf, stop: bool = True, /) -> int:
       """
-      Write the bytes from *buf* to the slave specified by *addr*.  If a
+      Write the bytes from *buf* to the peripheral specified by *addr*.  If a
       NACK is received following the write of a byte from *buf* then the
       remaining bytes are not sent.  If *stop* is true then a STOP condition is
       generated at the end of the transfer, even if a NACK is received.
@@ -1783,8 +1816,8 @@ class I2C:
       Standard bus operations
       -----------------------
       
-      The following methods implement the standard I2C master read and write
-      operations that target a given slave device.
+      The following methods implement the standard I2C controller read and write
+      operations that target a given peripheral device.
       """
 
    
@@ -1796,7 +1829,7 @@ class I2C:
       /
    ) -> int:
       """
-      Write the bytes contained in *vector* to the slave specified by *addr*.
+      Write the bytes contained in *vector* to the peripheral specified by *addr*.
       *vector* should be a tuple or list of objects with the buffer protocol.
       The *addr* is sent once and then the bytes from each object in *vector*
       are written out sequentially.  The objects in *vector* may be zero bytes
@@ -1812,13 +1845,13 @@ class I2C:
       Standard bus operations
       -----------------------
       
-      The following methods implement the standard I2C master read and write
-      operations that target a given slave device.
+      The following methods implement the standard I2C controller read and write
+      operations that target a given peripheral device.
       """
 
    def readfrom_mem(self, addr: int, memaddr: int, nbytes: int, /, *, addrsize: int = 8) -> bytes:
       """
-      Read *nbytes* from the slave specified by *addr* starting from the memory
+      Read *nbytes* from the peripheral specified by *addr* starting from the memory
       address specified by *memaddr*.
       The argument *addrsize* specifies the address size in bits.
       Returns a `bytes` object with the data read.
@@ -1829,7 +1862,7 @@ class I2C:
       
       Some I2C devices act as a memory device (or set of registers) that can be read
       from and written to.  In this case there are two addresses associated with an
-      I2C transaction: the slave address and the memory address.  The following
+      I2C transaction: the peripheral address and the memory address.  The following
       methods are convenience functions to communicate with such devices.
       """
 
@@ -1844,7 +1877,7 @@ class I2C:
       addrsize: int = 8
    ) -> None:
       """
-      Read into *buf* from the slave specified by *addr* starting from the
+      Read into *buf* from the peripheral specified by *addr* starting from the
       memory address specified by *memaddr*.  The number of bytes read is the
       length of *buf*.
       The argument *addrsize* specifies the address size in bits (on ESP8266
@@ -1858,13 +1891,13 @@ class I2C:
       
       Some I2C devices act as a memory device (or set of registers) that can be read
       from and written to.  In this case there are two addresses associated with an
-      I2C transaction: the slave address and the memory address.  The following
+      I2C transaction: the peripheral address and the memory address.  The following
       methods are convenience functions to communicate with such devices.
       """
 
    def writeto_mem(self, addr: int, memaddr: int, buf: _AnyReadableBuf, /, *, addrsize: int = 8) -> None:
       """
-      Write *buf* to the slave specified by *addr* starting from the
+      Write *buf* to the peripheral specified by *addr* starting from the
       memory address specified by *memaddr*.
       The argument *addrsize* specifies the address size in bits (on ESP8266
       this argument is not recognised and the address size is always 8 bits).
@@ -1877,7 +1910,7 @@ class I2C:
       
       Some I2C devices act as a memory device (or set of registers) that can be read
       from and written to.  In this case there are two addresses associated with an
-      I2C transaction: the slave address and the memory address.  The following
+      I2C transaction: the peripheral address and the memory address.  The following
       methods are convenience functions to communicate with such devices.
       """
 
@@ -2131,7 +2164,7 @@ irq trigger source
       /, 
       *, 
       trigger: int, 
-      handler: Optional[Callable[["RTC"], None]] = None, 
+      handler: Optional[Callable[[RTC], None]] = None, 
       wake: int = IDLE
    ) -> None:
       """
@@ -2204,7 +2237,7 @@ Timer operating mode.
       *, 
       mode: int = PERIODIC, 
       period: int = -1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
    ):
       """
       Construct a new timer object of the given id. Id of -1 constructs a
@@ -2219,7 +2252,7 @@ Timer operating mode.
       *, 
       mode: int = PERIODIC, 
       period: int = -1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
    ) -> None:
       """
       Initialise the timer. Example::
@@ -2445,10 +2478,10 @@ class SDCard(_AbstractBlockDev):
       """
        This class provides access to SD or MMC storage cards using either
        a dedicated SD/MMC interface hardware or through an SPI channel.
-       The class implements the block protocol defined by :class:`uos.AbstractBlockDev`.
+       The class implements the block protocol defined by :class:`os.AbstractBlockDev`.
        This allows the mounting of an SD card to be as simple as::
        
-         uos.mount(machine.SDCard(), "/sd")
+         os.mount(machine.SDCard(), "/sd")
        
        The constructor takes the following parameters:
        

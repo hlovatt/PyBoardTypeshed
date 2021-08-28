@@ -14,7 +14,7 @@ This module provides network drivers and routing configuration. To use this
 module, a MicroPython variant/build with network capabilities must be installed.
 Network drivers for specific hardware are available within this module and are
 used to configure hardware network interface(s). Network services provided
-by configured interfaces are then available for use via the :mod:`usocket`
+by configured interfaces are then available for use via the :mod:`socket`
 module.
 
 For example::
@@ -22,17 +22,17 @@ For example::
     # connect/ show IP config a specific network interface
     # see below for examples of specific drivers
     import network
-    import utime
+    import time
     nic = network.Driver(...)
     if not nic.isconnected():
         nic.connect()
         print("Waiting for connection...")
         while not nic.isconnected():
-            utime.sleep(1)
+            time.sleep(1)
     print(nic.ifconfig())
 
-    # now use usocket as usual
-    import usocket as socket
+    # now use socket as usual
+    import socket
     addr = socket.getaddrinfo('micropython.org', 80)[0][-1]
     s = socket.socket()
     s.connect(addr)
@@ -47,7 +47,7 @@ For example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -382,6 +382,8 @@ class WLAN:
    def scan(self) -> Tuple[str, bytes, int, int, int]:
       """
        Scan for the available wireless networks.
+       Hidden networks -- where the SSID is not broadcast -- will also be scanned
+       if the WLAN interface allows it.
        
        Scanning is only possible on STA interface. Returns list of tuples with
        the information about WiFi access points:
@@ -389,7 +391,7 @@ class WLAN:
            (ssid, bssid, channel, RSSI, authmode, hidden)
        
        *bssid* is hardware address of an access point, in binary form, returned as
-       bytes object. You can use `ubinascii.hexlify()` to convert it to ASCII form.
+       bytes object. You can use `binascii.hexlify()` to convert it to ASCII form.
        
        There are five values for authmode:
        

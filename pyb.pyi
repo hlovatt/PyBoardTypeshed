@@ -89,7 +89,7 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -587,11 +587,11 @@ def mount(
 ) -> None:
    """
    .. note:: This function is deprecated. Mounting and unmounting devices should
-      be performed by :meth:`uos.mount` and :meth:`uos.umount` instead.
+      be performed by :meth:`os.mount` and :meth:`os.umount` instead.
    
    Mount a block device and make it available as part of the filesystem.
    ``device`` must be an object that provides the block protocol. (The
-   following is also deprecated. See :class:`uos.AbstractBlockDev` for the
+   following is also deprecated. See :class:`os.AbstractBlockDev` for the
    correct way to create a block device.)
    
     - ``readblocks(self, blocknum, buf)``
@@ -629,11 +629,11 @@ def mount(
 ) -> None:
    """
    .. note:: This function is deprecated. Mounting and unmounting devices should
-      be performed by :meth:`uos.mount` and :meth:`uos.umount` instead.
+      be performed by :meth:`os.mount` and :meth:`os.umount` instead.
    
    Mount a block device and make it available as part of the filesystem.
    ``device`` must be an object that provides the block protocol. (The
-   following is also deprecated. See :class:`uos.AbstractBlockDev` for the
+   following is also deprecated. See :class:`os.AbstractBlockDev` for the
    correct way to create a block device.)
    
     - ``readblocks(self, blocknum, buf)``
@@ -661,13 +661,13 @@ def mount(
    """
 
 @overload
-def repl_uart() -> Optional["UART"]:
+def repl_uart() -> Optional[UART]:
    """
    Get or set the UART object where the REPL is repeated on.
    """
 
 @overload
-def repl_uart(uart: "UART", /) -> None:
+def repl_uart(uart: UART, /) -> None:
    """
    Get or set the UART object where the REPL is repeated on.
    """
@@ -853,7 +853,7 @@ class ADC:
 
 
 
-   def __init__(self, pin: Union[int, "Pin"], /):
+   def __init__(self, pin: Union[int, Pin], /):
       """
       Create an ADC object associated with the given pin.
       This allows you to then read analog values on that pin.
@@ -865,7 +865,7 @@ class ADC:
       will be between 0 and 4095.
       """
 
-   def read_timed(self, buf: _AnyWritableBuf, timer: Union["Timer", int], /) -> None:
+   def read_timed(self, buf: _AnyWritableBuf, timer: Union[Timer, int], /) -> None:
       """
       Read analog values into ``buf`` at a rate set by the ``timer`` object.
       
@@ -905,9 +905,9 @@ class ADC:
    
    @staticmethod
    def read_timed_multi(
-      adcs: Tuple['ADC', ...], 
+      adcs: Tuple[ADC, ...], 
       bufs: Tuple[_AnyWritableBuf, ...], 
-      timer: "Timer", 
+      timer: Timer, 
       /
    ) -> bool:
       """
@@ -1601,7 +1601,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       Return value: ``None``.
       """
 
-   def rxcallback(self, fifo: int, fun: Callable[["CAN"], None], /) -> None:
+   def rxcallback(self, fifo: int, fun: Callable[[CAN], None], /) -> None:
       """
       Register a function to be called when a message is accepted into a empty fifo:
       
@@ -1696,7 +1696,7 @@ class DAC:
    """
 
 
-   def __init__(self, port: Union[int, "Pin"], /, bits: int = 8, *, buffering: Optional[bool] = None):
+   def __init__(self, port: Union[int, Pin], /, bits: int = 8, *, buffering: Optional[bool] = None):
       """
       Construct a new DAC object.
       
@@ -1753,7 +1753,7 @@ class DAC:
       object or by using the ``init`` method.
       """
 
-   def write_timed(self, data: _AnyWritableBuf, freq: Union[int, "Timer"], /, *, mode: int = NORMAL) -> None:
+   def write_timed(self, data: _AnyWritableBuf, freq: Union[int, Timer], /, *, mode: int = NORMAL) -> None:
       """
       Initiates a burst of RAM to DAC using a DMA transfer.
       The input data is treated as an array of bytes in 8-bit mode, and
@@ -1848,7 +1848,7 @@ interrupt on a rising or falling edge
 
 
 
-   def __init__(self, pin: Union[int, str, "Pin"], mode: int, pull: int, callback: Callable[[int], None]):
+   def __init__(self, pin: Union[int, str, Pin], mode: int, pull: int, callback: Callable[[int], None]):
       """
       Create an ExtInt object:
       
@@ -1934,21 +1934,21 @@ class Flash:
       """
        These methods implement the simple and :ref:`extended
        <block-device-interface>` block protocol defined by
-       :class:`uos.AbstractBlockDev`.
+       :class:`os.AbstractBlockDev`.
       """
 
    def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None:
       """
        These methods implement the simple and :ref:`extended
        <block-device-interface>` block protocol defined by
-       :class:`uos.AbstractBlockDev`.
+       :class:`os.AbstractBlockDev`.
       """
 
    def ioctl(self, op: int, arg: int) -> Optional[int]:
       """
        These methods implement the simple and :ref:`extended
        <block-device-interface>` block protocol defined by
-       :class:`uos.AbstractBlockDev`.
+       :class:`os.AbstractBlockDev`.
       """
 
 
@@ -1964,11 +1964,11 @@ class I2C:
    
        from pyb import I2C
    
-       i2c = I2C(1)                         # create on bus 1
-       i2c = I2C(1, I2C.MASTER)             # create and init as a master
-       i2c.init(I2C.MASTER, baudrate=20000) # init as a master
-       i2c.init(I2C.SLAVE, addr=0x42)       # init as a slave with given address
-       i2c.deinit()                         # turn off the peripheral
+       i2c = I2C(1)                             # create on bus 1
+       i2c = I2C(1, I2C.CONTROLLER)             # create and init as a controller
+       i2c.init(I2C.CONTROLLER, baudrate=20000) # init as a controller
+       i2c.init(I2C.PERIPHERAL, addr=0x42)      # init as a peripheral with given address
+       i2c.deinit()                             # turn off the I2C unit
    
    Printing the i2c object gives you information about its configuration.
    
@@ -1987,21 +1987,21 @@ class I2C:
    
        i2c.send(b'123', timeout=2000)   # timeout after 2 seconds
    
-   A master must specify the recipient's address::
+   A controller must specify the recipient's address::
    
-       i2c.init(I2C.MASTER)
-       i2c.send('123', 0x42)        # send 3 bytes to slave with address 0x42
+       i2c.init(I2C.CONTROLLER)
+       i2c.send('123', 0x42)        # send 3 bytes to peripheral with address 0x42
        i2c.send(b'456', addr=0x42)  # keyword for address
    
    Master also has other methods::
    
-       i2c.is_ready(0x42)           # check if slave 0x42 is ready
-       i2c.scan()                   # scan for slaves on the bus, returning
+       i2c.is_ready(0x42)           # check if peripheral 0x42 is ready
+       i2c.scan()                   # scan for peripherals on the bus, returning
                                     #   a list of valid addresses
-       i2c.mem_read(3, 0x42, 2)     # read 3 bytes from memory of slave 0x42,
-                                    #   starting at address 2 in the slave
-       i2c.mem_write('abc', 0x42, 2, timeout=1000) # write 'abc' (3 bytes) to memory of slave 0x42
-                                                   # starting at address 2 in the slave, timeout after 1 second
+       i2c.mem_read(3, 0x42, 2)     # read 3 bytes from memory of peripheral 0x42,
+                                    #   starting at address 2 in the peripheral
+       i2c.mem_write('abc', 0x42, 2, timeout=1000) # write 'abc' (3 bytes) to memory of peripheral 0x42
+                                                   # starting at address 2 in the peripheral, timeout after 1 second
    """
 
 
@@ -2059,9 +2059,9 @@ class I2C:
       """
      Initialise the I2C bus with the given parameters:
      
-        - ``mode`` must be either ``I2C.MASTER`` or ``I2C.SLAVE``
-        - ``addr`` is the 7-bit address (only sensible for a slave)
-        - ``baudrate`` is the SCL clock rate (only sensible for a master)
+        - ``mode`` must be either ``I2C.CONTROLLER`` or ``I2C.PERIPHERAL``
+        - ``addr`` is the 7-bit address (only sensible for a peripheral)
+        - ``baudrate`` is the SCL clock rate (only sensible for a controller)
         - ``gencall`` is whether to support general call mode
         - ``dma`` is whether to allow the use of DMA for the I2C transfers (note
           that DMA transfers have more precise timing but currently do not handle bus
@@ -2070,7 +2070,7 @@ class I2C:
 
    def is_ready(self, addr: int, /) -> bool:
       """
-      Check if an I2C device responds to the given address.  Only valid when in master mode.
+      Check if an I2C device responds to the given address.  Only valid when in controller mode.
       """
 
    
@@ -2094,7 +2094,7 @@ class I2C:
         - ``addr_size`` selects width of memaddr: 8 or 16 bits
       
       Returns the read data.
-      This is only valid in master mode.
+      This is only valid in controller mode.
       """
 
 
@@ -2332,117 +2332,117 @@ class Pin:
 
 
    
-   AF1_TIM1: ClassVar["PinAF"] = ...
+   AF1_TIM1: ClassVar[PinAF] = ...
    """
    Alternate def_ 1, timer 1.
    """
    
-   AF1_TIM2: ClassVar["PinAF"] = ...
+   AF1_TIM2: ClassVar[PinAF] = ...
    """
    Alternate def_ 1, timer 2.
    """
 
-   AF2_TIM3: ClassVar["PinAF"] = ...
+   AF2_TIM3: ClassVar[PinAF] = ...
    """
    Alternate def_ 2, timer 3.
    """
 
-   AF2_TIM4: ClassVar["PinAF"] = ...
+   AF2_TIM4: ClassVar[PinAF] = ...
    """
    Alternate def_ 2, timer 4.
    """
 
-   AF2_TIM5: ClassVar["PinAF"] = ...
+   AF2_TIM5: ClassVar[PinAF] = ...
    """
    Alternate def_ 2, timer 5.
    """
 
-   AF3_TIM10: ClassVar["PinAF"] = ...
+   AF3_TIM10: ClassVar[PinAF] = ...
    """
    Alternate def_ 3, timer 10.
    """
 
-   AF3_TIM11: ClassVar["PinAF"] = ...
+   AF3_TIM11: ClassVar[PinAF] = ...
    """
    Alternate def_ 3, timer 11.
    """
 
-   AF3_TIM8: ClassVar["PinAF"] = ...
+   AF3_TIM8: ClassVar[PinAF] = ...
    """
    Alternate def_ 3, timer 8.
    """
 
-   AF3_TIM9: ClassVar["PinAF"] = ...
+   AF3_TIM9: ClassVar[PinAF] = ...
    """
    Alternate def_ 3, timer 9.
    """
 
-   AF4_I2C1: ClassVar["PinAF"] = ...
+   AF4_I2C1: ClassVar[PinAF] = ...
    """
    Alternate def_ 4, I2C 1.
    """
 
-   AF4_I2C2: ClassVar["PinAF"] = ...
+   AF4_I2C2: ClassVar[PinAF] = ...
    """
    Alternate def_ 4, I2C 2.
    """
 
-   AF5_SPI1: ClassVar["PinAF"] = ...
+   AF5_SPI1: ClassVar[PinAF] = ...
    """
    Alternate def_ 5, SPI 1.
    """
 
-   AF5_SPI2: ClassVar["PinAF"] = ...
+   AF5_SPI2: ClassVar[PinAF] = ...
    """
    Alternate def_ 5, SPI 2.
    """
 
-   AF7_USART1: ClassVar["PinAF"] = ...
+   AF7_USART1: ClassVar[PinAF] = ...
    """
    Alternate def_ 7, USART 1.
    """
 
-   AF7_USART2: ClassVar["PinAF"] = ...
+   AF7_USART2: ClassVar[PinAF] = ...
    """
    Alternate def_ 7, USART 2.
    """
 
-   AF7_USART3: ClassVar["PinAF"] = ...
+   AF7_USART3: ClassVar[PinAF] = ...
    """
    Alternate def_ 7, USART 3.
    """
 
-   AF8_UART4: ClassVar["PinAF"] = ...
+   AF8_UART4: ClassVar[PinAF] = ...
    """
    Alternate def_ 8, USART 4.
    """
 
-   AF8_USART6: ClassVar["PinAF"] = ...
+   AF8_USART6: ClassVar[PinAF] = ...
    """
    Alternate def_ 8, USART 6.
    """
 
-   AF9_CAN1: ClassVar["PinAF"] = ...
+   AF9_CAN1: ClassVar[PinAF] = ...
    """
    Alternate def_ 9, CAN 1.
    """
 
-   AF9_CAN2: ClassVar["PinAF"] = ...
+   AF9_CAN2: ClassVar[PinAF] = ...
    """
    Alternate def_ 9, CAN 2.
    """
 
-   AF9_TIM12: ClassVar["PinAF"] = ...
+   AF9_TIM12: ClassVar[PinAF] = ...
    """
    Alternate def_ 9, timer 12.
    """
 
-   AF9_TIM13: ClassVar["PinAF"] = ...
+   AF9_TIM13: ClassVar[PinAF] = ...
    """
    Alternate def_ 9, timer 13.
    """
 
-   AF9_TIM14: ClassVar["PinAF"] = ...
+   AF9_TIM14: ClassVar[PinAF] = ...
    """
    Alternate def_ 9, timer 14.
    """
@@ -2480,247 +2480,247 @@ class Pin:
       The board pins (board nomenclature, e.g. `X1`) that are bought out onto pads on a PyBoard.
       """
 
-      LED_BLUE: ClassVar["Pin"] = ...
+      LED_BLUE: ClassVar[Pin] = ...
       """
       The blue LED.
       """
       
-      LED_GREEN: ClassVar["Pin"] = ...
+      LED_GREEN: ClassVar[Pin] = ...
       """
       The green LED.
       """
       
-      LED_RED: ClassVar["Pin"] = ...
+      LED_RED: ClassVar[Pin] = ...
       """
       The red LED.
       """
       
-      LED_YELLOW: ClassVar["Pin"] = ...
+      LED_YELLOW: ClassVar[Pin] = ...
       """
       The yellow LED.
       """
       
-      MMA_AVDD: ClassVar["Pin"] = ...
+      MMA_AVDD: ClassVar[Pin] = ...
       """
       Accelerometer (MMA7660) analogue power (AVDD) pin.
       """
       
-      MMA_INT: ClassVar["Pin"] = ...
+      MMA_INT: ClassVar[Pin] = ...
       """
       Accelerometer (MMA7660) interrupt (\INT) pin.
       """
       
-      SD: ClassVar["Pin"] = ...
+      SD: ClassVar[Pin] = ...
       """
       SD card present switch (0 for card inserted, 1 for no card) (same as SD_SW).
       """
 
-      SD_CK: ClassVar["Pin"] = ...
+      SD_CK: ClassVar[Pin] = ...
       """
       SD card clock.
       """
 
-      SD_CMD: ClassVar["Pin"] = ...
+      SD_CMD: ClassVar[Pin] = ...
       """
       SD card command.
       """
 
-      SD_D0: ClassVar["Pin"] = ...
+      SD_D0: ClassVar[Pin] = ...
       """
       SD card serial data 0.
       """
 
-      SD_D1: ClassVar["Pin"] = ...
+      SD_D1: ClassVar[Pin] = ...
       """
       SD card serial data 1.
       """
 
-      SD_D2: ClassVar["Pin"] = ...
+      SD_D2: ClassVar[Pin] = ...
       """
       SD card serial data 2.
       """
 
-      SD_D3: ClassVar["Pin"] = ...
+      SD_D3: ClassVar[Pin] = ...
       """
       SD card serial data 3.
       """
 
-      SD_SW: ClassVar["Pin"] = ...
+      SD_SW: ClassVar[Pin] = ...
       """
       SD card present switch (0 for card inserted, 1 for no card) (same as SD).
       """
 
-      SW: ClassVar["Pin"] = ...
+      SW: ClassVar[Pin] = ...
       """
       Usr switch (0 = pressed, 1 = not pressed).
       """
 
-      USB_DM: ClassVar["Pin"] = ...
+      USB_DM: ClassVar[Pin] = ...
       """
       USB data -.
       """
 
-      USB_DP: ClassVar["Pin"] = ...
+      USB_DP: ClassVar[Pin] = ...
       """
       USB data +.
       """
 
-      USB_ID: ClassVar["Pin"] = ...
+      USB_ID: ClassVar[Pin] = ...
       """
       USB OTG (on-the-go) ID.
       """
 
-      USB_VBUS: ClassVar["Pin"] = ...
+      USB_VBUS: ClassVar[Pin] = ...
       """
       USB VBUS (power) monitoring pin.
       """
 
-      X1: ClassVar["Pin"] = ...
+      X1: ClassVar[Pin] = ...
       """
       X1 pin.
       """
 
-      X10: ClassVar["Pin"] = ...
+      X10: ClassVar[Pin] = ...
       """
       X10 pin.
       """
 
-      X11: ClassVar["Pin"] = ...
+      X11: ClassVar[Pin] = ...
       """
       X11 pin.
       """
 
-      X12: ClassVar["Pin"] = ...
+      X12: ClassVar[Pin] = ...
       """
       X12 pin.
       """
 
-      X17: ClassVar["Pin"] = ...
+      X17: ClassVar[Pin] = ...
       """
       X17 pin.
       """
 
-      X18: ClassVar["Pin"] = ...
+      X18: ClassVar[Pin] = ...
       """
       X18 pin.
       """
 
-      X19: ClassVar["Pin"] = ...
+      X19: ClassVar[Pin] = ...
       """
       X19 pin.
       """
 
-      X2: ClassVar["Pin"] = ...
+      X2: ClassVar[Pin] = ...
       """
       X2 pin.
       """
 
-      X20: ClassVar["Pin"] = ...
+      X20: ClassVar[Pin] = ...
       """
       X20 pin.
       """
 
-      X21: ClassVar["Pin"] = ...
+      X21: ClassVar[Pin] = ...
       """
       X21 pin.
       """
              
-      X22: ClassVar["Pin"] = ...
+      X22: ClassVar[Pin] = ...
       """
       X22 pin.
       """
 
-      X3: ClassVar["Pin"] = ...
+      X3: ClassVar[Pin] = ...
       """
       X3 pin.
       """
 
-      X4: ClassVar["Pin"] = ...
+      X4: ClassVar[Pin] = ...
       """
       X4 pin.
       """
 
-      X5: ClassVar["Pin"] = ...
+      X5: ClassVar[Pin] = ...
       """
       X5 pin.
       """
 
-      X6: ClassVar["Pin"] = ...
+      X6: ClassVar[Pin] = ...
       """
       X6 pin.
       """
 
-      X7: ClassVar["Pin"] = ...
+      X7: ClassVar[Pin] = ...
       """
       X7 pin.
       """
 
-      X8: ClassVar["Pin"] = ...
+      X8: ClassVar[Pin] = ...
       """
       X8 pin.
       """
 
-      X9: ClassVar["Pin"] = ...
+      X9: ClassVar[Pin] = ...
       """
       X9 pin.
       """
 
-      Y1: ClassVar["Pin"] = ...
+      Y1: ClassVar[Pin] = ...
       """
       Y1 pin.
       """
 
-      Y10: ClassVar["Pin"] = ...
+      Y10: ClassVar[Pin] = ...
       """
       Y10 pin.
       """
 
-      Y11: ClassVar["Pin"] = ...
+      Y11: ClassVar[Pin] = ...
       """
       Y11 pin.
       """
 
-      Y12: ClassVar["Pin"] = ...
+      Y12: ClassVar[Pin] = ...
       """
       Y12 pin.
       """
 
-      Y2: ClassVar["Pin"] = ...
+      Y2: ClassVar[Pin] = ...
       """
       Y2 pin.
       """
 
-      Y3: ClassVar["Pin"] = ...
+      Y3: ClassVar[Pin] = ...
       """
       Y3 pin.
       """
 
-      Y4: ClassVar["Pin"] = ...
+      Y4: ClassVar[Pin] = ...
       """
       Y4 pin.
       """
 
-      Y5: ClassVar["Pin"] = ...
+      Y5: ClassVar[Pin] = ...
       """
       Y5 pin.
       """
 
-      Y6: ClassVar["Pin"] = ...
+      Y6: ClassVar[Pin] = ...
       """
       Y6 pin.
       """
 
-      Y7: ClassVar["Pin"] = ...
+      Y7: ClassVar[Pin] = ...
       """
       Y7 pin.
       """
 
-      Y8: ClassVar["Pin"] = ...
+      Y8: ClassVar[Pin] = ...
       """
       Y8 pin.
       """
 
-      Y9: ClassVar["Pin"] = ...
+      Y9: ClassVar[Pin] = ...
       """
       Y9 pin.
       """
@@ -2732,237 +2732,237 @@ class Pin:
       The CPU pins (CPU nomenclature, e.g. `A0`) that are bought out onto pads on a PyBoard.
       """
       
-      A0: ClassVar["Pin"] = ...
+      A0: ClassVar[Pin] = ...
       """
       A0 pin.
       """
       
-      A1: ClassVar["Pin"] = ...
+      A1: ClassVar[Pin] = ...
       """
       A1 pin.
       """
 
-      A10: ClassVar["Pin"] = ...
+      A10: ClassVar[Pin] = ...
       """
       A10 pin.
       """
 
-      A11: ClassVar["Pin"] = ...
+      A11: ClassVar[Pin] = ...
       """
       A11 pin.
       """
 
-      A12: ClassVar["Pin"] = ...
+      A12: ClassVar[Pin] = ...
       """
       A12 pin.
       """
 
-      A13: ClassVar["Pin"] = ...
+      A13: ClassVar[Pin] = ...
       """
       A13 pin.
       """
 
-      A14: ClassVar["Pin"] = ...
+      A14: ClassVar[Pin] = ...
       """
       A14 pin.
       """
 
-      A15: ClassVar["Pin"] = ...
+      A15: ClassVar[Pin] = ...
       """
       A15 pin.
       """
 
-      A2: ClassVar["Pin"] = ...
+      A2: ClassVar[Pin] = ...
       """
       A2 pin.
       """
 
-      A3: ClassVar["Pin"] = ...
+      A3: ClassVar[Pin] = ...
       """
       A3 pin.
       """
 
-      A4: ClassVar["Pin"] = ...
+      A4: ClassVar[Pin] = ...
       """
       A4 pin.
       """
 
-      A5: ClassVar["Pin"] = ...
+      A5: ClassVar[Pin] = ...
       """
       A5 pin.
       """
 
-      A6: ClassVar["Pin"] = ...
+      A6: ClassVar[Pin] = ...
       """
       A6 pin.
       """
 
-      A7: ClassVar["Pin"] = ...
+      A7: ClassVar[Pin] = ...
       """
       A7 pin.
       """
 
-      A8: ClassVar["Pin"] = ...
+      A8: ClassVar[Pin] = ...
       """
       A8 pin.
       """
 
-      A9: ClassVar["Pin"] = ...
+      A9: ClassVar[Pin] = ...
       """
       A9 pin.
       """
 
-      B0: ClassVar["Pin"] = ...
+      B0: ClassVar[Pin] = ...
       """
       B0 pin.
       """
 
-      B1: ClassVar["Pin"] = ...
+      B1: ClassVar[Pin] = ...
       """
       B1 pin.
       """
 
-      B10: ClassVar["Pin"] = ...
+      B10: ClassVar[Pin] = ...
       """
       B10 pin.
       """
 
-      B11: ClassVar["Pin"] = ...
+      B11: ClassVar[Pin] = ...
       """
       B11 pin.
       """
 
-      B12: ClassVar["Pin"] = ...
+      B12: ClassVar[Pin] = ...
       """
       B12 pin.
       """
 
-      B13: ClassVar["Pin"] = ...
+      B13: ClassVar[Pin] = ...
       """
       B13 pin.
       """
 
-      B14: ClassVar["Pin"] = ...
+      B14: ClassVar[Pin] = ...
       """
       B14 pin.
       """
 
-      B15: ClassVar["Pin"] = ...
+      B15: ClassVar[Pin] = ...
       """
       B15 pin.
       """
 
-      B2: ClassVar["Pin"] = ...
+      B2: ClassVar[Pin] = ...
       """
       B2 pin.
       """
 
-      B3: ClassVar["Pin"] = ...
+      B3: ClassVar[Pin] = ...
       """
       B3 pin.
       """
 
-      B4: ClassVar["Pin"] = ...
+      B4: ClassVar[Pin] = ...
       """
       B4 pin.
       """
 
-      B5: ClassVar["Pin"] = ...
+      B5: ClassVar[Pin] = ...
       """
       B5 pin.
       """
 
-      B6: ClassVar["Pin"] = ...
+      B6: ClassVar[Pin] = ...
       """
       B6 pin.
       """
 
-      B7: ClassVar["Pin"] = ...
+      B7: ClassVar[Pin] = ...
       """
       B7 pin.
       """
 
-      B8: ClassVar["Pin"] = ...
+      B8: ClassVar[Pin] = ...
       """
       B8 pin.
       """
 
-      B9: ClassVar["Pin"] = ...
+      B9: ClassVar[Pin] = ...
       """
       B9 pin.
       """
 
-      C0: ClassVar["Pin"] = ...
+      C0: ClassVar[Pin] = ...
       """
       C0 pin.
       """
 
-      C1: ClassVar["Pin"] = ...
+      C1: ClassVar[Pin] = ...
       """
       C1 pin.
       """
 
-      C10: ClassVar["Pin"] = ...
+      C10: ClassVar[Pin] = ...
       """
       C10 pin.
       """
 
-      C11: ClassVar["Pin"] = ...
+      C11: ClassVar[Pin] = ...
       """
       C11 pin.
       """
 
-      C12: ClassVar["Pin"] = ...
+      C12: ClassVar[Pin] = ...
       """
       C12 pin.
       """
 
-      C13: ClassVar["Pin"] = ...
+      C13: ClassVar[Pin] = ...
       """
       C13 pin.
       """
 
-      C2: ClassVar["Pin"] = ...
+      C2: ClassVar[Pin] = ...
       """
       C2 pin.
       """
 
-      C3: ClassVar["Pin"] = ...
+      C3: ClassVar[Pin] = ...
       """
       C3 pin.
       """
 
-      C4: ClassVar["Pin"] = ...
+      C4: ClassVar[Pin] = ...
       """
       C4 pin.
       """
 
-      C5: ClassVar["Pin"] = ...
+      C5: ClassVar[Pin] = ...
       """
       C5 pin.
       """
 
-      C6: ClassVar["Pin"] = ...
+      C6: ClassVar[Pin] = ...
       """
       C6 pin.
       """
 
-      C7: ClassVar["Pin"] = ...
+      C7: ClassVar[Pin] = ...
       """
       C7 pin.
       """
 
-      C8: ClassVar["Pin"] = ...
+      C8: ClassVar[Pin] = ...
       """
       C8 pin.
       """
 
-      C9: ClassVar["Pin"] = ...
+      C9: ClassVar[Pin] = ...
       """
       C9 pin.
       """
 
-      D2: ClassVar["Pin"] = ...
+      D2: ClassVar[Pin] = ...
       """
       D2 pin.
       """
@@ -3043,7 +3043,7 @@ enable the pull-up resistor on the pin
    
    def __init__(
       self, 
-      id: Union["Pin", str], 
+      id: Union[Pin, str], 
       /, 
       mode: int = IN, 
       pull: int = PULL_NONE, 
@@ -3072,28 +3072,28 @@ enable the pull-up resistor on the pin
 
    @overload
    @staticmethod
-   def dict() -> Dict[str, "Pin"]:
+   def dict() -> Dict[str, Pin]:
       """
       Get or set the pin mapper dictionary.
       """
 
    @overload
    @staticmethod
-   def dict(dict: Dict[str, "Pin"], /) -> None:
+   def dict(dict: Dict[str, Pin], /) -> None:
       """
       Get or set the pin mapper dictionary.
       """
 
    @overload
    @staticmethod
-   def mapper() -> Callable[[str], "Pin"]:
+   def mapper() -> Callable[[str], Pin]:
       """
       Get or set the pin mapper function.
       """
 
    @overload
    @staticmethod
-   def mapper(fun: Callable[[str], "Pin"], /) -> None:
+   def mapper(fun: Callable[[str], Pin], /) -> None:
       """
       Get or set the pin mapper function.
       """
@@ -3168,7 +3168,7 @@ enable the pull-up resistor on the pin
       argument to the init function.
       """
 
-   def af_list(self) -> List["PinAF"]:
+   def af_list(self) -> List[PinAF]:
       """
       Returns an array of alternate functions available for this pin.
       """
@@ -3341,7 +3341,7 @@ class RTC:
       ``subseconds`` counts down from 255 to 0
       """
 
-   def wakeup(self, timeout: Optional[Callable[["RTC"], None]] = None, /) -> None:
+   def wakeup(self, timeout: Optional[Callable[[RTC], None]] = None, /) -> None:
       """
       Set the RTC wakeup timer to trigger repeatedly at every ``timeout``
       milliseconds.  This trigger can wake the pyboard from both the sleep
@@ -3565,16 +3565,16 @@ class Servo:
 
 class SPI:
    """
-   SPI is a serial protocol that is driven by a master.  At the physical level
+   SPI is a serial protocol that is driven by a controller.  At the physical level
    there are 3 lines: SCK, MOSI, MISO.
    
    See usage model of I2C; SPI is very similar.  Main difference is
    parameters to init the SPI bus::
    
        from pyb import SPI
-       spi = SPI(1, SPI.MASTER, baudrate=600000, polarity=1, phase=0, crc=0x7)
+       spi = SPI(1, SPI.CONTROLLER, baudrate=600000, polarity=1, phase=0, crc=0x7)
    
-   Only required parameter is mode, SPI.MASTER or SPI.SLAVE.  Polarity can be
+   Only required parameter is mode, SPI.CONTROLLER or SPI.PERIPHERAL.  Polarity can be
    0 or 1, and is the level the idle clock line sits at.  Phase can be 0 or 1
    to sample data on the first or second clock edge respectively.  Crc can be
    None for no CRC, or a polynomial specifier.
@@ -3589,15 +3589,15 @@ class SPI:
 
 
 
-   MASTER: ClassVar[int] = ...
+   CONTROLLER: ClassVar[int] = ...
    """
-for initialising the SPI bus to master or slave mode
+for initialising the SPI bus to controller or peripheral mode
    """
 
 
-   SLAVE: ClassVar[int] = ...
+   PERIPHERAL: ClassVar[int] = ...
    """
-for initialising the SPI bus to master or slave mode
+for initialising the SPI bus to controller or peripheral mode
    """
 
 
@@ -3640,7 +3640,7 @@ set the first bit to be the least or most significant bit
       self, 
       bus: int, 
       /, 
-      mode: int = MASTER, 
+      mode: int = CONTROLLER, 
       baudrate: int = 328125, 
       *,
       polarity: int = 1, 
@@ -3671,7 +3671,7 @@ set the first bit to be the least or most significant bit
       self, 
       bus: int, 
       /, 
-      mode: int = MASTER, 
+      mode: int = CONTROLLER, 
       *,
       prescaler: int = 256, 
       polarity: int = 1, 
@@ -3705,7 +3705,7 @@ set the first bit to be the least or most significant bit
    @overload
    def init(
       self, 
-      mode: int = MASTER, 
+      mode: int = CONTROLLER, 
       baudrate: int = 328125, 
       *,
       polarity: int = 1, 
@@ -3718,8 +3718,8 @@ set the first bit to be the least or most significant bit
       """
       Initialise the SPI bus with the given parameters:
       
-        - ``mode`` must be either ``SPI.MASTER`` or ``SPI.SLAVE``.
-        - ``baudrate`` is the SCK clock rate (only sensible for a master).
+        - ``mode`` must be either ``SPI.CONTROLLER`` or ``SPI.PERIPHERAL``.
+        - ``baudrate`` is the SCK clock rate (only sensible for a controller).
         - ``prescaler`` is the prescaler to use to derive SCK from the APB bus frequency;
           use of ``prescaler`` overrides ``baudrate``.
         - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
@@ -3744,7 +3744,7 @@ set the first bit to be the least or most significant bit
    @overload
    def init(
       self, 
-      mode: int = MASTER, 
+      mode: int = CONTROLLER, 
       *,
       prescaler: int = 256, 
       polarity: int = 1, 
@@ -3757,8 +3757,8 @@ set the first bit to be the least or most significant bit
       """
       Initialise the SPI bus with the given parameters:
       
-        - ``mode`` must be either ``SPI.MASTER`` or ``SPI.SLAVE``.
-        - ``baudrate`` is the SCK clock rate (only sensible for a master).
+        - ``mode`` must be either ``SPI.CONTROLLER`` or ``SPI.PERIPHERAL``.
+        - ``baudrate`` is the SCK clock rate (only sensible for a controller).
         - ``prescaler`` is the prescaler to use to derive SCK from the APB bus frequency;
           use of ``prescaler`` overrides ``baudrate``.
         - ``polarity`` can be 0 or 1, and is the level the idle clock line sits at.
@@ -4048,7 +4048,7 @@ class Timer:
       freq: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       deadtime: int = 0
    ):
       """
@@ -4067,7 +4067,7 @@ class Timer:
       period: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       deadtime: int = 0
    ):
       """
@@ -4083,7 +4083,7 @@ class Timer:
       freq: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       deadtime: int = 0
    ) -> None:
       """
@@ -4141,7 +4141,7 @@ class Timer:
       period: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       deadtime: int = 0
    ) -> None:
       """
@@ -4201,7 +4201,7 @@ class Timer:
       Stops the timer, and disables the timer peripheral.
       """
 
-   def callback(self, fun: Optional[Callable[["Timer"], None]], /) -> None:
+   def callback(self, fun: Optional[Callable[[Timer], None]], /) -> None:
       """
       Set the function to be called when the timer triggers.
       ``fun`` is passed 1 argument, the timer object.
@@ -4295,7 +4295,7 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       pin: Optional[Pin] = None,
       pulse_width: int,
    ) -> "TimerChannel":
@@ -4380,7 +4380,7 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       pin: Optional[Pin] = None,
       pulse_width_percent: Union[int, float],
    ) -> "TimerChannel":
@@ -4465,7 +4465,7 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       pin: Optional[Pin] = None,
       compare: int,
       polarity: int,
@@ -4551,7 +4551,7 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       pin: Optional[Pin] = None,
       polarity: int,
    ) -> "TimerChannel":
@@ -4636,7 +4636,7 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[["Timer"], None]] = None, 
+      callback: Optional[Callable[[Timer], None]] = None, 
       pin: Optional[Pin] = None,
    ) -> "TimerChannel":
       """

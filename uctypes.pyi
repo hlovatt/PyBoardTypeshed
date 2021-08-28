@@ -25,7 +25,7 @@ sub-fields.
 
 .. seealso::
 
-    Module :mod:`ustruct`
+    Module :mod:`struct`
         Standard Python way to access binary data structures (doesn't scale
         well to large and complex structures).
 
@@ -190,7 +190,7 @@ Following are encoding examples for various field types:
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -244,7 +244,7 @@ Layout type for a native structure - with data endianness and alignment
 
 
 # noinspection PyShadowingNames
-def sizeof(struct: Union["struct", _descriptor], layout_type: int = NATIVE, /) -> int:
+def sizeof(struct: Union[struct, _descriptor], layout_type: int = NATIVE, /) -> int:
    """
    Return size of data structure in bytes. The *struct* argument can be
    either a structure class or a specific instantiated structure object

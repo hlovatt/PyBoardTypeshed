@@ -15,11 +15,11 @@ bitmap images, which can then be sent to a display.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import TypeVar, overload, Final
+from typing import TypeVar, overload, Final, Optional
 
 from uarray import array
 
@@ -254,30 +254,24 @@ class FrameBuffer:
        leave a footprint of the previous colors in the FrameBuffer.
       """
 
-   @overload
-   def blit(self, fbuf: "FrameBuffer", x: int, y: int, /) -> None:
+   
+   def blit(self, fbuf: FrameBuffer, x: int, y: int, key: int = -1, pallet: Optional[FrameBuffer] = None, /) -> None:
       """
        Draw another FrameBuffer on top of the current one at the given coordinates.
        If *key* is specified then it should be a color integer and the
        corresponding color will be considered transparent: all pixels with that
        color value will not be drawn.
        
-       This method works between FrameBuffer instances utilising different formats,
-       but the resulting colors may be unexpected due to the mismatch in color
-       formats.
-      """
-
-   @overload
-   def blit(self, fbuf: "FrameBuffer", x: int, y: int, key: int, /) -> None:
-      """
-       Draw another FrameBuffer on top of the current one at the given coordinates.
-       If *key* is specified then it should be a color integer and the
-       corresponding color will be considered transparent: all pixels with that
-       color value will not be drawn.
-       
-       This method works between FrameBuffer instances utilising different formats,
-       but the resulting colors may be unexpected due to the mismatch in color
-       formats.
+       The *palette* argument enables blitting between FrameBuffers with differing
+       formats. Typical usage is to render a monochrome or grayscale glyph/icon to
+       a color display. The *palette* is a FrameBuffer instance whose format is
+       that of the current FrameBuffer. The *palette* height is one pixel and its
+       pixel width is the number of colors in the source FrameBuffer. The *palette*
+       for an N-bit source needs 2**N pixels; the *palette* for a monochrome source
+       would have 2 pixels representing background and foreground colors. The
+       application assigns a color to each pixel in the *palette*. The color of the
+       current pixel will be that of that *palette* pixel whose x position is the
+       color of the corresponding source pixel.
       """
 
 

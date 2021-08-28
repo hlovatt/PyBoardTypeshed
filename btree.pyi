@@ -28,7 +28,7 @@ Example::
 
     # First, we need to open a stream which holds a database
     # This is usually a file, but can be in-memory database
-    # using uio.BytesIO, a raw flash partition, etc.
+    # using io.BytesIO, a raw flash partition, etc.
     # Oftentimes, you want to create a database file if it doesn't
     # exist and open if it exists. Idiom below takes care of this.
     # DO NOT open database with "a+b" access mode.
@@ -87,7 +87,7 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "4.0.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -157,7 +157,7 @@ but only one of these and not a mixture in a single declaration.
 
 
 
-def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: int = 0, minkeypage: int = 0) -> "_BTree":
+def open(stream: _IOBase, /, *, flags: int = 0, pagesize: int = 0, cachesize: int = 0, minkeypage: int = 0) -> _BTree:
    """
    Open a database from a random-access `stream` (like an open file). All
    other parameters are optional and keyword-only, and allow to tweak advanced
