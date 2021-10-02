@@ -22,14 +22,14 @@ hold/accumulate various objects.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import overload, Tuple, Any, Type, Iterable, TypeVar, Generic, Mapping, Dict
+from typing import overload, Tuple, Any, Type, Iterable, TypeVar, Generic, Mapping, Dict, Final
 
-_KT = TypeVar("_KT")
-_VT = TypeVar("_VT")
+_KT: Final = TypeVar("_KT")
+_VT: Final = TypeVar("_VT")
 
 
 def namedtuple(name: str, fields: str | Iterable[str]) -> Type[Tuple[Any, ...]]:

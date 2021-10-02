@@ -14,13 +14,13 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import overload, Sequence, Any, MutableSequence, Generic, Text, TypeVar
+from typing import overload, Sequence, Any, MutableSequence, Generic, Text, TypeVar, Final
 
-_T = TypeVar("_T", int, float, Text)
+_T: Final = TypeVar("_T", int, float, Text)
 
 
 
@@ -67,16 +67,7 @@ class array(MutableSequence[_T], Generic[_T]):
 
 
 
-   @overload
-   def __init__(self, typecode: str, /):
-      """
-       Create array with elements of given type. Initial contents of the
-       array are given by *iterable*. If it is not provided, an empty
-       array is created.
-      """
-
-   @overload
-   def __init__(self, typecode: str, iterable: Sequence[Any], /):
+   def __init__(self, typecode: str, iterable: Sequence[Any] = ..., /):
       """
        Create array with elements of given type. Initial contents of the
        array are given by *iterable*. If it is not provided, an empty

@@ -30,26 +30,23 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import overload, Any, Union, Tuple, TypeVar, Optional, Final
+from typing import overload, Any, Tuple, TypeVar, Optional, Final
 
 from pyb import Pin, I2C, SPI
 from uarray import array
 
 
-
-_AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
+_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
 
 
-
-
-_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
@@ -266,7 +263,7 @@ The width and height of the display, respectively, in pixels.  These
        Set the baudrate of the UART interface.
       """
 
-   def set_startup_deco(self, value: Union[bool, str], /) -> None:
+   def set_startup_deco(self, value: bool | str, /) -> None:
       """
        Set the start-up decoration of the display.  The *value* parameter can be a
        logical or of `STARTUP_DECO_NONE`, `STARTUP_DECO_MLOGO`, `STARTUP_DECO_INFO`.

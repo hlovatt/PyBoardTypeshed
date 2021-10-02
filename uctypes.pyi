@@ -190,16 +190,16 @@ Following are encoding examples for various field types:
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import Tuple, Union, TypeVar, Final
+from typing import Tuple, TypeVar, Final
 
 from uarray import array
 
 
-_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
@@ -207,15 +207,15 @@ but only one of these and not a mixture in a single declaration.
 
 
 
-_scalar_property = int
-_recursive_property = Tuple[int, "_property"]
-_array_property = Tuple[int, int]
-_array_of_aggregate_property = Tuple[int, int, "_property"]
-_pointer_to_a_primitive_property = Tuple[int, int]
-_pointer_to_an_aggregate_property = Tuple[int, "_property"]
-_bitfield_property = int
-_property = Union[_scalar_property, _recursive_property, _array_property, _array_of_aggregate_property, _pointer_to_a_primitive_property, _pointer_to_an_aggregate_property, _bitfield_property]
-_descriptor = Tuple[str, _property]
+_ScalarProperty: Final = int
+_RecursiveProperty: Final = Tuple[int, "_property"]
+_ArrayProperty: Final = Tuple[int, int]
+_ArrayOfAggregateProperty: Final = Tuple[int, int, "_property"]
+_PointerToAPrimitiveProperty: Final = Tuple[int, int]
+_PointerToAaAggregateProperty: Final = Tuple[int, "_property"]
+_BitfieldProperty: Final = int
+_property: Final = _ScalarProperty | _RecursiveProperty | _ArrayProperty | _ArrayOfAggregateProperty | _PointerToAPrimitiveProperty | _PointerToAaAggregateProperty | _BitfieldProperty
+_descriptor: Final = Tuple[str, _property]
 
 LITTLE_ENDIAN: Final[int] = ...
 """
@@ -244,7 +244,7 @@ Layout type for a native structure - with data endianness and alignment
 
 
 # noinspection PyShadowingNames
-def sizeof(struct: Union[struct, _descriptor], layout_type: int = NATIVE, /) -> int:
+def sizeof(struct: struct | _descriptor, layout_type: int = NATIVE, /) -> int:
    """
    Return size of data structure in bytes. The *struct* argument can be
    either a structure class or a specific instantiated structure object

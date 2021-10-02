@@ -15,7 +15,7 @@ bitmap images, which can then be sent to a display.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
@@ -24,7 +24,7 @@ from typing import TypeVar, overload, Final, Optional
 from uarray import array
 
 
-_AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
+_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
@@ -126,35 +126,7 @@ class FrameBuffer:
 
 
 
-   @overload
-   def __init__(self, buffer: _AnyWritableBuf, width: int, height: int, format: int, /):
-      """
-       Construct a FrameBuffer object.  The parameters are:
-       
-           - *buffer* is an object with a buffer protocol which must be large
-             enough to contain every pixel defined by the width, height and
-             format of the FrameBuffer.
-           - *width* is the width of the FrameBuffer in pixels
-           - *height* is the height of the FrameBuffer in pixels
-           - *format* specifies the type of pixel used in the FrameBuffer;
-             permissible values are listed under Constants below. These set the
-             number of bits used to encode a color value and the layout of these
-             bits in *buffer*.
-             Where a color value c is passed to a method, c is a small integer
-             with an encoding that is dependent on the format of the FrameBuffer.
-           - *stride* is the number of pixels between each horizontal line
-             of pixels in the FrameBuffer. This defaults to *width* but may
-             need adjustments when implementing a FrameBuffer within another
-             larger FrameBuffer or screen. The *buffer* size must accommodate
-             an increased step size.
-       
-       One must specify valid *buffer*, *width*, *height*, *format* and
-       optionally *stride*.  Invalid *buffer* size or dimensions may lead to
-       unexpected errors.
-      """
-
-   @overload
-   def __init__(self, buffer: _AnyWritableBuf, width: int, height: int, format: int, stride: int, /):
+   def __init__(self, buffer: _AnyWritableBuf, width: int, height: int, format: int, stride: int = ..., /):
       """
        Construct a FrameBuffer object.  The parameters are:
        

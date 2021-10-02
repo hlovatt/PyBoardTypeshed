@@ -34,48 +34,24 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from abc import abstractmethod
-from typing import overload, Union, Tuple, TypeVar, Optional, NoReturn, List, Callable
-from typing import Sequence, runtime_checkable, Protocol, ClassVar, Any, Final
+from typing import overload, Tuple, TypeVar, Optional, NoReturn, List, Callable
+from typing import Sequence, ClassVar, Any, Final
 
 from uarray import array
+from uos import AbstractBlockDev
 
 
-
-@runtime_checkable
-class _AbstractBlockDev(Protocol):
-    """
-    A `Protocol` (structurally typed) with the defs needed by 
-    `usb_mode` argument `msc`.
-    """
-
-    __slots__ = ()
-
-    @abstractmethod
-    def readblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ... 
-
-    @abstractmethod
-    def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
-
-    @abstractmethod
-    def ioctl(self, op: int, arg: int) -> Optional[int]: ...
-
-
-
-
-_AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
+_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
 
 
-
-
-_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
@@ -902,7 +878,7 @@ class Signal:
    @overload
    def __init__(
       self, 
-      id: Union[Pin, str], 
+      id: Pin | str, 
       /, 
       mode: int = -1, 
       pull: int = -1, 
@@ -997,7 +973,7 @@ class ADC:
 
 
 
-   def __init__(self, pin: Union[int, Pin], /):
+   def __init__(self, pin: int | Pin, /):
       """
       Access the ADC associated with a source identified by *id*.  This
       *id* may be an integer (usually specifying a channel number), a
@@ -1062,7 +1038,7 @@ IRQ trigger sources
    @overload
    def __init__(
       self,
-      id: Union[int, str],
+      id: int | str,
       baudrate: int = 9600, 
       bits: int = 8, 
       parity: Optional[int] = None, 
@@ -1084,7 +1060,7 @@ IRQ trigger sources
    @overload
    def __init__(
       self,
-      id: Union[int, str],
+      id: int | str,
       baudrate: int = 9600, 
       bits: int = 8, 
       parity: Optional[int] = None, 
@@ -1100,7 +1076,7 @@ IRQ trigger sources
    @overload
    def __init__(
       self,
-      id: Union[int, str],
+      id: int | str,
       baudrate: int = 9600, 
       bits: int = 8, 
       parity: Optional[int] = None, 
@@ -2343,7 +2319,7 @@ class SD:
    def __init__(
       self, 
       id: int = 0, 
-      pins: Union[Tuple[str, str, str], Tuple[Pin, Pin, Pin]] = ("GP10", "GP11", "GP15")
+      pins: Tuple[str, str, str] | Tuple[Pin, Pin, Pin] = ("GP10", "GP11", "GP15")
    ):
       """
       Create a SD card object. See ``init()`` for parameters if initialization.
@@ -2353,7 +2329,7 @@ class SD:
    def init(
       self, 
       id: int = 0, 
-      pins: Union[Tuple[str, str, str], Tuple[Pin, Pin, Pin]] = ("GP10", "GP11", "GP15")
+      pins: Tuple[str, str, str] | Tuple[Pin, Pin, Pin] = ("GP10", "GP11", "GP15")
    ) -> None:
       """
       Enable the SD card. In order to initialize the card, give it a 3-tuple:
@@ -2367,7 +2343,7 @@ class SD:
 
 
 # noinspection PyShadowingNames
-class SDCard(_AbstractBlockDev):
+class SDCard(AbstractBlockDev):
    """
    SD cards are one of the most common small form factor removable storage media.
    SD cards come in a variety of sizes and physical form factors. MMC cards are
@@ -2467,13 +2443,13 @@ class SDCard(_AbstractBlockDev):
       self, 
       slot: int = 1, 
       width: int = 1, 
-      cd: Optional[Union[int, str, Pin]] = None, 
-      wp: Optional[Union[int, str, Pin]] = None, 
-      sck: Optional[Union[int, str, Pin]] = None, 
-      miso: Optional[Union[int, str, Pin]] = None, 
-      mosi: Optional[Union[int, str, Pin]] = None, 
-      cs: Optional[Union[int, str, Pin]] = None, 
-      freq: int = 20000000
+      cd: int | str | Pin | None = None, 
+      wp: int | str | Pin | None = None, 
+      sck: int | str | Pin | None = None, 
+      miso: int | str | Pin | None = None, 
+      mosi: int | str | Pin | None = None, 
+      cs: int | str | Pin | None = None, 
+      freq: int = 20000000,
    ):
       """
        This class provides access to SD or MMC storage cards using either

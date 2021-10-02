@@ -24,23 +24,23 @@ building-blocks for higher-level abstractions such as specific device types.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import overload, Any, Union, Tuple, Callable, Optional, TypeVar
+from typing import overload, Any, Tuple, Callable, Optional, TypeVar, Final
 
 from uarray import array
 
 
-_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
 
 
-_AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
+_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
@@ -96,7 +96,7 @@ class BLE:
        - ``'mac'``: The current address in use, depending on the current address mode.
          This returns a tuple of ``(addr_type, addr)``.
        
-         See :meth:`gatts_write <BLE.gap_scan>` for details about address type.
+         See :meth:`gatts_write <BLE.gatts_write>` for details about address type.
        
          This may only be queried while the interface is currently active.
        
@@ -161,7 +161,7 @@ class BLE:
        - ``'mac'``: The current address in use, depending on the current address mode.
          This returns a tuple of ``(addr_type, addr)``.
        
-         See :meth:`gatts_write <BLE.gap_scan>` for details about address type.
+         See :meth:`gatts_write <BLE.gatts_write>` for details about address type.
        
          This may only be queried while the interface is currently active.
        
@@ -544,14 +544,14 @@ class BLE:
        --------------------------
       """
 
-   _flag = int
-   _descriptor = Tuple["UUID", _flag]
-   _characteristic = Union[Tuple["UUID", _flag], Tuple["UUID", _flag, Tuple[_descriptor, ...]]]
-   _service = Tuple["UUID", Tuple[_characteristic, ...]]
+   _Flag: Final = int
+   _Descriptor: Final = Tuple["UUID", _Flag]
+   _Characteristic: Final = Tuple["UUID", _Flag] | Tuple["UUID", _Flag, Tuple[_Descriptor, ...]]
+   _Service: Final = Tuple["UUID", Tuple[_Characteristic, ...]]
    
    def gatts_register_services(
       self, 
-      services_definition: Tuple[_service, ...], 
+      services_definition: Tuple[_Service, ...], 
       /
    ) -> Tuple[Tuple[memoryview, ...], ...]:
       """
@@ -1227,7 +1227,7 @@ class UUID:
 
 
 
-   def __init__(self, value: Union[int, str], /):
+   def __init__(self, value: int | str, /):
       """
        Creates a UUID instance with the specified **value**.
        

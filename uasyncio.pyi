@@ -39,21 +39,22 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
 from abc import ABC
-from typing import Awaitable, TypeVar, Optional, List, Tuple, Union, Callable
-from typing import Coroutine, Any, Dict, Iterable, Generic
+from typing import Awaitable, TypeVar, Optional, List, Tuple, Callable
+from typing import Coroutine, Any, Dict, Iterable, Generic, Final
 
 from uarray import array
 
-_T = TypeVar("_T")
-_C = Union[Coroutine[Any, None, _T], Awaitable[_T]]  # `Coroutine` `_T` is covariant and `Awaitable` `_T` is invariant.
+_T: Final = TypeVar("_T")
+# `Coroutine` `_T` is covariant and `Awaitable` `_T` is invariant.
+_C: Final = Coroutine[Any, None, _T] | Awaitable[_T]
 
 
-_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
@@ -132,7 +133,7 @@ StreamWriter = 'Stream'
 
 def open_connection(
    host: Optional[str], 
-   port: Union[str, int, None],
+   port: str | int | None,
    /,
 ) -> Awaitable[Tuple[StreamReader, StreamWriter]]:
    """
@@ -149,8 +150,8 @@ def open_connection(
 
 def start_server(
    callback: Callable[[StreamReader, StreamWriter], None], 
-   host: Optional[str], 
-   port: Union[str, int, None],
+   host: str | None, 
+   port: str | int | None,
    backlog: int = 5, 
    /,
 ) -> Awaitable[Server]:

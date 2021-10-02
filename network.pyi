@@ -47,23 +47,23 @@ For example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
 from abc import abstractmethod
-from typing import Protocol, List, Tuple, Callable, overload, Any, Optional, ClassVar, Union
+from typing import Protocol, List, Tuple, Callable, overload, Any, Optional, ClassVar, Final
 
 import pyb
 
 
-MODE_11B: int = ...
+MODE_11B: Final[int] = ...
 """IEEE 802.11b"""
 
-MODE_11G: int = ...
+MODE_11G: Final[int] = ...
 """IEEE 802.11g"""
 
-MODE_11N: int = ...
+MODE_11N: Final[int] = ...
 """IEEE 802.11n"""
 
 
@@ -726,7 +726,7 @@ selects the antenna type
       """
 
    @overload
-   def ifconfig(self, if_id: int = 0, /, *, config: Union[str, Tuple[str, str, str, str]]) -> None:
+   def ifconfig(self, if_id: int = 0, /, *, config: str | Tuple[str, str, str, str]) -> None:
       """
       With no parameters given returns a 4-tuple of *(ip, subnet_mask, gateway, DNS_server)*.
       

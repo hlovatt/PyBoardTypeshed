@@ -22,25 +22,12 @@ encodings of it in ASCII form (in both directions).
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
-from typing import overload
 
-
-@overload
-def hexlify(data: bytes, /) -> bytes:
-   """
-   Convert the bytes in the *data* object to a hexadecimal representation.
-   Returns a bytes object.
-   
-   If the additional argument *sep* is supplied it is used as a separator
-   between hexadecimal values.
-   """
-
-@overload
-def hexlify(data: bytes, sep: str | bytes, /) -> bytes:
+def hexlify(data: bytes, sep: str | bytes = ..., /) -> bytes:
    """
    Convert the bytes in the *data* object to a hexadecimal representation.
    Returns a bytes object.

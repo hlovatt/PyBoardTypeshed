@@ -89,16 +89,16 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "5.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 
 from abc import ABC, abstractmethod
 from typing import NoReturn, overload, Tuple, Sequence, runtime_checkable, Protocol
-from typing import Optional, Union, TypeVar, List, Callable, Dict, Any, ClassVar
+from typing import Optional, TypeVar, List, Callable, Dict, Any, ClassVar, Final
 
 from uarray import array
-
+from uos import AbstractBlockDev
 
 @runtime_checkable
 class _OldAbstractReadOnlyBlockDev(Protocol):
@@ -110,7 +110,7 @@ class _OldAbstractReadOnlyBlockDev(Protocol):
     __slots__ = ()
 
     @abstractmethod
-    def readblocks(self, blocknum: int, buf: bytes, /) -> None: ...
+    def readblocks(self, blocknum: int, buf: bytearray, /) -> None: ...
 
     @abstractmethod
     def count(self) -> int: ...
@@ -126,55 +126,32 @@ class _OldAbstractBlockDev(_OldAbstractReadOnlyBlockDev, Protocol):
     __slots__ = ()
 
     @abstractmethod
-    def writeblocks(self, blocknum: int, buf: bytes, /) -> None: ...
+    def writeblocks(self, blocknum: int, buf: bytes | bytearray, /) -> None: ...
 
     @abstractmethod
     def sync(self) -> None: ...
 
 
-
-@runtime_checkable
-class _AbstractBlockDev(Protocol):
-    """
-    A `Protocol` (structurally typed) with the defs needed by 
-    `usb_mode` argument `msc`.
-    """
-
-    __slots__ = ()
-
-    @abstractmethod
-    def readblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ... 
-
-    @abstractmethod
-    def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
-
-    @abstractmethod
-    def ioctl(self, op: int, arg: int) -> Optional[int]: ...
-
-
-
-hid_mouse: Tuple[int, int, int, int, bytes] = ...
+hid_mouse: Final[Tuple[int, int, int, int, bytes]] = ...
 """
 Mouse human interface device (hid), see `hid` argument of `usb_mode`.
 """
 
 
-hid_keyboard: Tuple[int, int, int, int, bytes] = ...
+hid_keyboard: Final[Tuple[int, int, int, int, bytes]] = ...
 """
 Keyboard human interface device (hid), see `hid` argument of `usb_mode`.
 """
 
 
 
-_AnyWritableBuf = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
+_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
 
 
-
-
-_AnyReadableBuf = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
+_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
@@ -738,7 +715,7 @@ def usb_mode(
    port: int = -1, 
    vid: int = 0xf055, 
    pid: int = -1, 
-   msc: Sequence[_AbstractBlockDev] = (), 
+   msc: Sequence[AbstractBlockDev] = (), 
    hid: Tuple[int, int, int, int, bytes] = hid_mouse, 
    high_speed: bool = False
 ) -> None:
@@ -853,7 +830,7 @@ class ADC:
 
 
 
-   def __init__(self, pin: Union[int, Pin], /):
+   def __init__(self, pin: int | Pin, /):
       """
       Create an ADC object associated with the given pin.
       This allows you to then read analog values on that pin.
@@ -865,7 +842,7 @@ class ADC:
       will be between 0 and 4095.
       """
 
-   def read_timed(self, buf: _AnyWritableBuf, timer: Union[Timer, int], /) -> None:
+   def read_timed(self, buf: _AnyWritableBuf, timer: Timer | int, /) -> None:
       """
       Read analog values into ``buf`` at a rate set by the ``timer`` object.
       
@@ -1194,7 +1171,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
    
    def __init__(
       self, 
-      bus: Union[int, str], 
+      bus: int | str, 
       mode: int,
       /,
       extframe: bool = False, 
@@ -1545,7 +1522,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       """
 
    @overload
-   def recv(self, fifo: int, list: List[Union[int, bool, memoryview]], /, *, timeout: int = 5000) -> None:
+   def recv(self, fifo: int, list: List[int | bool | memoryview], /, *, timeout: int = 5000) -> None:
       """
       Receive data on the bus:
       
@@ -1580,7 +1557,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       """
 
    
-   def send(self, data: Union[int, _AnyWritableBuf], id: int, /, *, timeout: int = 0, rtr: bool = False) -> None:
+   def send(self, data: int | _AnyWritableBuf, id: int, /, *, timeout: int = 0, rtr: bool = False) -> None:
       """
       Send a message on the bus:
       
@@ -1696,7 +1673,7 @@ class DAC:
    """
 
 
-   def __init__(self, port: Union[int, Pin], /, bits: int = 8, *, buffering: Optional[bool] = None):
+   def __init__(self, port: int | Pin, /, bits: int = 8, *, buffering: Optional[bool] = None):
       """
       Construct a new DAC object.
       
@@ -1753,7 +1730,7 @@ class DAC:
       object or by using the ``init`` method.
       """
 
-   def write_timed(self, data: _AnyWritableBuf, freq: Union[int, Timer], /, *, mode: int = NORMAL) -> None:
+   def write_timed(self, data: _AnyWritableBuf, freq: int | Timer, /, *, mode: int = NORMAL) -> None:
       """
       Initiates a burst of RAM to DAC using a DMA transfer.
       The input data is treated as an array of bytes in 8-bit mode, and
@@ -1848,7 +1825,7 @@ interrupt on a rising or falling edge
 
 
 
-   def __init__(self, pin: Union[int, str, Pin], mode: int, pull: int, callback: Callable[[int], None]):
+   def __init__(self, pin: int | str | Pin, mode: int, pull: int, callback: Callable[[int], None]):
       """
       Create an ExtInt object:
       
@@ -1895,7 +1872,7 @@ interrupt on a rising or falling edge
       """
 
 
-class Flash:
+class Flash(AbstractBlockDev):
    """
    The Flash class allows direct access to the primary flash device on the pyboard.
    
@@ -2009,7 +1986,7 @@ class I2C:
    
    def __init__(
       self, 
-      bus: Union[int, str], 
+      bus: int | str, 
       mode: str, 
       /, 
       *, 
@@ -2047,7 +2024,7 @@ class I2C:
    
    def init(
       self, 
-      bus: Union[int, str], 
+      bus: int | str, 
       mode: str, 
       /, 
       *, 
@@ -2076,7 +2053,7 @@ class I2C:
    
    def mem_read(
       self, 
-      data: Union[int, _AnyWritableBuf], 
+      data: int | _AnyWritableBuf, 
       addr: int, 
       memaddr: int,
       /, 
@@ -2169,7 +2146,7 @@ class LCD:
       This method reads from the visible buffer.
       """
 
-   def light(self, value: Union[bool, int], /) -> None:
+   def light(self, value: bool | int, /) -> None:
       """
       Turn the backlight on/off.  True or 1 turns it on, False or 0 turns it off.
       """
@@ -3043,13 +3020,13 @@ enable the pull-up resistor on the pin
    
    def __init__(
       self, 
-      id: Union[Pin, str], 
+      id: Pin | str, 
       /, 
       mode: int = IN, 
       pull: int = PULL_NONE, 
       *,
       value: Any = None,
-      alt: Union[str, int] = -1,
+      alt: str | int = -1,
    ):
       """
       Create a new Pin object associated with the id.  If additional arguments are given,
@@ -3105,7 +3082,7 @@ enable the pull-up resistor on the pin
       pull: int = PULL_NONE, 
       *, 
       value: Any = None, 
-      alt: Union[str, int] = -1,
+      alt: str | int = -1,
    ) -> None:
       """
       Initialise the pin:
@@ -3780,7 +3757,7 @@ set the first bit to be the least or most significant bit
       prescaler.
       """
 
-   def recv(self, recv: Union[int, _AnyWritableBuf], /, *, timeout: int = 5000) -> _AnyWritableBuf:
+   def recv(self, recv: int | _AnyWritableBuf, /, *, timeout: int = 5000) -> _AnyWritableBuf:
       """
       Receive data on the bus:
       
@@ -3792,7 +3769,7 @@ set the first bit to be the least or most significant bit
       otherwise the same buffer that was passed in to ``recv``.
       """
 
-   def send(self, send: Union[int, _AnyWritableBuf, bytes], /, *, timeout: int = 5000) -> None:
+   def send(self, send: int | _AnyWritableBuf | bytes, /, *, timeout: int = 5000) -> None:
       """
       Send data on the bus:
       
@@ -3805,8 +3782,8 @@ set the first bit to be the least or most significant bit
    
    def send_recv(
       self, 
-      send: Union[int, bytearray, array, bytes], 
-      recv: Optional[_AnyWritableBuf] = None, 
+      send: int | bytearray | array | bytes, 
+      recv: _AnyWritableBuf | None = None, 
       /, 
       *, 
       timeout: int = 5000
@@ -4382,7 +4359,7 @@ class Timer:
       *, 
       callback: Optional[Callable[[Timer], None]] = None, 
       pin: Optional[Pin] = None,
-      pulse_width_percent: Union[int, float],
+      pulse_width_percent: int | float,
    ) -> "TimerChannel":
       """
       If only a channel number is passed, then a previously initialized channel
@@ -4863,7 +4840,7 @@ class TimerChannel(ABC):
 
    @overload
    @abstractmethod
-   def pulse_width_percent(self, value: Union[int, float], /) -> None:
+   def pulse_width_percent(self, value: int | float, /) -> None:
       """
       Get or set the pulse width percentage associated with a channel.  The value
       is a number between 0 and 100 and sets the percentage of the timer period
@@ -4935,7 +4912,7 @@ to select the flow control type.
    @overload
    def __init__(
       self, 
-      bus: Union[int, str],
+      bus: int | str,
       /
    ):
       """
@@ -4976,11 +4953,11 @@ to select the flow control type.
    @overload
    def __init__(
       self, 
-      bus: Union[int, str],
+      bus: int | str,
       baudrate: int,
       /,
       bits: int = 8,
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       *, 
       timeout: int = 0, 
@@ -5386,7 +5363,7 @@ to select the flow control type.
       otherwise the number of bytes read into ``data`` is returned.
       """
 
-   def send(self, buf: Union[_AnyWritableBuf, bytes, int], /, *, timeout: int = 5000) -> int:
+   def send(self, buf: _AnyWritableBuf | bytes | int, /, *, timeout: int = 5000) -> int:
       """
       Send data over the USB VCP:
       
