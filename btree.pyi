@@ -80,7 +80,7 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from types import TracebackType
 from typing import Protocol, Iterable, AnyStr, runtime_checkable, Optional, TypeVar, Tuple, Final
@@ -103,10 +103,10 @@ but only one of these and not a mixture in a single declaration.
 
 
 _AnyStr: Final = TypeVar('_AnyStr', str, bytes)  # `str` for text IO and `bytes` for binary IO.
-_Self: Final = TypeVar('_Self')  # The type that extends `_IOBase`.
+_Self: Final = TypeVar('_Self')  # The type that extends `IOBase`.
 
 @runtime_checkable
-class _IOBase(Protocol[_AnyStr, _Self]):
+class IOBase(Protocol[_AnyStr, _Self]):
     """A `Protocol` (structurally typed) for an IOStream."""
 
     __slots__ = ()
@@ -244,7 +244,7 @@ class _IOBase(Protocol[_AnyStr, _Self]):
 
 
 def open(
-   stream: _IOBase[bytes, Any], 
+   stream: IOBase[bytes, Any], 
    /, 
    *, 
    flags: int = 0, 

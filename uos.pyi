@@ -18,7 +18,7 @@ functions.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import abstractmethod
 from types import TracebackType
@@ -52,10 +52,10 @@ Type that allows bytearray, array, or memoryview, but only one of these and not 
 
 
 _AnyStr: Final = TypeVar('_AnyStr', str, bytes)  # `str` for text IO and `bytes` for binary IO.
-_Self: Final = TypeVar('_Self')  # The type that extends `_IOBase`.
+_Self: Final = TypeVar('_Self')  # The type that extends `IOBase`.
 
 @runtime_checkable
-class _IOBase(Protocol[_AnyStr, _Self]):
+class IOBase(Protocol[_AnyStr, _Self]):
     """A `Protocol` (structurally typed) for an IOStream."""
 
     __slots__ = ()
@@ -434,7 +434,7 @@ def sync() -> None:
    Sync all filesystems.
    """
 
-def dupterm(stream_object: _IOBase | None, index: int = 0, /) -> _IOBase | None:
+def dupterm(stream_object: IOBase | None, index: int = 0, /) -> IOBase | None:
    """
    Duplicate or switch the MicroPython terminal (the REPL) on the given `stream`-like
    object. The *stream_object* argument must be a native stream object, or derive
@@ -456,7 +456,7 @@ def dupterm(stream_object: _IOBase | None, index: int = 0, /) -> _IOBase | None:
    The function returns the previous stream-like object in the given slot.
    """
 
-def mount(fsobj: "AbstractBlockDev", mount_point: str, /, *, readonly: bool = False) -> _IOBase | None:
+def mount(fsobj: "AbstractBlockDev", mount_point: str, /, *, readonly: bool = False) -> IOBase | None:
    """
     Mount the filesystem object *fsobj* at the location in the VFS given by the
     *mount_point* string.  *fsobj* can be a a VFS object that has a ``mount()``

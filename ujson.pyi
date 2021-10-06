@@ -17,7 +17,7 @@ data format.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from types import TracebackType
 from typing import Any, Tuple, AnyStr, Final, TypeVar, runtime_checkable, Protocol
@@ -40,10 +40,10 @@ Type that allows bytearray, array, or memoryview, but only one of these and not 
 
 
 _AnyStr: Final = TypeVar('_AnyStr', str, bytes)  # `str` for text IO and `bytes` for binary IO.
-_Self: Final = TypeVar('_Self')  # The type that extends `_IOBase`.
+_Self: Final = TypeVar('_Self')  # The type that extends `IOBase`.
 
 @runtime_checkable
-class _IOBase(Protocol[_AnyStr, _Self]):
+class IOBase(Protocol[_AnyStr, _Self]):
     """A `Protocol` (structurally typed) for an IOStream."""
 
     __slots__ = ()
@@ -179,7 +179,7 @@ class _IOBase(Protocol[_AnyStr, _Self]):
         """
 
 
-def dump(obj: Any, stream: _IOBase[str, Any], separators: Tuple[str, str] | None = None, /) -> None:
+def dump(obj: Any, stream: IOBase[str, Any], separators: Tuple[str, str] | None = None, /) -> None:
    """
    Serialise *obj* to a JSON string, writing it to the given *stream*.
    
@@ -195,7 +195,7 @@ def dumps(obj: Any, separators: Tuple[str, str] | None = None) -> str:
    The arguments have the same meaning as in `dump`.
    """
 
-def load(stream: _IOBase[str, Any]) -> Any:
+def load(stream: IOBase[str, Any]) -> Any:
    """
    Parse the given *stream*, interpreting it as a JSON string and
    deserialising the data to a Python object.  The resulting object is

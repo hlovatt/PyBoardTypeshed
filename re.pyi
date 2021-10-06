@@ -114,7 +114,7 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import AnyStr, Callable, Generic, Tuple, Final, Any
 
@@ -229,7 +229,7 @@ class Match(Generic[AnyStr]):
    to the replacement function in `sub()`.
    
    The name, `Match`, used for typing is not the same as the runtime name, `match` (note lowercase `m`).
-   The reason is that the runtime uses `match` as both a class name and as a method name and
+   The reason for this difference is that the runtime uses `match` as both a class name and as a method name and
    this is not possible within code written entirely in Python and therefore not possible within typing code.
    """
 

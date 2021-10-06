@@ -82,7 +82,7 @@ to implement, or subclass, a stream class in pure Python.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import TypeVar, Final, Protocol, runtime_checkable, Literal, List
 from typing import AnyStr, Optional, overload, Type
@@ -183,10 +183,10 @@ but only one of these and not a mixture in a single declaration.
 
 
 _AnyStr: Final = TypeVar('_AnyStr', str, bytes)  # `str` for text IO and `bytes` for binary IO.
-_Self: Final = TypeVar('_Self')  # The type that extends `_IOBase`.
+_Self: Final = TypeVar('_Self')  # The type that extends `IOBase`.
 
 @runtime_checkable
-class _IOBase(Protocol[_AnyStr, _Self]):
+class IOBase(Protocol[_AnyStr, _Self]):
     """A `Protocol` (structurally typed) for an IOStream."""
 
     __slots__ = ()
@@ -347,7 +347,7 @@ def open(name: _OpenFile, mode: _OpenBinaryMode = ..., /, **kwargs) -> "FileIO":
    """
 
 
-class FileIO(_IOBase[bytes, "FileIO"]):
+class FileIO(IOBase[bytes, "FileIO"]):
    """
 
    """
@@ -361,7 +361,7 @@ class FileIO(_IOBase[bytes, "FileIO"]):
       """
 
 
-class TextIOWrapper(_IOBase[str, "TextIOWrapper"]):
+class TextIOWrapper(IOBase[str, "TextIOWrapper"]):
    """
 
    """
@@ -375,7 +375,7 @@ class TextIOWrapper(_IOBase[str, "TextIOWrapper"]):
       """
 
 
-class StringIO(_IOBase[str, "StringIO"]):
+class StringIO(IOBase[str, "StringIO"]):
    """
 
    """
@@ -383,7 +383,7 @@ class StringIO(_IOBase[str, "StringIO"]):
 
 
    @overload
-   def _init__(self, string: str = "", /):
+   def __init__(self, string: str = "", /):
       """
    
    In-memory file-like object for input/output.
@@ -404,7 +404,7 @@ class StringIO(_IOBase[str, "StringIO"]):
       """
 
    @overload
-   def _init__(self, alloc_size: int, /):
+   def __init__(self, alloc_size: int, /):
       """
    
    In-memory file-like object for input/output.
@@ -429,7 +429,7 @@ class StringIO(_IOBase[str, "StringIO"]):
       """Get the current contents of the underlying buffer which holds data."""
 
 
-class BytesIO(_IOBase[bytes, "BytesIO"]):
+class BytesIO(IOBase[bytes, "BytesIO"]):
    """
 
    """
@@ -437,7 +437,7 @@ class BytesIO(_IOBase[bytes, "BytesIO"]):
 
 
    @overload
-   def _init__(self, string: bytes = "", /):
+   def __init__(self, string: bytes = "", /):
       """
        In-memory file-like objects for input/output. `StringIO` is used for
        text-mode I/O (similar to a normal file opened with "t" modifier).
@@ -464,7 +464,7 @@ class BytesIO(_IOBase[bytes, "BytesIO"]):
       """
 
    @overload
-   def _init__(self, alloc_size: int, /):
+   def __init__(self, alloc_size: int, /):
       """
        In-memory file-like objects for input/output. `StringIO` is used for
        text-mode I/O (similar to a normal file opened with "t" modifier).
