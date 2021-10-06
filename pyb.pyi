@@ -1,10 +1,8 @@
 """
-
 functions related to the board
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/pyb.rst`, etc.
-
 =============================================
 
    
@@ -84,14 +82,10 @@ Descriptions taken from
    cause ``nRTS`` to go ``False`` until the character is read.
 """
 
-
-
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import ABC, abstractmethod
 from typing import NoReturn, overload, Tuple, Sequence, runtime_checkable, Protocol
@@ -768,7 +762,6 @@ class Accel:
            print(accel.x(), accel.y(), accel.z())
    
    Raw values are between -32 and 31.
-   
    """
 
 
@@ -825,7 +818,6 @@ class ADC:
        val = adc.read_core_vbat()          # read MCU VBAT
        val = adc.read_core_vref()          # read MCU VREF
        val = adc.read_vref()               # read MCU supply voltage
-   
    """
 
 
@@ -1079,9 +1071,7 @@ class CAN:
        can.setfilter(0, CAN.LIST16, 0, (123, 124, 125, 126))  # set a filter to receive messages with id=123, 124, 125 and 126
        can.send('message!', 123)   # send a message with id 123
        can.recv(0)                 # receive message on FIFO 0
-   
    """
-
 
 
    NORMAL: ClassVar[int] = ...
@@ -1796,9 +1786,7 @@ class ExtInt:
    There is also a C API, so that drivers which require EXTI interrupt lines
    can also use this code. See extint.h for the available functions and
    usrsw.h for an example of using this.
-   
    """
-
 
 
    IRQ_FALLING: ClassVar[int] = ...
@@ -2109,7 +2097,6 @@ class LCD:
            lcd.pixel(x, y, 1)          # draw the dot
            lcd.show()                  # show the buffer
            pyb.delay(50)               # pause for 50ms
-   
    """
 
 
@@ -2179,7 +2166,6 @@ class LCD:
 class LED:
    """
    The LED object controls an individual LED (Light Emitting Diode).
-   
    """
 
 
@@ -3244,8 +3230,6 @@ class PinAF(ABC):
 
       pin = pyb.Pin(pyb.Pin.board.X3, mode=pyb.Pin.AF_PP, af=1)
 
-   
-
    """
 
    __slots__ = ()
@@ -3291,7 +3275,6 @@ class RTC:
        rtc = pyb.RTC()
        rtc.datetime((2014, 5, 1, 4, 13, 0, 0, 0))
        print(rtc.datetime())
-   
    """
 
 
@@ -3565,7 +3548,6 @@ class SPI:
    """
 
 
-
    CONTROLLER: ClassVar[int] = ...
    """
 for initialising the SPI bus to controller or peripheral mode
@@ -3817,7 +3799,6 @@ class Switch:
    Example::
    
         pyb.Switch().callback(lambda: pyb.LED(1).toggle())
-   
    """
 
 
@@ -3892,7 +3873,6 @@ class Timer:
    exceptions raised within a callback don't give much information.  See
    :func:`micropython.alloc_emergency_exception_buf` for how to get around this
    limitation.
-   
    """
 
 
@@ -4752,8 +4732,6 @@ class TimerChannel(ABC):
 
    TimerChannel objects are created using the Timer.channel() method.
 
-   
-
    """
 
 
@@ -4892,7 +4870,6 @@ class UART:
    *Note:* The stream functions ``read``, ``write``, etc. are new in MicroPython v1.3.4.
    Earlier versions use ``uart.send`` and ``uart.recv``.
    """
-
 
 
    RTS: ClassVar[int] = ...
@@ -5201,9 +5178,7 @@ class USB_VCP:
    The USB_VCP class allows creation of a `stream`-like object representing the USB
    virtual comm port.  It can be used to read and write data over USB to
    the connected host.
-   
    """
-
 
 
    RTS: ClassVar[int] = ...
@@ -5372,5 +5347,3 @@ to select the flow control type.
       
       Return value: number of bytes sent.
       """
-
-

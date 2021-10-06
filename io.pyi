@@ -1,10 +1,8 @@
 """
-
 input/output streams
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/io.rst`, etc.
-
 =================================
 
 .. module:: io
@@ -79,17 +77,12 @@ for which we may introduce buffering support.)
 Note that for efficiency, MicroPython doesn't provide abstract base
 classes corresponding to the hierarchy above, and it's not possible
 to implement, or subclass, a stream class in pure Python.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import TypeVar, Final, Protocol, runtime_checkable, Literal, List
 from typing import AnyStr, Optional, overload, Type
@@ -329,7 +322,6 @@ class _IOBase(Protocol[_AnyStr, _Self]):
         """
 
 
-
 @overload
 def open(name: _OpenFile, /, **kwargs) -> "TextIOWrapper":
    """
@@ -358,7 +350,6 @@ def open(name: _OpenFile, mode: _OpenBinaryMode = ..., /, **kwargs) -> "FileIO":
 class FileIO(_IOBase[bytes, "FileIO"]):
    """
 
-   
    """
 
 
@@ -503,5 +494,3 @@ class BytesIO(_IOBase[bytes, "BytesIO"]):
       """
            Get the current contents of the underlying buffer which holds data.
       """
-
-

@@ -1,10 +1,8 @@
 """
-
 binary/ASCII conversions
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/binascii.rst`, etc.
-
 ===========================================
 
 .. module:: binascii
@@ -14,17 +12,12 @@ Descriptions taken from
 
 This module implements conversions between binary data and various
 encodings of it in ASCII form (in both directions).
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 
 def hexlify(data: bytes, sep: str | bytes = ..., /) -> bytes:
@@ -55,6 +48,3 @@ def b2a_base64(data: bytes, /) -> bytes:
    <https://tools.ietf.org/html/rfc3548.html>`_. Returns the encoded data
    followed by a newline character, as a bytes object.
    """
-
-
-

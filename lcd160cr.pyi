@@ -1,10 +1,8 @@
 """
-
 control of LCD160CR display
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/lcd160cr.rst`, etc.
-
 ===============================================
 
    
@@ -22,17 +20,12 @@ Descriptions taken from
    
    * `LCD160CRv1.0 reference manual <http://micropython.org/resources/LCD160CRv10-refmanual.pdf>`_ (100KiB PDF)
    * `LCD160CRv1.0 schematics <http://micropython.org/resources/LCD160CRv10-schematics.pdf>`_ (1.6MiB PDF)
-   
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, Any, Tuple, TypeVar, Optional, Final
 
@@ -51,7 +44,6 @@ _AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
-
 
 
 
@@ -106,7 +98,6 @@ Types of start-up decoration, can be OR'ed together, used by
 
 class LCD160CR:
    """
-
    The LCD160CR class provides an interface to the display.  Create an
    instance of this class and use its methods to draw to the LCD and get
    the status of the touch panel.
@@ -122,7 +113,6 @@ class LCD160CR:
        lcd.set_font(1)
        lcd.write('Hello MicroPython!')
        print('touch:', lcd.get_touch())
-   
    """
 
 
@@ -591,5 +581,3 @@ The width and height of the display, respectively, in pixels.  These
       """
        Reset the display.
       """
-
-

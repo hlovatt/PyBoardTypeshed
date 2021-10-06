@@ -1,10 +1,8 @@
 """
-
 hashing algorithms
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/hashlib.rst`, etc.
-
 ====================================
 
 .. module:: hashlib
@@ -29,17 +27,12 @@ be implemented:
 * MD5 - A legacy algorithm, not considered cryptographically secure. Only
   selected boards, targeting interoperability with legacy applications,
   will offer this.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import ABC
 from typing import overload, TypeVar, Final
@@ -52,13 +45,8 @@ Type that allows bytearray, array, memoryview, or bytes,
 but only one of these and not a mixture in a single declaration.
 """
 
-
-
-
 class sha256("_Hash"):
    """
-
-   
 
    The current generation, modern hashing algorithm (of SHA2 series).
    It is suitable for cryptographically-secure purposes. Included in the
@@ -85,7 +73,6 @@ class sha256("_Hash"):
 class sha1("_Hash"):
    """
 
-
    A previous generation algorithm. Not recommended for new usages,
    but SHA1 is a part of number of Internet standards and existing
    applications, so boards targeting network connectivity and
@@ -111,7 +98,6 @@ class sha1("_Hash"):
 class md5("_Hash"):
    """
 
-
    A legacy algorithm, not considered cryptographically secure. Only
    selected boards, targeting interoperability with legacy applications,
    will offer this.
@@ -128,7 +114,6 @@ class md5("_Hash"):
 
 class _Hash(ABC):
    """
-
 
    Abstract base class for hashing algorithms that defines methods available in all algorithms.
 
@@ -152,5 +137,3 @@ class _Hash(ABC):
       This method is NOT implemented. Use ``binascii.hexlify(hash.digest())``
       to achieve a similar effect.
       """
-
-

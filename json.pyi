@@ -1,10 +1,8 @@
 """
-
 JSON encoding and decoding
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/json.rst`, etc.
-
 =========================================
 
 .. module:: json
@@ -14,17 +12,12 @@ Descriptions taken from
 
 This modules allows to convert between Python objects and the JSON
 data format.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from types import TracebackType
 from typing import Any, Tuple, AnyStr, Final, TypeVar, runtime_checkable, Protocol
@@ -186,7 +179,6 @@ class _IOBase(Protocol[_AnyStr, _Self]):
         """
 
 
-
 def dump(obj: Any, stream: _IOBase[str, Any], separators: Tuple[str, str] | None = None, /) -> None:
    """
    Serialise *obj* to a JSON string, writing it to the given *stream*.
@@ -218,6 +210,3 @@ def loads(str: AnyStr) -> Any:
    Parse the JSON *str* and return an object.  Raises :exc:`ValueError` if the
    string is not correctly formed.
    """
-
-
-

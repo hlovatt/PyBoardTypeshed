@@ -1,5 +1,4 @@
 """
-
 Frame buffer manipulation
 
 Descriptions taken from 
@@ -7,17 +6,12 @@ Descriptions taken from
 
 This module provides a general frame buffer which can be used to create
 bitmap images, which can then be sent to a display.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import TypeVar, overload, Final, Optional
 
@@ -28,7 +22,6 @@ _AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
-
 
 
 
@@ -105,8 +98,6 @@ Grayscale (8-bit) color format
 
 class FrameBuffer:
    """
-
-   
    The FrameBuffer class provides a pixel buffer which can be drawn upon with
    pixels, lines, rectangles, text and even other FrameBuffer's. It is useful
    when generating output for displays.
@@ -121,7 +112,6 @@ class FrameBuffer:
        fbuf.fill(0)
        fbuf.text('MicroPython!', 0, 0, 0xffff)
        fbuf.hline(0, 10, 96, 0xffff)
-   
    """
 
 
@@ -245,5 +235,3 @@ class FrameBuffer:
        current pixel will be that of that *palette* pixel whose x position is the
        color of the corresponding source pixel.
       """
-
-

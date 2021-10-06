@@ -1,10 +1,8 @@
 """
-
 access binary data in a structured way
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/uctypes.rst`, etc.
-
 ========================================================
 
 .. module:: uctypes
@@ -182,17 +180,12 @@ Following are encoding examples for various field types:
   significant bit being numbered 0. Some targets may use different
   numbering in their native ABI, but ``uctypes`` always uses the normalized
   numbering described above.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Tuple, TypeVar, Final
 
@@ -204,7 +197,6 @@ _AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
-
 
 
 _ScalarProperty: Final = int
@@ -377,10 +369,8 @@ Type constants for pointers and arrays. Note that there is no explicit
 # noinspection PyPep8Naming
 class struct:
    """
-
    Module contents
    ---------------
-   
    """
 
 
@@ -390,5 +380,3 @@ class struct:
       Instantiate a "foreign data structure" object based on structure address in
       memory, descriptor (encoded as a dictionary), and layout type (see below).
       """
-
-

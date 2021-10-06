@@ -1,10 +1,8 @@
 """
-
 network configuration
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/network.rst`, etc.
-
 ****************************************
 
 .. module:: network
@@ -39,17 +37,12 @@ For example::
     s.send(b'GET / HTTP/1.1\r\nHost: micropython.org\r\n\r\n')
     data = s.recv(1000)
     s.close()
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import abstractmethod
 from typing import Protocol, List, Tuple, Callable, overload, Any, Optional, ClassVar, Final
@@ -102,7 +95,6 @@ def phy_mode(self, mode: int, /) -> None:
 
 class AbstractNIC(Protocol):
    """
-
    Common network adapter interface
    ================================
    
@@ -111,7 +103,6 @@ class AbstractNIC(Protocol):
    for different hardware. This means that MicroPython does not actually
    provide ``AbstractNIC`` class, but any actual NIC class, as described
    in the following sections, implements methods as described here.
-   
    """
 
 
@@ -568,7 +559,6 @@ class WLANWiPy:
    """
 
 
-
    STA: ClassVar[int] = ...
    """
 selects the WLAN mode
@@ -849,7 +839,6 @@ class CC3K:
    """
 
 
-
    WEP: ClassVar[int] = ...
    """
 security type to use
@@ -1014,5 +1003,3 @@ class WIZNET5K:
       """
       Dump the WIZnet5x00 registers.  Useful for debugging.
       """
-
-

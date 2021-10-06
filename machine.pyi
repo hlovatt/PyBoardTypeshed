@@ -1,10 +1,8 @@
 """
-
 functions related to the hardware
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/machine.rst`, etc.
-
 ====================================================
 
 .. module:: machine
@@ -26,17 +24,12 @@ Descriptions taken from
    This is true for both physical devices with IDs >= 0 and "virtual" devices
    with negative IDs like -1 (these "virtual" devices are still thin shims on
    top of real hardware and real hardware interrupts). See :ref:`isr_rules`.
-   
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, Tuple, TypeVar, Optional, NoReturn, List, Callable
 from typing import Sequence, ClassVar, Any, Final
@@ -56,7 +49,6 @@ _AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
-
 
 
 def reset() -> NoReturn:
@@ -369,9 +361,7 @@ class Pin:
    
        # configure an irq callback
        p0.irq(lambda p:print(p))
-   
    """
-
 
 
    IN: ClassVar[int] = ...
@@ -1020,9 +1010,7 @@ class UART:
        uart.readline()     # read a line
        uart.readinto(buf)  # read and store into the given buffer
        uart.write('abc')   # write the 3 characters
-   
    """
-
 
 
    RX_ANY: ClassVar[int] = ...
@@ -1378,7 +1366,6 @@ class SPI:
    is not as efficient.  These classes have the same methods available and
    differ primarily in the way they are constructed.
    """
-
 
 
    CONTROLLER: ClassVar[int] = ...
@@ -1908,7 +1895,6 @@ class RTC:
    """
 
 
-
    ALARM0: ClassVar[int] = ...
    """
 irq trigger source
@@ -2175,7 +2161,6 @@ class Timer:
    If you are using a WiPy board please refer to :ref:`machine.TimerWiPy <machine.TimerWiPy>`
    instead of this class.
    """
-
 
 
    ONE_SHOT: ClassVar[int] = ...
@@ -2487,5 +2472,3 @@ class SDCard(AbstractBlockDev):
    def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
    
    def ioctl(self, op: int, arg: int) -> Optional[int]: ...
-
-

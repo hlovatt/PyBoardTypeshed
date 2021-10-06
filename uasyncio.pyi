@@ -1,5 +1,4 @@
 """
-
 asynchronous I/O scheduler for writing concurrent code
 
 Descriptions taken from 
@@ -31,17 +30,12 @@ Example::
     # Running on a generic board
     from machine import Pin
     uasyncio.run(main(Pin(1), Pin(2)))
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import ABC
 from typing import Awaitable, TypeVar, Optional, List, Tuple, Callable
@@ -59,7 +53,6 @@ _AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
-
 
 
 def create_task(coro: _C, /) -> Task[_T]:
@@ -181,10 +174,8 @@ def new_event_loop() -> Loop:
 
 class Task(Awaitable[_T], Iterable[_T], Generic[_T], ABC):
    """
-
    class Task
    ----------
-   
    """
 
 
@@ -207,10 +198,8 @@ class Task(Awaitable[_T], Iterable[_T], Generic[_T], ABC):
 
 class Event:
    """
-
    class Event
    -----------
-   
    """
 
 
@@ -250,10 +239,8 @@ class Event:
 
 class ThreadSafeFlag:
    """
-
    class ThreadSafeFlag
    --------------------
-   
    """
 
 
@@ -284,10 +271,8 @@ class ThreadSafeFlag:
 
 class Lock(Awaitable[None], ABC):
    """
-
    class Lock
    ----------
-   
    """
 
 
@@ -469,5 +454,3 @@ class Loop:
        Call the current exception handler.  The argument *context* is passed through and
        is a dictionary containing keys: ``'message'``, ``'exception'``, ``'future'``.
       """
-
-

@@ -1,10 +1,8 @@
 """
-
 basic "operating system" services
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/os.rst`, etc.
-
 ==============================================
 
 .. module:: os
@@ -15,17 +13,12 @@ Descriptions taken from
 The ``os`` module contains functions for filesystem access and mounting,
 terminal redirection and duplication, and the ``uname`` and ``urandom``
 functions.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import abstractmethod
 from types import TracebackType
@@ -196,7 +189,6 @@ class _IOBase(Protocol[_AnyStr, _Self]):
         """
         Return the current stream position.
         """
-
 
 
 def uname() -> Tuple[str, str, str, str, str]:
@@ -528,8 +520,6 @@ class VfsFat("AbstractBlockDev"):
 class VfsLfs1("AbstractBlockDev"):
    """
 
-   
-
    """
 
 
@@ -571,8 +561,6 @@ class VfsLfs1("AbstractBlockDev"):
 
 class VfsLfs2("AbstractBlockDev"):
    """
-
-   
 
    """
 
@@ -626,8 +614,6 @@ class VfsLfs2("AbstractBlockDev"):
 @runtime_checkable
 class AbstractBlockDev(Protocol):
    """
-
-   
    Block devices
    -------------
    
@@ -658,7 +644,6 @@ class AbstractBlockDev(Protocol):
    Some filesystems (such as littlefs) that require more control over write
    operations, for example writing to sub-block regions without erasing, may require
    that the block device supports the extended interface.
-   
    """
 
 
@@ -847,5 +832,3 @@ class AbstractBlockDev(Protocol):
            detailed above. Other operations should return 0 on success and non-zero
            for failure, with the value returned being an ``OSError`` errno code.
       """
-
-

@@ -1,5 +1,4 @@
 """
-
 Low-level Bluetooth radio functionality
 
 Descriptions taken from 
@@ -16,17 +15,12 @@ building-blocks for higher-level abstractions such as specific device types.
 
 .. note:: This module is still under development and its classes, functions,
           methods and constants are subject to change.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, Any, Tuple, Callable, Optional, TypeVar, Final
 
@@ -45,16 +39,11 @@ _AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
 
-
-
-
 # noinspection SpellCheckingInspection
 class BLE:
    """
-
    class BLE
    ---------
-   
    """
 
 
@@ -1218,11 +1207,8 @@ class BLE:
 
 class UUID:
    """
-
    class UUID
    ----------
-   
-   
    """
 
 
@@ -1236,5 +1222,3 @@ class UUID:
        - A 16-bit integer. e.g. ``0x2908``.
        - A 128-bit UUID string. e.g. ``'6E400001-B5A3-F393-E0A9-E50E24DCCA9E'``.
       """
-
-

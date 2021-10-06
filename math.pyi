@@ -1,10 +1,8 @@
 """
-
 mathematical functions
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/math.rst`, etc.
-
 =====================================
 
 .. module:: math
@@ -19,18 +17,15 @@ working with floating-point numbers.
 
 Availability: not available on WiPy. Floating point support required
 for this module.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import SupportsFloat, Tuple, Final
+
 
 def acos(x: SupportsFloat, /) -> float:
    """
@@ -240,8 +235,3 @@ pi: Final[float] = ...
 """
 the ratio of a circle's circumference to its diameter
 """
-
-
-
-
-

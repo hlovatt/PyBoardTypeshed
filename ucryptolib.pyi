@@ -1,25 +1,18 @@
 """
-
 cryptographic ciphers
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/cryptolib.rst`, etc.
-
 =========================================
 
 .. module:: cryptolib
    :synopsis: cryptographic ciphers
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, TypeVar, Final
 
@@ -38,15 +31,10 @@ _AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
 
-
-
-
 # noinspection PyPep8Naming
 class aes:
    """
-
    .. class:: aes
-   
    """
 
 
@@ -122,5 +110,3 @@ class aes:
       """
            Like `encrypt()`, but for decryption.
       """
-
-

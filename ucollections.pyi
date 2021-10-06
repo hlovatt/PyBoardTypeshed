@@ -1,10 +1,8 @@
 """
-
 collection and container types
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/collections.rst`, etc.
-
 ====================================================
 
 .. module:: collections
@@ -14,17 +12,12 @@ Descriptions taken from
 
 This module implements advanced collection and container types to
 hold/accumulate various objects.
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, Tuple, Any, Type, Iterable, TypeVar, Generic, Mapping, Dict, Final
 
@@ -188,5 +181,3 @@ class OrderedDict(Dict[_KT, _VT], Generic[_KT, _VT]):
            w 5
            b 3
       """
-
-

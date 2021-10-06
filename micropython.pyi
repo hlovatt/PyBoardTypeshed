@@ -1,25 +1,18 @@
 """
-
 access and control MicroPython internals
 
 Descriptions taken from 
 `https://raw.githubusercontent.com/micropython/micropython/master/docs/library/micropython.rst`, etc.
-
 ==============================================================
 
 .. module:: micropython
    :synopsis: access and control MicroPython internals
-
 """
-
-
 
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.0.0"  # Version set by https://github.com/hlovatt/tag2ver
-
-
+__version__ = "6.1.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import TypeVar, overload, Callable, Any, Final
 
@@ -260,6 +253,3 @@ def schedule(func: Callable[[_T], None], arg: _T, /) -> None:
    There is a finite queue to hold the scheduled functions and `schedule()`
    will raise a `RuntimeError` if the queue is full.
    """
-
-
-
