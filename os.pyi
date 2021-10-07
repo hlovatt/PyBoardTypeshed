@@ -18,12 +18,12 @@ functions.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import abstractmethod
 from types import TracebackType
 from typing import Tuple, AnyStr, Final, TypeVar, runtime_checkable, Protocol
-from typing import Optional, Type, List, overload, Literal
+from typing import Type, overload, Literal
 
 from uarray import array
 
@@ -69,10 +69,10 @@ class IOBase(Protocol[_AnyStr, _Self]):
         
     def __exit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
-    ) -> Optional[bool]:
+        exc_type: Type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
         """
         Called on exit of a `with` block.
         The parameters describe the exception that caused the context to be exited. 
@@ -115,7 +115,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         This method does nothing for read-only and non-blocking streams.
         """
 
-    def read(self, size: Optional[int] = -1) -> Optional[AnyStr]:
+    def read(self, size: int | None = -1) -> AnyStr | None:
         """
         Read up to `size` bytes from the object and return them as a `str` (text file) or `bytes` (binary file). 
         As a convenience, if `size` is unspecified or -1, all bytes until EOF are returned. 
@@ -126,7 +126,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         If `self` is in non-blocking mode and no bytes are available, `None` is returned.
         """
 
-    def readinto(self, b: _AnyWritableBuf) -> Optional[int]:
+    def readinto(self, b: _AnyWritableBuf) -> int | None:
         """
         Read bytes into a pre-allocated, writable bytes-like object b, and return the number of bytes read. 
         For example, b might be a bytearray. 
@@ -144,7 +144,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         for text files, the newline argument to `open()` can be used to select the line terminator(s) recognized.
         """
 
-    def readlines(self, hint: Optional[int] = -1) -> List[AnyStr]:
+    def readlines(self, hint: int | None = -1) -> list[AnyStr]:
         """
         Read and return a list of lines, as a `list[str]` (text file) or `list[bytes]` (binary file), from the stream. 
         `hint` can be specified to control the number of lines read: 
@@ -159,7 +159,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         without calling `file.readlines()`.
         """
 
-    def write(self, b: _AnyReadableBuf) -> Optional[int]:
+    def write(self, b: _AnyReadableBuf) -> int | None:
         """
         Write the given bytes-like object, `b`, to the underlying raw stream, and return the number of bytes written. 
         This can be less than the length of `b` in bytes, depending on specifics of the underlying raw stream, 
@@ -221,7 +221,7 @@ def getcwd() -> str:
    """
 
 @overload
-def ilistdir() -> List[Tuple[str, int, int] | Tuple[str, int, int, int]]:
+def ilistdir() -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
@@ -242,7 +242,7 @@ def ilistdir() -> List[Tuple[str, int, int] | Tuple[str, int, int, int]]:
    """
 
 @overload
-def ilistdir(dir: int, /) -> List[Tuple[str, int, int] | Tuple[str, int, int, int]]:
+def ilistdir(dir: int, /) -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
@@ -263,7 +263,7 @@ def ilistdir(dir: int, /) -> List[Tuple[str, int, int] | Tuple[str, int, int, in
    """
 
 @overload
-def ilistdir(dir: str, /) -> List[Tuple[str, int, int] | Tuple[str, int, int, int]]:
+def ilistdir(dir: str, /) -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
@@ -284,7 +284,7 @@ def ilistdir(dir: str, /) -> List[Tuple[str, int, int] | Tuple[str, int, int, in
    """
 
 @overload
-def ilistdir(dir: bytes, /) -> List[Tuple[bytes, int, int] | Tuple[bytes, int, int, int]]:
+def ilistdir(dir: bytes, /) -> list[Tuple[bytes, int, int] | Tuple[bytes, int, int, int]]:
    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
@@ -305,7 +305,7 @@ def ilistdir(dir: bytes, /) -> List[Tuple[bytes, int, int] | Tuple[bytes, int, i
    """
 
 @overload
-def ilistdir(dir: _PathLike[str], /) -> List[Tuple[str, int, int] | Tuple[str, int, int, int]]:
+def ilistdir(dir: _PathLike[str], /) -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
@@ -326,7 +326,7 @@ def ilistdir(dir: _PathLike[str], /) -> List[Tuple[str, int, int] | Tuple[str, i
    """
 
 @overload
-def ilistdir(dir: _PathLike[bytes], /) -> List[Tuple[bytes, int, int] | Tuple[bytes, int, int, int]]:
+def ilistdir(dir: _PathLike[bytes], /) -> list[Tuple[bytes, int, int] | Tuple[bytes, int, int, int]]:
    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
@@ -347,37 +347,37 @@ def ilistdir(dir: _PathLike[bytes], /) -> List[Tuple[bytes, int, int] | Tuple[by
    """
 
 @overload
-def listdir() -> List[str]:
+def listdir() -> list[str]:
    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
-def listdir(dir: int, /) -> List[str]:
+def listdir(dir: int, /) -> list[str]:
    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
-def listdir(dir: str, /) -> List[str]:
+def listdir(dir: str, /) -> list[str]:
    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
-def listdir(dir: bytes, /) -> List[bytes]:
+def listdir(dir: bytes, /) -> list[bytes]:
    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
-def listdir(dir: _PathLike[str], /) -> List[str]:
+def listdir(dir: _PathLike[str], /) -> list[str]:
    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
-def listdir(dir: _PathLike[bytes], /) -> List[bytes]:
+def listdir(dir: _PathLike[bytes], /) -> list[bytes]:
    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """

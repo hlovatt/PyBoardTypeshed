@@ -42,10 +42,10 @@ For example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import abstractmethod
-from typing import Protocol, List, Tuple, Callable, overload, Any, Optional, ClassVar, Final
+from typing import Protocol, Tuple, Callable, overload, Any, ClassVar, Final
 
 import pyb
 
@@ -140,7 +140,7 @@ class AbstractNIC(Protocol):
 
    @overload
    @abstractmethod
-   def connect(self, key: Optional[str] = None, /, **kwargs: Any) -> None:
+   def connect(self, key: str | None = None, /, **kwargs: Any) -> None:
       """
           Connect the interface to a network. This method is optional, and
           available only for interfaces which are not "always connected".
@@ -159,7 +159,7 @@ class AbstractNIC(Protocol):
 
    @overload
    @abstractmethod
-   def connect(self, service_id: Any, key: Optional[str] = None, /, **kwargs: Any) -> None:
+   def connect(self, service_id: Any, key: str | None = None, /, **kwargs: Any) -> None:
       """
           Connect the interface to a network. This method is optional, and
           available only for interfaces which are not "always connected".
@@ -192,7 +192,7 @@ class AbstractNIC(Protocol):
 
    
    @abstractmethod
-   def scan(self, **kwargs: Any) -> List[Tuple[str, ...]]:
+   def scan(self, **kwargs: Any) -> list[Tuple[str, ...]]:
       """
           Scan for the available network services/connections. Returns a
           list of tuples with discovered service parameters. For various
@@ -352,11 +352,11 @@ class WLAN:
    
    def connect(
       self, 
-      ssid: Optional[str] = None, 
-      password: Optional[str] = None, 
+      ssid: str | None = None, 
+      password: str | None = None, 
       /, 
       *, 
-      bssid: Optional[bytes] = None
+      bssid: bytes | None = None
    ) -> None:
       """
        Connect to the specified wireless network, using the specified password.
@@ -668,9 +668,9 @@ selects the antenna type
       ssid: str, 
       /, 
       *, 
-      auth: Optional[Tuple[str, str]] = None, 
-      bssid: Optional[bytes] = None,
-      timeout: Optional[int] = None,
+      auth: Tuple[str, str] | None = None, 
+      bssid: bytes | None = None,
+      timeout: int | None = None,
    ) -> None:
       """
       Connect to a WiFi access point using the given SSID, and other security
@@ -685,7 +685,7 @@ selects the antenna type
          - *timeout* is the maximum time in milliseconds to wait for the connection to succeed.
       """
 
-   def scan(self) -> Tuple[str, bytes, int, Optional[int], int]:
+   def scan(self) -> Tuple[str, bytes, int, int | None, int]:
       """
       Performs a network scan and returns a list of named tuples with (ssid, bssid, sec, channel, rssi).
       Note that channel is always ``None`` since this info is not provided by the WiPy.
@@ -882,11 +882,11 @@ security type to use
    def connect(
       self, 
       ssid: str, 
-      key: Optional[str] = None, 
+      key: str | None = None, 
       /, 
       *, 
       security: int = WPA2,
-      bssid: Optional[bytes] = None,
+      bssid: bytes | None = None,
    ) -> None:
       """
       Connect to a WiFi access point using the given SSID, and other security

@@ -80,11 +80,11 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 from types import TracebackType
-from typing import Protocol, Iterable, AnyStr, runtime_checkable, Optional, TypeVar, Tuple, Final
-from typing import Type, Any, List
+from typing import Protocol, Iterable, AnyStr, runtime_checkable, TypeVar, Tuple, Final
+from typing import Type, Any
 
 from uarray import array
 
@@ -120,10 +120,10 @@ class IOBase(Protocol[_AnyStr, _Self]):
         
     def __exit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
-    ) -> Optional[bool]:
+        exc_type: Type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
         """
         Called on exit of a `with` block.
         The parameters describe the exception that caused the context to be exited. 
@@ -166,7 +166,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         This method does nothing for read-only and non-blocking streams.
         """
 
-    def read(self, size: Optional[int] = -1) -> Optional[AnyStr]:
+    def read(self, size: int | None = -1) -> AnyStr | None:
         """
         Read up to `size` bytes from the object and return them as a `str` (text file) or `bytes` (binary file). 
         As a convenience, if `size` is unspecified or -1, all bytes until EOF are returned. 
@@ -177,7 +177,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         If `self` is in non-blocking mode and no bytes are available, `None` is returned.
         """
 
-    def readinto(self, b: _AnyWritableBuf) -> Optional[int]:
+    def readinto(self, b: _AnyWritableBuf) -> int | None:
         """
         Read bytes into a pre-allocated, writable bytes-like object b, and return the number of bytes read. 
         For example, b might be a bytearray. 
@@ -195,7 +195,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         for text files, the newline argument to `open()` can be used to select the line terminator(s) recognized.
         """
 
-    def readlines(self, hint: Optional[int] = -1) -> List[AnyStr]:
+    def readlines(self, hint: int | None = -1) -> list[AnyStr]:
         """
         Read and return a list of lines, as a `list[str]` (text file) or `list[bytes]` (binary file), from the stream. 
         `hint` can be specified to control the number of lines read: 
@@ -210,7 +210,7 @@ class IOBase(Protocol[_AnyStr, _Self]):
         without calling `file.readlines()`.
         """
 
-    def write(self, b: _AnyReadableBuf) -> Optional[int]:
+    def write(self, b: _AnyReadableBuf) -> int | None:
         """
         Write the given bytes-like object, `b`, to the underlying raw stream, and return the number of bytes written. 
         This can be less than the length of `b` in bytes, depending on specifics of the underlying raw stream, 
@@ -321,7 +321,7 @@ class _BTree:
       Standard dictionary methods.
       """
 
-   def get(self, key: bytes, default: Optional[bytes] = None, /) -> Optional[bytes]:
+   def get(self, key: bytes, default: bytes | None = None, /) -> bytes | None:
       """
       Standard dictionary methods.
       """
@@ -350,8 +350,8 @@ class _BTree:
    
    def keys(
       self, 
-      start_key: Optional[bytes] = None, 
-      end_key: Optional[bytes] = None, 
+      start_key: bytes | None = None, 
+      end_key: bytes | None = None, 
       flags: int = 0, 
       /
    ) -> Iterable[bytes]:
@@ -373,8 +373,8 @@ class _BTree:
    
    def values(
       self, 
-      start_key: Optional[bytes] = None, 
-      end_key: Optional[bytes] = None, 
+      start_key: bytes | None = None, 
+      end_key: bytes | None = None, 
       flags: int = 0, 
       /
    ) -> Iterable[bytes]:
@@ -396,8 +396,8 @@ class _BTree:
    
    def items(
       self, 
-      start_key: Optional[bytes] = None, 
-      end_key: Optional[bytes] = None, 
+      start_key: bytes | None = None, 
+      end_key: bytes | None = None, 
       flags: int = 0, 
       /
    ) -> Iterable[Tuple[bytes, bytes]]:

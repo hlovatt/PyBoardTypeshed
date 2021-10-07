@@ -25,9 +25,9 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
-from typing import overload, Any, Tuple, TypeVar, Optional, Final
+from typing import overload, Any, Tuple, TypeVar, Final
 
 from pyb import Pin, I2C, SPI
 from uarray import array
@@ -290,8 +290,8 @@ The width and height of the display, respectively, in pixels.  These
       buf: _AnyWritableBuf, 
       x: int = 0, 
       y: int = 0, 
-      w: Optional[int] = None, 
-      h: Optional[int] = None, 
+      w: int | None = None, 
+      h: int | None = None, 
       /
    ) -> None:
       """
@@ -437,7 +437,7 @@ The width and height of the display, respectively, in pixels.  These
        Similar to :meth:`LCD160CR.poly_dot` but draws lines between the dots.
       """
 
-   def touch_config(self, calib: bool = False, save: bool = False, irq: Optional[bool] = None, /) -> None:
+   def touch_config(self, calib: bool = False, save: bool = False, irq: bool | None = None, /) -> None:
       """
        Configure the touch panel:
        

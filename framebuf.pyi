@@ -11,9 +11,9 @@ bitmap images, which can then be sent to a display.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
-from typing import TypeVar, overload, Final, Optional
+from typing import TypeVar, overload, Final
 
 from uarray import array
 
@@ -217,7 +217,7 @@ class FrameBuffer:
       """
 
    
-   def blit(self, fbuf: FrameBuffer, x: int, y: int, key: int = -1, pallet: Optional[FrameBuffer] = None, /) -> None:
+   def blit(self, fbuf: FrameBuffer, x: int, y: int, key: int = -1, pallet: FrameBuffer | None = None, /) -> None:
       """
        Draw another FrameBuffer on top of the current one at the given coordinates.
        If *key* is specified then it should be a color integer and the

@@ -20,9 +20,9 @@ building-blocks for higher-level abstractions such as specific device types.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
-from typing import overload, Any, Tuple, Callable, Optional, TypeVar, Final
+from typing import overload, Any, Tuple, Callable, TypeVar, Final
 
 from uarray import array
 
@@ -400,10 +400,10 @@ class BLE:
    def gap_advertise(
       self, 
       interval_us: int, 
-      adv_data: Optional[_AnyReadableBuf] = None, 
+      adv_data: _AnyReadableBuf | None = None, 
       /, 
       *,
-      resp_data: Optional[_AnyReadableBuf] = None, 
+      resp_data: _AnyReadableBuf | None = None, 
       connectable: bool = True
    ) -> None:
       """
@@ -801,7 +801,7 @@ class BLE:
        ``gatts_write(char_handle, bytes(100))``.
       """
 
-   def gattc_discover_services(self, conn_handle: memoryview, uuid: Optional[UUID] = None, /) -> None:
+   def gattc_discover_services(self, conn_handle: memoryview, uuid: UUID | None = None, /) -> None:
       """
        Query a connected server for its services.
        
@@ -828,7 +828,7 @@ class BLE:
       conn_handle: memoryview, 
       start_handle: int, 
       end_handle: int, 
-      uuid: Optional[UUID] = None, 
+      uuid: UUID | None = None, 
       /
    ) -> None:
       """
@@ -1101,7 +1101,7 @@ class BLE:
       self, 
       conn_handle: memoryview, 
       cid: memoryview, 
-      buf: Optional[_AnyWritableBuf], 
+      buf: _AnyWritableBuf | None, 
       /
    ) -> int:
       """

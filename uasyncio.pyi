@@ -35,10 +35,10 @@ Example::
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import ABC
-from typing import Awaitable, TypeVar, Optional, List, Tuple, Callable
+from typing import Awaitable, TypeVar, Tuple, Callable
 from typing import Coroutine, Any, Dict, Iterable, Generic, Final
 
 from uarray import array
@@ -62,7 +62,7 @@ def create_task(coro: _C, /) -> Task[_T]:
     Returns the corresponding `Task` object.
    """
 
-def current_task() -> Optional[Task[Any]]:
+def current_task() -> Task[Any] | None:
    """
     Return the `Task` object associated with the currently running task.
    """
@@ -109,7 +109,7 @@ def wait_for_ms(awaitable: Awaitable[_T], timeout: int, /) -> Awaitable[_T]:
     This is a coroutine, and a MicroPython extension.
    """
 
-def gather(*awaitable: Awaitable[Any], return_exceptions: bool = False) -> Awaitable[List[Any]]:
+def gather(*awaitable: Awaitable[Any], return_exceptions: bool = False) -> Awaitable[list[Any]]:
    """
     Run all *awaitables* concurrently.  Any *awaitables* that are not tasks are
     promoted to tasks.
@@ -125,7 +125,7 @@ StreamReader = 'Stream'
 StreamWriter = 'Stream'
 
 def open_connection(
-   host: Optional[str], 
+   host: str | None, 
    port: str | int | None,
    /,
 ) -> Awaitable[Tuple[StreamReader, StreamWriter]]:
@@ -432,13 +432,13 @@ class Loop:
        Close the event loop.
       """
 
-   def set_exception_handler(self, handler: Optional[Callable[[Loop, Dict[str, Any]], None]], /) -> None:
+   def set_exception_handler(self, handler: Callable[[Loop, Dict[str, Any]], None] | None, /) -> None:
       """
        Set the exception handler to call when a Task raises an exception that is not
        caught.  The *handler* should accept two arguments: ``(loop, context)``.
       """
 
-   def get_exception_handler(self) -> Optional[Callable[[Loop, Dict[str, Any]], None]]:
+   def get_exception_handler(self) -> Callable[[Loop, Dict[str, Any]], None] | None:
       """
        Get the current exception handler.  Returns the handler, or ``None`` if no
        custom handler is set.

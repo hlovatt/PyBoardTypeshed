@@ -29,9 +29,9 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
-from typing import overload, Tuple, TypeVar, Optional, NoReturn, List, Callable
+from typing import overload, Tuple, TypeVar, NoReturn, Callable
 from typing import Sequence, ClassVar, Any, Final
 
 from uarray import array
@@ -474,8 +474,8 @@ Selects the IRQ trigger type.
       pull: int = -1, 
       *,
       value: Any = None,
-      drive: Optional[int] = None,
-      alt: Optional[int] = None
+      drive: int | None = None,
+      alt: int | None = None
    ):
       """
       Access the pin peripheral (GPIO pin) associated with the given ``id``.  If
@@ -545,8 +545,8 @@ Selects the IRQ trigger type.
       pull: int = -1, 
       *,
       value: Any = None,
-      drive: Optional[int] = None,
-      alt: Optional[int] = None
+      drive: int | None = None,
+      alt: int | None = None
    ) -> None:
       """
       Re-initialise the pin using the given parameters.  Only those arguments that
@@ -654,13 +654,13 @@ Selects the IRQ trigger type.
    def irq(
       self,
       /,
-      handler: Optional[Callable[[Pin], None]] = None, 
+      handler: Callable[[Pin], None] | None = None, 
       trigger: int = (IRQ_FALLING | IRQ_RISING), 
       *, 
       priority: int = 1, 
-      wake: Optional[int] = None, 
+      wake: int | None = None, 
       hard: bool = False,
-   ) -> Optional[Callable[[Pin], None]]:
+   ) -> Callable[[Pin], None] | None:
       """
       Configure an interrupt handler to be called when the trigger source of the
       pin is active.  If the pin mode is ``Pin.IN`` then the trigger source is
@@ -874,8 +874,8 @@ class Signal:
       pull: int = -1, 
       *, 
       value: Any = None,
-      drive: Optional[int] = None,
-      alt: Optional[int] = None,
+      drive: int | None = None,
+      alt: int | None = None,
       invert: bool = False,
    ):
       """
@@ -1029,17 +1029,17 @@ IRQ trigger sources
       id: int | str,
       baudrate: int = 9600, 
       bits: int = 8, 
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       /, 
       *, 
-      tx: Optional[Pin] = None,
-      rx: Optional[Pin] = None,
-      txbuf: Optional[int] = None,
-      rxbuf: Optional[int] = None,
-      timeout: Optional[int] = None,
-      timeout_char: Optional[int] = None,
-      invert: Optional[int] = None,
+      tx: Pin | None = None,
+      rx: Pin | None = None,
+      txbuf: int | None = None,
+      rxbuf: int | None = None,
+      timeout: int | None = None,
+      timeout_char: int | None = None,
+      invert: int | None = None,
    ):
       """
       Construct a UART object of the given id.
@@ -1051,11 +1051,11 @@ IRQ trigger sources
       id: int | str,
       baudrate: int = 9600, 
       bits: int = 8, 
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       /, 
       *, 
-      pins: Optional[Tuple[Pin, Pin]] = None,
+      pins: Tuple[Pin, Pin] | None = None,
    ):
       """
       Construct a UART object of the given id.
@@ -1067,11 +1067,11 @@ IRQ trigger sources
       id: int | str,
       baudrate: int = 9600, 
       bits: int = 8, 
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       /, 
       *, 
-      pins: Optional[Tuple[Pin, Pin, Pin, Pin]] = None,
+      pins: Tuple[Pin, Pin, Pin, Pin] | None = None,
    ):
       """
       Construct a UART object of the given id.
@@ -1082,17 +1082,17 @@ IRQ trigger sources
       self,
       baudrate: int = 9600, 
       bits: int = 8, 
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       /, 
       *, 
-      tx: Optional[Pin] = None,
-      rx: Optional[Pin] = None,
-      txbuf: Optional[int] = None,
-      rxbuf: Optional[int] = None,
-      timeout: Optional[int] = None,
-      timeout_char: Optional[int] = None,
-      invert: Optional[int] = None,
+      tx: Pin | None = None,
+      rx: Pin | None = None,
+      txbuf: int | None = None,
+      rxbuf: int | None = None,
+      timeout: int | None = None,
+      timeout_char: int | None = None,
+      invert: int | None = None,
    ) -> None:
       """
       Initialise the UART bus with the given parameters:
@@ -1137,11 +1137,11 @@ IRQ trigger sources
       self,
       baudrate: int = 9600, 
       bits: int = 8, 
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       /, 
       *, 
-      pins: Optional[Tuple[Pin, Pin]] = None,
+      pins: Tuple[Pin, Pin] | None = None,
    ) -> None:
       """
       Initialise the UART bus with the given parameters:
@@ -1186,11 +1186,11 @@ IRQ trigger sources
       self,
       baudrate: int = 9600, 
       bits: int = 8, 
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       /, 
       *, 
-      pins: Optional[Tuple[Pin, Pin, Pin, Pin]] = None,
+      pins: Tuple[Pin, Pin, Pin, Pin] | None = None,
    ) -> None:
       """
       Initialise the UART bus with the given parameters:
@@ -1250,7 +1250,7 @@ IRQ trigger sources
       """
 
    @overload
-   def read(self) -> Optional[bytes]:
+   def read(self) -> bytes | None:
       """
       Read characters.  If ``nbytes`` is specified then read at most that many bytes,
       otherwise read as much data as possible. It may return sooner if a timeout
@@ -1261,7 +1261,7 @@ IRQ trigger sources
       """
 
    @overload
-   def read(self, nbytes: int, /) -> Optional[bytes]:
+   def read(self, nbytes: int, /) -> bytes | None:
       """
       Read characters.  If ``nbytes`` is specified then read at most that many bytes,
       otherwise read as much data as possible. It may return sooner if a timeout
@@ -1272,7 +1272,7 @@ IRQ trigger sources
       """
 
    @overload
-   def readinto(self, buf: _AnyWritableBuf, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, /) -> int | None:
       """
       Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
       that many bytes.  Otherwise, read at most ``len(buf)`` bytes. It may return sooner if a timeout
@@ -1283,7 +1283,7 @@ IRQ trigger sources
       """
 
    @overload
-   def readinto(self, buf: _AnyWritableBuf, nbytes: int, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, nbytes: int, /) -> int | None:
       """
       Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
       that many bytes.  Otherwise, read at most ``len(buf)`` bytes. It may return sooner if a timeout
@@ -1293,7 +1293,7 @@ IRQ trigger sources
       timeout.
       """
 
-   def readline(self) -> Optional[bytes]:
+   def readline(self) -> bytes | None:
       """
       Read a line, ending in a newline character. It may return sooner if a timeout
       is reached. The timeout is configurable in the constructor.
@@ -1301,7 +1301,7 @@ IRQ trigger sources
       Return value: the line read or ``None`` on timeout.
       """
 
-   def write(self, buf: _AnyReadableBuf, /) -> Optional[int]:
+   def write(self, buf: _AnyReadableBuf, /) -> int | None:
       """
       Write the buffer of bytes to the bus.
       
@@ -1319,7 +1319,7 @@ IRQ trigger sources
       self, 
       trigger: int, 
       priority: int = 1, 
-      handler: Optional[Callable[[UART], None]] = None, 
+      handler: Callable[[UART], None] | None = None, 
       wake: int = IDLE, 
       /
    ) -> Any:
@@ -1416,9 +1416,9 @@ set the first bit to be the least significant bit
       phase: int = 0, 
       bits: int = 8, 
       firstbit: int = MSB, 
-      sck: Optional[Pin] = None, 
-      mosi: Optional[Pin] = None, 
-      miso: Optional[Pin] = None, 
+      sck: Pin | None = None, 
+      mosi: Pin | None = None, 
+      miso: Pin | None = None, 
    ):
       """
       Construct an SPI object on the given bus, *id*. Values of *id* depend
@@ -1442,7 +1442,7 @@ set the first bit to be the least significant bit
       phase: int = 0, 
       bits: int = 8, 
       firstbit: int = MSB, 
-      pins: Optional[Tuple[Pin, Pin, Pin]] = None, 
+      pins: Tuple[Pin, Pin, Pin] | None = None, 
    ):
       """
       Construct an SPI object on the given bus, *id*. Values of *id* depend
@@ -1464,9 +1464,9 @@ set the first bit to be the least significant bit
       phase: int = 0, 
       bits: int = 8, 
       firstbit: int = MSB, 
-      sck: Optional[Pin] = None, 
-      mosi: Optional[Pin] = None, 
-      miso: Optional[Pin] = None, 
+      sck: Pin | None = None, 
+      mosi: Pin | None = None, 
+      miso: Pin | None = None, 
    ) -> None:
       """
       Initialise the SPI bus with the given parameters:
@@ -1499,7 +1499,7 @@ set the first bit to be the least significant bit
       phase: int = 0, 
       bits: int = 8, 
       firstbit: int = MSB, 
-      pins: Optional[Tuple[Pin, Pin, Pin]] = None, 
+      pins: Tuple[Pin, Pin, Pin] | None = None, 
    ) -> None:
       """
       Initialise the SPI bus with the given parameters:
@@ -1535,7 +1535,7 @@ set the first bit to be the least significant bit
        Returns a ``bytes`` object with the data that was read.
       """
 
-   def readinto(self, buf: _AnyWritableBuf, write: int = 0x00, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, write: int = 0x00, /) -> int | None:
       """
        Read into the buffer specified by ``buf`` while continuously writing the
        single byte given by ``write``.
@@ -1544,7 +1544,7 @@ set the first bit to be the least significant bit
        Note: on WiPy this function returns the number of bytes read.
       """
 
-   def write(self, buf: _AnyReadableBuf, /) -> Optional[int]:
+   def write(self, buf: _AnyReadableBuf, /) -> int | None:
       """
        Write the bytes contained in ``buf``.
        Returns ``None``.
@@ -1552,7 +1552,7 @@ set the first bit to be the least significant bit
        Note: on WiPy this function returns the number of bytes written.
       """
 
-   def write_readinto(self, write_buf: _AnyReadableBuf, read_buf: _AnyWritableBuf, /) -> Optional[int]:
+   def write_readinto(self, write_buf: _AnyReadableBuf, read_buf: _AnyWritableBuf, /) -> int | None:
       """
        Write the bytes from ``write_buf`` while reading into ``read_buf``.  The
        buffers can be the same or different, but both buffers must have the
@@ -1664,7 +1664,7 @@ class I2C:
       Availability: WiPy.
       """
 
-   def scan(self) -> List[int]:
+   def scan(self) -> list[int]:
       """
       Scan all I2C addresses between 0x08 and 0x77 inclusive and return a list of
       those that respond.  A device responds if it pulls the SDA line low after
@@ -2126,7 +2126,7 @@ irq trigger source
       /, 
       *, 
       trigger: int, 
-      handler: Optional[Callable[[RTC], None]] = None, 
+      handler: Callable[[RTC], None] | None = None, 
       wake: int = IDLE
    ) -> None:
       """
@@ -2198,7 +2198,7 @@ Timer operating mode.
       *, 
       mode: int = PERIODIC, 
       period: int = -1, 
-      callback: Optional[Callable[[Timer], None]] = None, 
+      callback: Callable[[Timer], None] | None = None, 
    ):
       """
       Construct a new timer object of the given id. Id of -1 constructs a
@@ -2213,7 +2213,7 @@ Timer operating mode.
       *, 
       mode: int = PERIODIC, 
       period: int = -1, 
-      callback: Optional[Callable[[Timer], None]] = None, 
+      callback: Callable[[Timer], None] | None = None, 
    ) -> None:
       """
       Initialise the timer. Example::
@@ -2471,4 +2471,4 @@ class SDCard(AbstractBlockDev):
    
    def writeblocks(self, blocknum: int, buf: bytes, offset: int = 0, /) -> None: ...
    
-   def ioctl(self, op: int, arg: int) -> Optional[int]: ...
+   def ioctl(self, op: int, arg: int) -> int | None: ...

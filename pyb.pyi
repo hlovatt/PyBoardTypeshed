@@ -85,11 +85,11 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import ABC, abstractmethod
 from typing import NoReturn, overload, Tuple, Sequence, runtime_checkable, Protocol
-from typing import Optional, TypeVar, List, Callable, Dict, Any, ClassVar, Final
+from typing import TypeVar, Callable, Dict, Any, ClassVar, Final
 
 from uarray import array
 from uos import AbstractBlockDev
@@ -632,7 +632,7 @@ def mount(
    """
 
 @overload
-def repl_uart() -> Optional[UART]:
+def repl_uart() -> UART | None:
    """
    Get or set the UART object where the REPL is repeated on.
    """
@@ -1285,7 +1285,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       """
 
    @overload
-   def info(self) -> List[int]:
+   def info(self) -> list[int]:
       """
       Get information about the controller's error states and TX and RX buffers.
       If *list* is provided then it should be a list object with at least 8 entries,
@@ -1309,7 +1309,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       """
 
    @overload
-   def info(self, list: List[int], /) -> List[int]:
+   def info(self, list: list[int], /) -> list[int]:
       """
       Get information about the controller's error states and TX and RX buffers.
       If *list* is provided then it should be a list object with at least 8 entries,
@@ -1512,7 +1512,7 @@ The operation mode of a filter used in :meth:`~CAN.setfilter()`.
       """
 
    @overload
-   def recv(self, fifo: int, list: List[int | bool | memoryview], /, *, timeout: int = 5000) -> None:
+   def recv(self, fifo: int, list: list[int | bool | memoryview], /, *, timeout: int = 5000) -> None:
       """
       Receive data on the bus:
       
@@ -1663,7 +1663,7 @@ class DAC:
    """
 
 
-   def __init__(self, port: int | Pin, /, bits: int = 8, *, buffering: Optional[bool] = None):
+   def __init__(self, port: int | Pin, /, bits: int = 8, *, buffering: bool | None = None):
       """
       Construct a new DAC object.
       
@@ -1688,7 +1688,7 @@ class DAC:
       especially near the extremes of range.
       """
 
-   def init(self, bits: int = 8, *, buffering: Optional[bool] = None) -> None:
+   def init(self, bits: int = 8, *, buffering: bool | None = None) -> None:
       """
       Reinitialise the DAC.  *bits* can be 8 or 12.  *buffering* can be
       ``None``, ``False`` or ``True``; see above constructor for the meaning
@@ -1909,7 +1909,7 @@ class Flash(AbstractBlockDev):
        :class:`os.AbstractBlockDev`.
       """
 
-   def ioctl(self, op: int, arg: int) -> Optional[int]:
+   def ioctl(self, op: int, arg: int) -> int | None:
       """
        These methods implement the simple and :ref:`extended
        <block-device-interface>` block protocol defined by
@@ -3131,7 +3131,7 @@ enable the pull-up resistor on the pin
       argument to the init function.
       """
 
-   def af_list(self) -> List[PinAF]:
+   def af_list(self) -> list[PinAF]:
       """
       Returns an array of alternate functions available for this pin.
       """
@@ -3153,7 +3153,7 @@ enable the pull-up resistor on the pin
       Get the pin name.
       """
 
-   def names(self) -> List[str]:
+   def names(self) -> list[str]:
       """
       Returns the cpu and board names for this pin.
       """
@@ -3301,7 +3301,7 @@ class RTC:
       ``subseconds`` counts down from 255 to 0
       """
 
-   def wakeup(self, timeout: Optional[Callable[[RTC], None]] = None, /) -> None:
+   def wakeup(self, timeout: Callable[[RTC], None] | None = None, /) -> None:
       """
       Set the RTC wakeup timer to trigger repeatedly at every ``timeout``
       milliseconds.  This trigger can wake the pyboard from both the sleep
@@ -3607,7 +3607,7 @@ set the first bit to be the least or most significant bit
       bits: int = 8, 
       firstbit: int = MSB, 
       ti: bool = False, 
-      crc: Optional[int] = None
+      crc: int | None = None
    ):
       """
       Construct an SPI object on the given bus.  ``bus`` can be 1 or 2, or
@@ -3638,7 +3638,7 @@ set the first bit to be the least or most significant bit
       bits: int = 8, 
       firstbit: int = MSB, 
       ti: bool = False, 
-      crc: Optional[int] = None
+      crc: int | None = None
    ):
       """
       Construct an SPI object on the given bus.  ``bus`` can be 1 or 2, or
@@ -3672,7 +3672,7 @@ set the first bit to be the least or most significant bit
       bits: int = 8, 
       firstbit: int = MSB, 
       ti: bool = False, 
-      crc: Optional[int] = None
+      crc: int | None = None
    ):
       """
       Initialise the SPI bus with the given parameters:
@@ -3711,7 +3711,7 @@ set the first bit to be the least or most significant bit
       bits: int = 8, 
       firstbit: int = MSB, 
       ti: bool = False, 
-      crc: Optional[int] = None
+      crc: int | None = None
    ):
       """
       Initialise the SPI bus with the given parameters:
@@ -3819,7 +3819,7 @@ class Switch:
       Get the switch state.  Returns ``True`` if pressed down, otherwise ``False``.
       """
 
-   def callback(self, fun: Optional[Callable[[], None]]) -> None:
+   def callback(self, fun: Callable[[], None] | None) -> None:
       """
       Register the given function to be called when the switch is pressed down.
       If ``fun`` is ``None``, then it disables the callback.
@@ -4005,7 +4005,7 @@ class Timer:
       freq: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[[Timer], None]] = None, 
+      callback: Callable[[Timer], None] | None = None, 
       deadtime: int = 0
    ):
       """
@@ -4024,7 +4024,7 @@ class Timer:
       period: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[[Timer], None]] = None, 
+      callback: Callable[[Timer], None] | None = None, 
       deadtime: int = 0
    ):
       """
@@ -4040,7 +4040,7 @@ class Timer:
       freq: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[[Timer], None]] = None, 
+      callback: Callable[[Timer], None] | None = None, 
       deadtime: int = 0
    ) -> None:
       """
@@ -4098,7 +4098,7 @@ class Timer:
       period: int, 
       mode: int = UP, 
       div: int = 1, 
-      callback: Optional[Callable[[Timer], None]] = None, 
+      callback: Callable[[Timer], None] | None = None, 
       deadtime: int = 0
    ) -> None:
       """
@@ -4158,7 +4158,7 @@ class Timer:
       Stops the timer, and disables the timer peripheral.
       """
 
-   def callback(self, fun: Optional[Callable[[Timer], None]], /) -> None:
+   def callback(self, fun: Callable[[Timer], None] | None, /) -> None:
       """
       Set the function to be called when the timer triggers.
       ``fun`` is passed 1 argument, the timer object.
@@ -4170,7 +4170,7 @@ class Timer:
       self, 
       channel: int, 
       /
-   ) -> Optional["TimerChannel"]:
+   ) -> "TimerChannel" | None:
       """
       If only a channel number is passed, then a previously initialized channel
       object is returned (or ``None`` if there is no previous channel).
@@ -4252,8 +4252,8 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[[Timer], None]] = None, 
-      pin: Optional[Pin] = None,
+      callback: Callable[[Timer], None] | None = None, 
+      pin: Pin | None = None,
       pulse_width: int,
    ) -> "TimerChannel":
       """
@@ -4337,8 +4337,8 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[[Timer], None]] = None, 
-      pin: Optional[Pin] = None,
+      callback: Callable[[Timer], None] | None = None, 
+      pin: Pin | None = None,
       pulse_width_percent: int | float,
    ) -> "TimerChannel":
       """
@@ -4422,8 +4422,8 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[[Timer], None]] = None, 
-      pin: Optional[Pin] = None,
+      callback: Callable[[Timer], None] | None = None, 
+      pin: Pin | None = None,
       compare: int,
       polarity: int,
    ) -> "TimerChannel":
@@ -4508,8 +4508,8 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[[Timer], None]] = None, 
-      pin: Optional[Pin] = None,
+      callback: Callable[[Timer], None] | None = None, 
+      pin: Pin | None = None,
       polarity: int,
    ) -> "TimerChannel":
       """
@@ -4593,8 +4593,8 @@ class Timer:
       /, 
       mode: int, 
       *, 
-      callback: Optional[Callable[[Timer], None]] = None, 
-      pin: Optional[Pin] = None,
+      callback: Callable[[Timer], None] | None = None, 
+      pin: Pin | None = None,
    ) -> "TimerChannel":
       """
       If only a channel number is passed, then a previously initialized channel
@@ -4738,7 +4738,7 @@ class TimerChannel(ABC):
 
    
    @abstractmethod
-   def callback(self, fun: Optional[Callable[[Timer], None]], /) -> None:
+   def callback(self, fun: Callable[[Timer], None] | None, /) -> None:
       """
       Set the function to be called when the timer channel triggers.
       ``fun`` is passed 1 argument, the timer object.
@@ -4983,7 +4983,7 @@ to select the flow control type.
       baudrate: int,
       /,
       bits: int = 8,
-      parity: Optional[int] = None, 
+      parity: int | None = None, 
       stop: int = 1, 
       *, 
       timeout: int = 0, 
@@ -5026,7 +5026,7 @@ to select the flow control type.
       """
 
    @overload
-   def read(self) -> Optional[bytes]:
+   def read(self) -> bytes | None:
       """
       Read characters.  If ``nbytes`` is specified then read at most that many bytes.
       If ``nbytes`` are available in the buffer, returns immediately, otherwise returns
@@ -5043,7 +5043,7 @@ to select the flow control type.
       """
 
    @overload
-   def read(self, nbytes: int, /) -> Optional[bytes]:
+   def read(self, nbytes: int, /) -> bytes | None:
       """
       Read characters.  If ``nbytes`` is specified then read at most that many bytes.
       If ``nbytes`` are available in the buffer, returns immediately, otherwise returns
@@ -5067,7 +5067,7 @@ to select the flow control type.
       """
 
    @overload
-   def readinto(self, buf: _AnyWritableBuf, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, /) -> int | None:
       """
       Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
       that many bytes.  Otherwise, read at most ``len(buf)`` bytes.
@@ -5077,7 +5077,7 @@ to select the flow control type.
       """
 
    @overload
-   def readinto(self, buf: _AnyWritableBuf, nbytes: int, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, nbytes: int, /) -> int | None:
       """
       Read bytes into the ``buf``.  If ``nbytes`` is specified then read at most
       that many bytes.  Otherwise, read at most ``len(buf)`` bytes.
@@ -5086,7 +5086,7 @@ to select the flow control type.
       timeout.
       """
 
-   def readline(self) -> Optional[str]:
+   def readline(self) -> str | None:
       """
       Read a line, ending in a newline character. If such a line exists, return is
       immediate. If the timeout elapses, all available data is returned regardless
@@ -5095,7 +5095,7 @@ to select the flow control type.
       Return value: the line read or ``None`` on timeout if no data is available.
       """
 
-   def write(self, buf: _AnyWritableBuf, /) -> Optional[int]:
+   def write(self, buf: _AnyWritableBuf, /) -> int | None:
       """
       Write the buffer of bytes to the bus.  If characters are 7 or 8 bits wide
       then each byte is one character.  If characters are 9 bits wide then two
@@ -5243,7 +5243,7 @@ to select the flow control type.
       """
 
    @overload
-   def read(self) -> Optional[bytes]:
+   def read(self) -> bytes | None:
       """
       Read at most ``nbytes`` from the serial device and return them as a
       bytes object.  If ``nbytes`` is not specified then the method reads
@@ -5254,7 +5254,7 @@ to select the flow control type.
       """
 
    @overload
-   def read(self, nbytes, /) -> Optional[bytes]:
+   def read(self, nbytes, /) -> bytes | None:
       """
       Read at most ``nbytes`` from the serial device and return them as a
       bytes object.  If ``nbytes`` is not specified then the method reads
@@ -5265,7 +5265,7 @@ to select the flow control type.
       """
 
    @overload
-   def readinto(self, buf: _AnyWritableBuf, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, /) -> int | None:
       """
       Read bytes from the serial device and store them into ``buf``, which
       should be a buffer-like object.  At most ``len(buf)`` bytes are read.
@@ -5277,7 +5277,7 @@ to select the flow control type.
       """
 
    @overload
-   def readinto(self, buf: _AnyWritableBuf, maxlen: int, /) -> Optional[int]:
+   def readinto(self, buf: _AnyWritableBuf, maxlen: int, /) -> int | None:
       """
       Read bytes from the serial device and store them into ``buf``, which
       should be a buffer-like object.  At most ``len(buf)`` bytes are read.
@@ -5288,7 +5288,7 @@ to select the flow control type.
       if no pending data available.
       """
 
-   def readline(self) -> Optional[bytes]:
+   def readline(self) -> bytes | None:
       """
       Read a whole line from the serial device.
       
@@ -5296,7 +5296,7 @@ to select the flow control type.
       newline character or ``None`` if no pending data available.
       """
 
-   def readlines(self) -> Optional[List[bytes]]:
+   def readlines(self) -> list[bytes] | None:
       """
       Read as much data as possible from the serial device, breaking it into
       lines.
@@ -5313,7 +5313,7 @@ to select the flow control type.
       """
 
    @overload
-   def recv(self, data: int, /, *, timeout: int = 5000) -> Optional[bytes]:
+   def recv(self, data: int, /, *, timeout: int = 5000) -> bytes | None:
       """
       Receive data on the bus:
       
@@ -5326,7 +5326,7 @@ to select the flow control type.
       """
 
    @overload
-   def recv(self, data: _AnyWritableBuf, /, *, timeout: int = 5000) -> Optional[int]:
+   def recv(self, data: _AnyWritableBuf, /, *, timeout: int = 5000) -> int | None:
       """
       Receive data on the bus:
       
