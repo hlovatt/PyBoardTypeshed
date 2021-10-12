@@ -185,29 +185,21 @@ Following are encoding examples for various field types:
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
-from typing import Tuple, TypeVar, Final
+from typing import Final
 
-from uarray import array
-
-
-_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
-"""
-Type that allows bytearray, array, memoryview, or bytes, 
-but only one of these and not a mixture in a single declaration.
-"""
-
+from uio import AnyReadableBuf
 
 _ScalarProperty: Final = int
-_RecursiveProperty: Final = Tuple[int, "_property"]
-_ArrayProperty: Final = Tuple[int, int]
-_ArrayOfAggregateProperty: Final = Tuple[int, int, "_property"]
-_PointerToAPrimitiveProperty: Final = Tuple[int, int]
-_PointerToAaAggregateProperty: Final = Tuple[int, "_property"]
+_RecursiveProperty: Final = tuple[int, "_property"]
+_ArrayProperty: Final = tuple[int, int]
+_ArrayOfAggregateProperty: Final = tuple[int, int, "_property"]
+_PointerToAPrimitiveProperty: Final = tuple[int, int]
+_PointerToAaAggregateProperty: Final = tuple[int, "_property"]
 _BitfieldProperty: Final = int
 _property: Final = _ScalarProperty | _RecursiveProperty | _ArrayProperty | _ArrayOfAggregateProperty | _PointerToAPrimitiveProperty | _PointerToAaAggregateProperty | _BitfieldProperty
-_descriptor: Final = Tuple[str, _property]
+_descriptor: Final = tuple[str, _property]
 
 LITTLE_ENDIAN: Final[int] = ...
 """
@@ -216,16 +208,10 @@ Layout type for a little-endian packed structure. (Packed means that every
    the alignment is 1).
 """
 
-
-
-
 BIG_ENDIAN: Final[int] = ...
 """
 Layout type for a big-endian packed structure.
 """
-
-
-
 
 NATIVE: Final[int] = ...
 """
@@ -233,25 +219,23 @@ Layout type for a native structure - with data endianness and alignment
    conforming to the ABI of the system on which MicroPython runs.
 """
 
-
-
 # noinspection PyShadowingNames
 def sizeof(struct: struct | _descriptor, layout_type: int = NATIVE, /) -> int:
-   """
+    """
    Return size of data structure in bytes. The *struct* argument can be
    either a structure class or a specific instantiated structure object
    (or its aggregate field).
    """
 
-def addressof(obj: _AnyReadableBuf, /) -> int:
-   """
+def addressof(obj: AnyReadableBuf, /) -> int:
+    """
    Return address of an object. Argument should be bytes, bytearray or
    other object supporting buffer protocol (and address of this buffer
    is what actually returned).
    """
 
 def bytes_at(addr: int, size: int, /) -> bytes:
-   """
+    """
    Capture memory at the given address and size as bytes object. As bytes
    object is immutable, memory is actually duplicated and copied into
    bytes object, so if memory contents change later, created object
@@ -259,13 +243,12 @@ def bytes_at(addr: int, size: int, /) -> bytes:
    """
 
 def bytearray_at(addr: int, size: int, /) -> bytearray:
-   """
+    """
    Capture memory at the given address and size as bytearray object.
    Unlike bytes_at() function above, memory is captured by reference,
    so it can be both written too, and you will access current value
    at the given memory address.
    """
-
 
 UINT8: Final[int] = ...
 """
@@ -273,13 +256,11 @@ Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
-
 INT8: Final[int] = ...
 """
 Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
-
 
 UINT16: Final[int] = ...
 """
@@ -287,13 +268,11 @@ Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
-
 INT16: Final[int] = ...
 """
 Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
-
 
 UINT32: Final[int] = ...
 """
@@ -301,13 +280,11 @@ Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
-
 INT32: Final[int] = ...
 """
 Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
-
 
 UINT64: Final[int] = ...
 """
@@ -315,38 +292,27 @@ Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
-
 INT64: Final[int] = ...
 """
 Integer types for structure descriptors. Constants for 8, 16, 32,
    and 64 bit types are provided, both signed and unsigned.
 """
 
-
-
-
 FLOAT32: Final[int] = ...
 """
 Floating-point types for structure descriptors.
 """
-
 
 FLOAT64: Final[int] = ...
 """
 Floating-point types for structure descriptors.
 """
 
-
-
-
 VOID: Final[int] = ...
 """
 ``VOID`` is an alias for ``UINT8``, and is provided to conveniently define
    C's void pointers: ``(uctypes.PTR, uctypes.VOID)``.
 """
-
-
-
 
 PTR: Final[int] = ...
 """
@@ -355,7 +321,6 @@ Type constants for pointers and arrays. Note that there is no explicit
    or ``ARRAY`` flags is a structure.
 """
 
-
 ARRAY: Final[int] = ...
 """
 Type constants for pointers and arrays. Note that there is no explicit
@@ -363,20 +328,17 @@ Type constants for pointers and arrays. Note that there is no explicit
    or ``ARRAY`` flags is a structure.
 """
 
-
-
-
 # noinspection PyPep8Naming
 class struct:
-   """
+    """
    Module contents
    ---------------
    """
 
-
-
-   def __init__(self, addr: int, descriptor: _descriptor, layout_type: int = NATIVE, /):
-      """
+    def __init__(
+        self, addr: int, descriptor: _descriptor, layout_type: int = NATIVE, /
+    ):
+        """
       Instantiate a "foreign data structure" object based on structure address in
       memory, descriptor (encoded as a dictionary), and layout type (see below).
       """

@@ -18,181 +18,25 @@ functions.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import abstractmethod
-from types import TracebackType
-from typing import Tuple, AnyStr, Final, TypeVar, runtime_checkable, Protocol
-from typing import Type, overload, Literal
+from typing import Final, TypeVar, runtime_checkable, Protocol, overload, Literal
 
-from uarray import array
+from uio import IOBase
 
-_StrOrBytesT: Final = TypeVar('_StrOrBytesT', str, bytes)
+_StrOrBytesT: Final = TypeVar("_StrOrBytesT", str, bytes)
 
 class _PathLike(Protocol[_StrOrBytesT]):
     @abstractmethod
     def __fspath__(self) -> _StrOrBytesT:
         """Return the file system path representation of the object, preferably as a `str`."""
-    
+
 _AnyPath: Final = str | bytes | _PathLike[str] | _PathLike[bytes]
 _FdOrAnyPath: Final = int | _AnyPath
 
-
-_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
-"""
-Type that allows bytearray, array, memoryview, or bytes, 
-but only one of these and not a mixture in a single declaration.
-"""
-
-
-_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
-"""
-Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
-"""
-
-
-_AnyStr: Final = TypeVar('_AnyStr', str, bytes)  # `str` for text IO and `bytes` for binary IO.
-_Self: Final = TypeVar('_Self')  # The type that extends `IOBase`.
-
-@runtime_checkable
-class IOBase(Protocol[_AnyStr, _Self]):
-    """A `Protocol` (structurally typed) for an IOStream."""
-
-    __slots__ = ()
-    
-    def __enter__(self) -> _Self:
-        """
-        Called on entry to a `with` block.
-        The `with` statement will bind this method’s return value to the target(s) specified in the `as` clause 
-        of the statement, if any.
-        """
-        
-    def __exit__(
-        self,
-        exc_type: Type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> bool | None:
-        """
-        Called on exit of a `with` block.
-        The parameters describe the exception that caused the context to be exited. 
-        If the context was exited without an exception, all three arguments will be `None`.
-
-        If an exception is supplied, and the method wishes to suppress the exception 
-        (i.e., prevent it from being propagated), it should return a true value. 
-        Otherwise, the exception will be processed normally upon exit from this method.
-
-        *Note* that `__exit__()` methods should not re-raise the passed-in exception; 
-        this is the caller’s responsibility.
-        """
-        
-    def __next__(self) -> _AnyStr:
-        """
-        
-        """
-    
-    def __iter__(self) -> _Self:
-        """
-        
-        """
-
-    def close(self) -> None:
-        """
-        Flushes the write buffers and closes the IO stream; best not called directly, use a `with` block instead.
-        Calling `f.close()` without using a `with` block might result in content not being completely written to the 
-        disk, even if the program exits successfully.
-        A closed file cannot be read or written any more. 
-        Any operation which requires that the file be open will raise a `ValueError` after the file has been closed. 
-        Calling `f.close()` more than once is allowed.
-        """
-
-    def flush(self) -> None:
-        """
-        Flushes the write buffers of the IO stream.
-        `flush()` does not necessarily write the file’s data to disk. 
-        Use `f.flush()` followed by `os.sync()` to ensure this behavior.
-        
-        This method does nothing for read-only and non-blocking streams.
-        """
-
-    def read(self, size: int | None = -1) -> AnyStr | None:
-        """
-        Read up to `size` bytes from the object and return them as a `str` (text file) or `bytes` (binary file). 
-        As a convenience, if `size` is unspecified or -1, all bytes until EOF are returned. 
-        Otherwise, only one system call is ever made. 
-        Fewer than `size` bytes may be returned if the operating system call returns fewer than `size` bytes.
-
-        If 0 bytes are returned, and `size` was not 0, this indicates end of file. 
-        If `self` is in non-blocking mode and no bytes are available, `None` is returned.
-        """
-
-    def readinto(self, b: _AnyWritableBuf) -> int | None:
-        """
-        Read bytes into a pre-allocated, writable bytes-like object b, and return the number of bytes read. 
-        For example, b might be a bytearray. 
-        
-        If `self` is in non-blocking mode and no bytes are available, `None` is returned.
-        """
-
-    def readline(self, size: int = -1) -> AnyStr:
-        """
-        Read and return, as a `str` (text file) or `bytes` (binary file), one line from the stream. 
-        If size is specified, at most size bytes will be read.
-        
-        The line terminator is always `b'
-'` for binary files; 
-        for text files, the newline argument to `open()` can be used to select the line terminator(s) recognized.
-        """
-
-    def readlines(self, hint: int | None = -1) -> list[AnyStr]:
-        """
-        Read and return a list of lines, as a `list[str]` (text file) or `list[bytes]` (binary file), from the stream. 
-        `hint` can be specified to control the number of lines read: 
-        no more lines will be read if the total size (in bytes/characters) of all lines so far exceeds `hint`.
-
-        `hint` values of 0 or less, as well as `None`, are treated as no hint.
-        The line terminator is always `b'
-'` for binary files; 
-        for text files, the newline argument to `open()` can be used to select the line terminator(s) recognized.
-
-        *Note* that it’s already possible to iterate on file objects using `for line in file: ...` 
-        without calling `file.readlines()`.
-        """
-
-    def write(self, b: _AnyReadableBuf) -> int | None:
-        """
-        Write the given bytes-like object, `b`, to the underlying raw stream, and return the number of bytes written. 
-        This can be less than the length of `b` in bytes, depending on specifics of the underlying raw stream, 
-        and especially if it is in non-blocking mode. 
-        `None` is returned if the raw stream is set not to block and no single byte could be readily written to it. 
-        
-        The caller may release or mutate `b` after this method returns, 
-        so the implementation only access `b` during the method call.
-        """
-
-    def seek(self, offset: int, whence: int = 0) -> int:
-        """
-        Change the stream position to the given byte `offset`. 
-        `offset` is interpreted relative to the position indicated by `whence`.
-        The default value for whence is 0. 
-        
-        Values for whence are:
-
-          * 0 – start of the stream (the default); offset should be zero or positive.
-          * 1 – current stream position; offset may be negative.
-          * 2 – end of the stream; offset is usually negative.
-        
-        Returns the new absolute position.
-        """
-
-    def tell(self) -> int:
-        """
-        Return the current stream position.
-        """
-
-
-def uname() -> Tuple[str, str, str, str, str]:
-   """
+def uname() -> tuple[str, str, str, str, str]:
+    """
    Return a tuple (possibly a named tuple) containing information about the
    underlying machine and/or its operating system.  The tuple has five fields
    in the following order, each of them being a string:
@@ -205,24 +49,24 @@ def uname() -> Tuple[str, str, str, str, str]:
    """
 
 def urandom(n: int, /) -> bytes:
-   """
+    """
    Return a bytes object with *n* random bytes. Whenever possible, it is
    generated by the hardware random number generator.
    """
 
 def chdir(path: _FdOrAnyPath, /) -> None:
-   """
+    """
    Change current directory.
    """
 
 def getcwd() -> str:
-   """
+    """
    Get the current directory.
    """
 
 @overload
-def ilistdir() -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
-   """
+def ilistdir() -> list[tuple[str, int, int] | tuple[str, int, int, int]]:
+    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
    current directory, otherwise it lists the directory given by *dir*.
@@ -242,8 +86,8 @@ def ilistdir() -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
    """
 
 @overload
-def ilistdir(dir: int, /) -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
-   """
+def ilistdir(dir: int, /) -> list[tuple[str, int, int] | tuple[str, int, int, int]]:
+    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
    current directory, otherwise it lists the directory given by *dir*.
@@ -263,8 +107,8 @@ def ilistdir(dir: int, /) -> list[Tuple[str, int, int] | Tuple[str, int, int, in
    """
 
 @overload
-def ilistdir(dir: str, /) -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
-   """
+def ilistdir(dir: str, /) -> list[tuple[str, int, int] | tuple[str, int, int, int]]:
+    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
    current directory, otherwise it lists the directory given by *dir*.
@@ -284,8 +128,10 @@ def ilistdir(dir: str, /) -> list[Tuple[str, int, int] | Tuple[str, int, int, in
    """
 
 @overload
-def ilistdir(dir: bytes, /) -> list[Tuple[bytes, int, int] | Tuple[bytes, int, int, int]]:
-   """
+def ilistdir(
+    dir: bytes, /
+) -> list[tuple[bytes, int, int] | tuple[bytes, int, int, int]]:
+    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
    current directory, otherwise it lists the directory given by *dir*.
@@ -305,8 +151,10 @@ def ilistdir(dir: bytes, /) -> list[Tuple[bytes, int, int] | Tuple[bytes, int, i
    """
 
 @overload
-def ilistdir(dir: _PathLike[str], /) -> list[Tuple[str, int, int] | Tuple[str, int, int, int]]:
-   """
+def ilistdir(
+    dir: _PathLike[str], /
+) -> list[tuple[str, int, int] | tuple[str, int, int, int]]:
+    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
    current directory, otherwise it lists the directory given by *dir*.
@@ -326,8 +174,10 @@ def ilistdir(dir: _PathLike[str], /) -> list[Tuple[str, int, int] | Tuple[str, i
    """
 
 @overload
-def ilistdir(dir: _PathLike[bytes], /) -> list[Tuple[bytes, int, int] | Tuple[bytes, int, int, int]]:
-   """
+def ilistdir(
+    dir: _PathLike[bytes], /
+) -> list[tuple[bytes, int, int] | tuple[bytes, int, int, int]]:
+    """
    This function returns an iterator which then yields tuples corresponding to
    the entries in the directory that it is listing.  With no argument it lists the
    current directory, otherwise it lists the directory given by *dir*.
@@ -348,67 +198,71 @@ def ilistdir(dir: _PathLike[bytes], /) -> list[Tuple[bytes, int, int] | Tuple[by
 
 @overload
 def listdir() -> list[str]:
-   """
+    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
 def listdir(dir: int, /) -> list[str]:
-   """
+    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
 def listdir(dir: str, /) -> list[str]:
-   """
+    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
 def listdir(dir: bytes, /) -> list[bytes]:
-   """
+    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
 def listdir(dir: _PathLike[str], /) -> list[str]:
-   """
+    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 @overload
 def listdir(dir: _PathLike[bytes], /) -> list[bytes]:
-   """
+    """
    With no argument, list the current directory.  Otherwise list the given directory.
    """
 
 def mkdir(path: _AnyPath, /) -> None:
-   """
+    """
    Create a new directory.
    """
 
 def remove(path: _AnyPath, /) -> None:
-   """
+    """
    Remove a file.
    """
 
 def rmdir(path: _AnyPath, /) -> None:
-   """
+    """
    Remove a directory.
    """
 
 def rename(old_path: _AnyPath, new_path: _AnyPath, /) -> None:
-   """
+    """
    Rename a file.
    """
 
-def stat(path: _FdOrAnyPath, /) -> Tuple[int, int, int, int, int, int, int, int, int, int]:
-   """
+def stat(
+    path: _FdOrAnyPath, /
+) -> tuple[int, int, int, int, int, int, int, int, int, int]:
+    """
    Get the status of a file or directory.
    """
 
-def statvfs(path: _FdOrAnyPath, /) -> Tuple[int, int, int, int, int, int, int, int, int, int]:
-   """
+def statvfs(
+    path: _FdOrAnyPath, /
+) -> tuple[int, int, int, int, int, int, int, int, int, int]:
+    """
    Get the status of a fileystem.
    
    Returns a tuple with the filesystem information in the following order:
@@ -430,12 +284,12 @@ def statvfs(path: _FdOrAnyPath, /) -> Tuple[int, int, int, int, int, int, int, i
    """
 
 def sync() -> None:
-   """
+    """
    Sync all filesystems.
    """
 
 def dupterm(stream_object: IOBase | None, index: int = 0, /) -> IOBase | None:
-   """
+    """
    Duplicate or switch the MicroPython terminal (the REPL) on the given `stream`-like
    object. The *stream_object* argument must be a native stream object, or derive
    from ``io.IOBase`` and implement the ``readinto()`` and
@@ -456,8 +310,10 @@ def dupterm(stream_object: IOBase | None, index: int = 0, /) -> IOBase | None:
    The function returns the previous stream-like object in the given slot.
    """
 
-def mount(fsobj: "AbstractBlockDev", mount_point: str, /, *, readonly: bool = False) -> IOBase | None:
-   """
+def mount(
+    fsobj: "AbstractBlockDev", mount_point: str, /, *, readonly: bool = False
+) -> IOBase | None:
+    """
     Mount the filesystem object *fsobj* at the location in the VFS given by the
     *mount_point* string.  *fsobj* can be a a VFS object that has a ``mount()``
     method, or a block device.  If it's a block device then the filesystem type
@@ -486,7 +342,7 @@ def mount(fsobj: "AbstractBlockDev", mount_point: str, /, *, readonly: bool = Fa
    """
 
 def umount(mount_point: str, /) -> None:
-   """
+    """
     Unmount a filesystem. *mount_point* can be a string naming the mount location,
     or a previously-mounted filesystem object.  During the unmount process the
     method ``umount()`` is called on the filesystem object.
@@ -494,46 +350,37 @@ def umount(mount_point: str, /) -> None:
     Will raise ``OSError(EINVAL)`` if *mount_point* is not found.
    """
 
-
 class VfsFat("AbstractBlockDev"):
-   """
+    """
 
    """
 
-
-
-   def __init__(self, block_dev: "AbstractBlockDev", /):
-      """
+    def __init__(self, block_dev: "AbstractBlockDev", /):
+        """
        Create a filesystem object that uses the FAT filesystem format.  Storage of
        the FAT filesystem is provided by *block_dev*.
        Objects created by this constructor can be mounted using :func:`mount`.
       """
-
-   
-   @staticmethod
-   def mkfs(block_dev: "AbstractBlockDev", /) -> None:
-      """
+    @staticmethod
+    def mkfs(block_dev: "AbstractBlockDev", /) -> None:
+        """
            Build a FAT filesystem on *block_dev*.
       """
 
-
 class VfsLfs1("AbstractBlockDev"):
-   """
+    """
 
    """
 
-
-
-   
-   def __init__(
-      self, 
-      block_dev: "AbstractBlockDev", 
-      readsize: int = 32, 
-      progsize: int = 32, 
-      lookahead: int = 32, 
-      /,
-   ):
-      """
+    def __init__(
+        self,
+        block_dev: "AbstractBlockDev",
+        readsize: int = 32,
+        progsize: int = 32,
+        lookahead: int = 32,
+        /,
+    ):
+        """
        Create a filesystem object that uses the `littlefs v1 filesystem format`_.
        Storage of the littlefs filesystem is provided by *block_dev*, which must
        support the :ref:`extended interface <block-device-interface>`.
@@ -541,42 +388,36 @@ class VfsLfs1("AbstractBlockDev"):
        
        See :ref:`filesystem` for more information.
       """
-
-   
-   @staticmethod
-   def mkfs(
-      block_dev: "AbstractBlockDev", 
-      readsize: int = 32, 
-      progsize: int = 32, 
-      lookahead: int = 32, 
-      /,
-   ) -> None:
-      """
+    @staticmethod
+    def mkfs(
+        block_dev: "AbstractBlockDev",
+        readsize: int = 32,
+        progsize: int = 32,
+        lookahead: int = 32,
+        /,
+    ) -> None:
+        """
            Build a Lfs1 filesystem on *block_dev*.
            
            .. note:: There are reports of littlefs v1 failing in certain situations,
                  for details see `littlefs issue 347`_.
       """
 
-
 class VfsLfs2("AbstractBlockDev"):
-   """
+    """
 
    """
 
-
-
-   
-   def __init__(
-      self, 
-      block_dev: "AbstractBlockDev", 
-      readsize: int = 32, 
-      progsize: int = 32, 
-      lookahead: int = 32, 
-      mtime: bool = True,
-      /,
-   ):
-      """
+    def __init__(
+        self,
+        block_dev: "AbstractBlockDev",
+        readsize: int = 32,
+        progsize: int = 32,
+        lookahead: int = 32,
+        mtime: bool = True,
+        /,
+    ):
+        """
        Create a filesystem object that uses the `littlefs v2 filesystem format`_.
        Storage of the littlefs filesystem is provided by *block_dev*, which must
        support the :ref:`extended interface <block-device-interface>`.
@@ -592,28 +433,25 @@ class VfsLfs2("AbstractBlockDev"):
        
        See :ref:`filesystem` for more information.
       """
-
-   
-   @staticmethod
-   def mkfs(
-      block_dev: "AbstractBlockDev", 
-      readsize: int = 32, 
-      progsize: int = 32, 
-      lookahead: int = 32, 
-      mtime: bool = True,
-      /,
-   ) -> None:
-      """
+    @staticmethod
+    def mkfs(
+        block_dev: "AbstractBlockDev",
+        readsize: int = 32,
+        progsize: int = 32,
+        lookahead: int = 32,
+        mtime: bool = True,
+        /,
+    ) -> None:
+        """
            Build a Lfs2 filesystem on *block_dev*.
            
            .. note:: There are reports of littlefs v2 failing in certain situations,
                  for details see `littlefs issue 295`_.
       """
 
-
 @runtime_checkable
 class AbstractBlockDev(Protocol):
-   """
+    """
    Block devices
    -------------
    
@@ -646,18 +484,14 @@ class AbstractBlockDev(Protocol):
    that the block device supports the extended interface.
    """
 
-
-
-   def __init__(self):
-      """
+    def __init__(self):
+        """
        Construct a block device object.  The parameters to the constructor are
        dependent on the specific block device.
       """
-
-   
-   @overload
-   def readblocks(self, block_num: int, buf: bytearray, /) -> None:
-      """
+    @overload
+    def readblocks(self, block_num: int, buf: bytearray, /) -> None:
+        """
            The first form reads aligned, multiples of blocks.
            Starting at the block given by the index *block_num*, read blocks from
            the device into *buf* (an array of bytes).
@@ -670,11 +504,9 @@ class AbstractBlockDev(Protocol):
            of *offset*, read bytes from the device into *buf* (an array of bytes).
            The number of bytes to read is given by the length of *buf*.
       """
-
-   
-   @overload
-   def readblocks(self, block_num: int, buf: bytearray, offset: int, /) -> None:
-      """
+    @overload
+    def readblocks(self, block_num: int, buf: bytearray, offset: int, /) -> None:
+        """
            The first form reads aligned, multiples of blocks.
            Starting at the block given by the index *block_num*, read blocks from
            the device into *buf* (an array of bytes).
@@ -687,11 +519,9 @@ class AbstractBlockDev(Protocol):
            of *offset*, read bytes from the device into *buf* (an array of bytes).
            The number of bytes to read is given by the length of *buf*.
       """
-
-   
-   @overload
-   def writeblocks(self, block_num: int, buf: bytes | bytearray, /) -> None:
-      """
+    @overload
+    def writeblocks(self, block_num: int, buf: bytes | bytearray, /) -> None:
+        """
            The first form writes aligned, multiples of blocks, and requires that the
            blocks that are written to be first erased (if necessary) by this method.
            Starting at the block given by the index *block_num*, write blocks from
@@ -710,11 +540,11 @@ class AbstractBlockDev(Protocol):
            Note that implementations must never implicitly erase blocks if the offset
            argument is specified, even if it is zero.
       """
-
-   
-   @overload
-   def writeblocks(self, block_num: int, buf: bytes | bytearray, offset: int, /) -> None:
-      """
+    @overload
+    def writeblocks(
+        self, block_num: int, buf: bytes | bytearray, offset: int, /
+    ) -> None:
+        """
            The first form writes aligned, multiples of blocks, and requires that the
            blocks that are written to be first erased (if necessary) by this method.
            Starting at the block given by the index *block_num*, write blocks from
@@ -733,10 +563,9 @@ class AbstractBlockDev(Protocol):
            Note that implementations must never implicitly erase blocks if the offset
            argument is specified, even if it is zero.
       """
-
-   @overload
-   def ioctl(self, op: int, arg: int) -> int | None:
-      """
+    @overload
+    def ioctl(self, op: int, arg: int) -> int | None:
+        """
            Control the block device and query its parameters.  The operation to
            perform is given by *op* which is one of the following integers:
            
@@ -766,10 +595,9 @@ class AbstractBlockDev(Protocol):
            detailed above. Other operations should return 0 on success and non-zero
            for failure, with the value returned being an ``OSError`` errno code.
       """
-
-   @overload
-   def ioctl(self, op: Literal[4, 5], arg: int) -> int:
-      """
+    @overload
+    def ioctl(self, op: Literal[4, 5], arg: int) -> int:
+        """
            Control the block device and query its parameters.  The operation to
            perform is given by *op* which is one of the following integers:
            
@@ -799,10 +627,9 @@ class AbstractBlockDev(Protocol):
            detailed above. Other operations should return 0 on success and non-zero
            for failure, with the value returned being an ``OSError`` errno code.
       """
-
-   @overload
-   def ioctl(self, op: Literal[1, 2, 3, 6], arg: int) -> int | None:
-      """
+    @overload
+    def ioctl(self, op: Literal[1, 2, 3, 6], arg: int) -> int | None:
+        """
            Control the block device and query its parameters.  The operation to
            perform is given by *op* which is one of the following integers:
            

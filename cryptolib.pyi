@@ -12,36 +12,21 @@ Descriptions taken from
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "6.2.1"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.0.0"  # Version set by https://github.com/hlovatt/tag2ver
 
-from typing import overload, TypeVar, Final
+from typing import overload
 
-from uarray import array
-
-
-_AnyReadableBuf: Final = TypeVar('_AnyReadableBuf', bytearray, array, memoryview, bytes)
-"""
-Type that allows bytearray, array, memoryview, or bytes, 
-but only one of these and not a mixture in a single declaration.
-"""
-
-
-_AnyWritableBuf: Final = TypeVar('_AnyWritableBuf', bytearray, array, memoryview)
-"""
-Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
-"""
+from uio import AnyReadableBuf, AnyWritableBuf
 
 # noinspection PyPep8Naming
 class aes:
-   """
+    """
    .. class:: aes
    """
 
-
-
-   @overload
-   def __init__(self, key: _AnyReadableBuf, mode: int, /):
-      """
+    @overload
+    def __init__(self, key: AnyReadableBuf, mode: int, /):
+        """
            Initialize cipher object, suitable for encryption/decryption. Note:
            after initialization, cipher object can be use only either for
            encryption or decryption. Running decrypt() operation after encrypt()
@@ -59,10 +44,9 @@ class aes:
                * *IV* is an initialization vector for CBC mode.
                * For Counter mode, *IV* is the initial value for the counter.
       """
-
-   @overload
-   def __init__(self, key: _AnyReadableBuf, mode: int, IV: _AnyReadableBuf, /):
-      """
+    @overload
+    def __init__(self, key: AnyReadableBuf, mode: int, IV: AnyReadableBuf, /):
+        """
            Initialize cipher object, suitable for encryption/decryption. Note:
            after initialization, cipher object can be use only either for
            encryption or decryption. Running decrypt() operation after encrypt()
@@ -80,33 +64,29 @@ class aes:
                * *IV* is an initialization vector for CBC mode.
                * For Counter mode, *IV* is the initial value for the counter.
       """
-
-   @overload
-   def encrypt(self, in_buf: _AnyReadableBuf, /) -> bytes:
-      """
+    @overload
+    def encrypt(self, in_buf: AnyReadableBuf, /) -> bytes:
+        """
            Encrypt *in_buf*. If no *out_buf* is given result is returned as a
            newly allocated `bytes` object. Otherwise, result is written into
            mutable buffer *out_buf*. *in_buf* and *out_buf* can also refer
            to the same mutable buffer, in which case data is encrypted in-place.
       """
-
-   @overload
-   def encrypt(self, in_buf: _AnyReadableBuf, out_buf: _AnyWritableBuf, /) -> None:
-      """
+    @overload
+    def encrypt(self, in_buf: AnyReadableBuf, out_buf: AnyWritableBuf, /) -> None:
+        """
            Encrypt *in_buf*. If no *out_buf* is given result is returned as a
            newly allocated `bytes` object. Otherwise, result is written into
            mutable buffer *out_buf*. *in_buf* and *out_buf* can also refer
            to the same mutable buffer, in which case data is encrypted in-place.
       """
-
-   @overload
-   def decrypt(self, in_buf: _AnyReadableBuf, /) -> bytes:
-      """
+    @overload
+    def decrypt(self, in_buf: AnyReadableBuf, /) -> bytes:
+        """
            Like `encrypt()`, but for decryption.
       """
-
-   @overload
-   def decrypt(self, in_buf: _AnyReadableBuf, out_buf: _AnyWritableBuf, /) -> None:
-      """
+    @overload
+    def decrypt(self, in_buf: AnyReadableBuf, out_buf: AnyWritableBuf, /) -> None:
+        """
            Like `encrypt()`, but for decryption.
       """
