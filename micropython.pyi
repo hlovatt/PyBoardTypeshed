@@ -1,9 +1,8 @@
 """
-access and control MicroPython internals
+access and control MicroPython internals.
 
-Descriptions taken from 
-`https://raw.githubusercontent.com/micropython/micropython/master/docs/library/micropython.rst`, etc.
-==============================================================
+Descriptions taken from:
+https://raw.githubusercontent.com/micropython/micropython/master/docs/library/micropython.rst.
 
 .. module:: micropython
    :synopsis: access and control MicroPython internals
