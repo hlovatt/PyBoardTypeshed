@@ -28,7 +28,7 @@ from machine import Pin
 _Color: Final = tuple[int, int, int] | tuple[int, int, int, int]
 
 class NeoPixel:
-    """
+   """
    This class stores pixel data for a WS2812 LED strip connected to a pin. The
    application should set pixel data and then call :meth:`NeoPixel.write`
    when it is ready to update the strip.
@@ -49,8 +49,10 @@ class NeoPixel:
        n.write()
    """
 
-    def __init__(self, pin: Pin, n: int, /, *, bpp: int = 3, timing: int = 1):
-        """
+
+
+   def __init__(self, pin: Pin, n: int, /, *, bpp: int = 3, timing: int = 1):
+      """
        Construct an NeoPixel object.  The parameters are:
        
            - *pin* is a machine.Pin instance.
@@ -58,24 +60,29 @@ class NeoPixel:
            - *bpp* is 3 for RGB LEDs, and 4 for RGBW LEDs.
            - *timing* is 0 for 400KHz, and 1 for 800kHz LEDs (most are 800kHz).
       """
-    def fill(self, pixel: _Color, /) -> None:
-        """
+
+   def fill(self, pixel: _Color, /) -> None:
+      """
        Sets the value of all pixels to the specified *pixel* value (i.e. an
        RGB/RGBW tuple).
       """
-    def __len__(self) -> int:
-        """
+
+   def __len__(self) -> int:
+      """
        Returns the number of LEDs in the strip.
       """
-    def __setitem__(self, index: int, val: _Color, /) -> None:
-        """
+
+   def __setitem__(self, index: int, val: _Color, /) -> None:
+      """
        Set the pixel at *index* to the value, which is an RGB/RGBW tuple.
       """
-    def __getitem__(self, index: int, /) -> _Color:
-        """
+
+   def __getitem__(self, index: int, /) -> _Color:
+      """
        Returns the pixel at *index* as an RGB/RGBW tuple.
       """
-    def write(self) -> None:
-        """
+
+   def write(self) -> None:
+      """
        Writes the current pixel data to the strip.
       """

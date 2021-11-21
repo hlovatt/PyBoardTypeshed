@@ -49,6 +49,7 @@ from typing import Protocol, Callable, overload, Any, ClassVar, Final
 
 import pyb
 
+
 MODE_11B: Final[int] = ...
 """IEEE 802.11b"""
 
@@ -57,9 +58,11 @@ MODE_11G: Final[int] = ...
 
 MODE_11N: Final[int] = ...
 """IEEE 802.11n"""
+
+
 @overload
 def phy_mode(self) -> int:
-    """
+   """
     Get or set the PHY mode.
     
     If the *mode* parameter is provided, sets the mode to its value. If
@@ -75,7 +78,7 @@ def phy_mode(self) -> int:
 
 @overload
 def phy_mode(self, mode: int, /) -> None:
-    """
+   """
     Get or set the PHY mode.
     
     If the *mode* parameter is provided, sets the mode to its value. If
@@ -89,8 +92,9 @@ def phy_mode(self, mode: int, /) -> None:
     Availability: ESP8266.
    """
 
+
 class AbstractNIC(Protocol):
-    """
+   """
    Common network adapter interface
    ================================
    
@@ -101,37 +105,43 @@ class AbstractNIC(Protocol):
    in the following sections, implements methods as described here.
    """
 
-    @abstractmethod
-    def __init__(self, id: Any = None, /, *args: Any, **kwargs: Any):
-        """
+
+
+   
+   @abstractmethod
+   def __init__(self, id: Any = None, /, *args: Any, **kwargs: Any):
+      """
       Instantiate a network interface object. Parameters are network interface
       dependent. If there are more than one interface of the same type, the first
       parameter should be `id`.
       """
-    @overload
-    @abstractmethod
-    def active(self, /) -> bool:
-        """
+
+   @overload
+   @abstractmethod
+   def active(self, /) -> bool:
+      """
            Activate ("up") or deactivate ("down") the network interface, if
            a boolean argument is passed. Otherwise, query current state if
            no argument is provided. Most other methods require an active
            interface (behaviour of calling them on inactive interface is
            undefined).
       """
-    @overload
-    @abstractmethod
-    def active(self, is_active: bool, /) -> None:
-        """
+
+   @overload
+   @abstractmethod
+   def active(self, is_active: bool, /) -> None:
+      """
            Activate ("up") or deactivate ("down") the network interface, if
            a boolean argument is passed. Otherwise, query current state if
            no argument is provided. Most other methods require an active
            interface (behaviour of calling them on inactive interface is
            undefined).
       """
-    @overload
-    @abstractmethod
-    def connect(self, key: str | None = None, /, **kwargs: Any) -> None:
-        """
+
+   @overload
+   @abstractmethod
+   def connect(self, key: str | None = None, /, **kwargs: Any) -> None:
+      """
           Connect the interface to a network. This method is optional, and
           available only for interfaces which are not "always connected".
           If no parameters are given, connect to the default (or the only)
@@ -146,12 +156,11 @@ class AbstractNIC(Protocol):
           
           * WiFi: *bssid* keyword to connect to a specific BSSID (MAC address)
       """
-    @overload
-    @abstractmethod
-    def connect(
-        self, service_id: Any, key: str | None = None, /, **kwargs: Any
-    ) -> None:
-        """
+
+   @overload
+   @abstractmethod
+   def connect(self, service_id: Any, key: str | None = None, /, **kwargs: Any) -> None:
+      """
           Connect the interface to a network. This method is optional, and
           available only for interfaces which are not "always connected".
           If no parameters are given, connect to the default (or the only)
@@ -166,19 +175,25 @@ class AbstractNIC(Protocol):
           
           * WiFi: *bssid* keyword to connect to a specific BSSID (MAC address)
       """
-    @abstractmethod
-    def disconnect(self) -> None:
-        """
+
+   
+   @abstractmethod
+   def disconnect(self) -> None:
+      """
           Disconnect from network.
       """
-    @abstractmethod
-    def isconnected(self) -> bool:
-        """
+
+   
+   @abstractmethod
+   def isconnected(self) -> bool:
+      """
           Returns ``True`` if connected to network, otherwise returns ``False``.
       """
-    @abstractmethod
-    def scan(self, **kwargs: Any) -> list[tuple[str, ...]]:
-        """
+
+   
+   @abstractmethod
+   def scan(self, **kwargs: Any) -> list[tuple[str, ...]]:
+      """
           Scan for the available network services/connections. Returns a
           list of tuples with discovered service parameters. For various
           network media, there are different variants of predefined/
@@ -193,10 +208,11 @@ class AbstractNIC(Protocol):
           duration and other parameters. Where possible, parameter names
           should match those in connect().
       """
-    @overload
-    @abstractmethod
-    def status(self) -> Any:
-        """
+
+   @overload
+   @abstractmethod
+   def status(self) -> Any:
+      """
           Query dynamic status information of the interface.  When called with no
           argument the return value describes the network link status.  Otherwise
           *param* should be a string naming the particular status parameter to
@@ -210,10 +226,11 @@ class AbstractNIC(Protocol):
             connected to the AP.  The list contains tuples of the form
             (MAC, RSSI).
       """
-    @overload
-    @abstractmethod
-    def status(self, param: str, /) -> Any:
-        """
+
+   @overload
+   @abstractmethod
+   def status(self, param: str, /) -> Any:
+      """
           Query dynamic status information of the interface.  When called with no
           argument the return value describes the network link status.  Otherwise
           *param* should be a string naming the particular status parameter to
@@ -227,10 +244,11 @@ class AbstractNIC(Protocol):
             connected to the AP.  The list contains tuples of the form
             (MAC, RSSI).
       """
-    @overload
-    @abstractmethod
-    def ifconfig(self) -> tuple[str, str, str, str]:
-        """
+
+   @overload
+   @abstractmethod
+   def ifconfig(self) -> tuple[str, str, str, str]:
+      """
           Get/set IP-level network interface parameters: IP address, subnet mask,
           gateway and DNS server. When called with no arguments, this method returns
           a 4-tuple with the above information. To set the above values, pass a
@@ -238,10 +256,11 @@ class AbstractNIC(Protocol):
           
            nic.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    @abstractmethod
-    def ifconfig(self, ip_mask_gateway_dns: tuple[str, str, str, str], /) -> None:
-        """
+
+   @overload
+   @abstractmethod
+   def ifconfig(self, ip_mask_gateway_dns: tuple[str, str, str, str], /) -> None:
+      """
           Get/set IP-level network interface parameters: IP address, subnet mask,
           gateway and DNS server. When called with no arguments, this method returns
           a 4-tuple with the above information. To set the above values, pass a
@@ -249,28 +268,12 @@ class AbstractNIC(Protocol):
           
            nic.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    @abstractmethod
-    def config(self, param: str, /) -> Any:
-        """
-          Get or set general network interface parameters. These methods allow to work
-          with additional parameters beyond standard IP configuration (as dealt with by
-          `ifconfig()`). These include network-specific and hardware-specific
-          parameters. For setting parameters, the keyword argument
-          syntax should be used, and multiple parameters can be set at once. For
-          querying, a parameter name should be quoted as a string, and only one
-          parameter can be queried at a time::
-          
-           # Set WiFi access point name (formally known as ESSID) and WiFi channel
-           ap.config(essid='My AP', channel=11)
-           # Query params one by one
-           print(ap.config('essid'))
-           print(ap.config('channel'))
+
+   
+   @overload
+   @abstractmethod
+   def config(self, param: str, /) -> Any:
       """
-    @overload
-    @abstractmethod
-    def config(self, **kwargs: Any) -> None:
-        """
           Get or set general network interface parameters. These methods allow to work
           with additional parameters beyond standard IP configuration (as dealt with by
           `ifconfig()`). These include network-specific and hardware-specific
@@ -286,8 +289,29 @@ class AbstractNIC(Protocol):
            print(ap.config('channel'))
       """
 
+   
+   @overload
+   @abstractmethod
+   def config(self, **kwargs: Any) -> None:
+      """
+          Get or set general network interface parameters. These methods allow to work
+          with additional parameters beyond standard IP configuration (as dealt with by
+          `ifconfig()`). These include network-specific and hardware-specific
+          parameters. For setting parameters, the keyword argument
+          syntax should be used, and multiple parameters can be set at once. For
+          querying, a parameter name should be quoted as a string, and only one
+          parameter can be queried at a time::
+          
+           # Set WiFi access point name (formally known as ESSID) and WiFi channel
+           ap.config(essid='My AP', channel=11)
+           # Query params one by one
+           print(ap.config('essid'))
+           print(ap.config('channel'))
+      """
+
+
 class WLAN:
-    """
+   """
    This class provides a driver for WiFi network processors.  Example usage::
    
        import network
@@ -298,48 +322,56 @@ class WLAN:
        # now use sockets as usual
    """
 
-    def __init__(self, interface_id: int, /):
-        """
+
+
+   def __init__(self, interface_id: int, /):
+      """
       Create a WLAN network interface object. Supported interfaces are
       ``network.STA_IF`` (station aka client, connects to upstream WiFi access
       points) and ``network.AP_IF`` (access point, allows other WiFi clients to
       connect). Availability of the methods below depends on interface type.
       For example, only STA interface may `WLAN.connect()` to an access point.
       """
-    @overload
-    def active(self, /) -> bool:
-        """
+
+   @overload
+   def active(self, /) -> bool:
+      """
        Activate ("up") or deactivate ("down") network interface, if boolean
        argument is passed. Otherwise, query current state if no argument is
        provided. Most other methods require active interface.
       """
-    @overload
-    def active(self, is_active: bool, /) -> None:
-        """
+
+   @overload
+   def active(self, is_active: bool, /) -> None:
+      """
        Activate ("up") or deactivate ("down") network interface, if boolean
        argument is passed. Otherwise, query current state if no argument is
        provided. Most other methods require active interface.
       """
-    def connect(
-        self,
-        ssid: str | None = None,
-        password: str | None = None,
-        /,
-        *,
-        bssid: bytes | None = None,
-    ) -> None:
-        """
+
+   
+   def connect(
+      self, 
+      ssid: str | None = None, 
+      password: str | None = None, 
+      /, 
+      *, 
+      bssid: bytes | None = None
+   ) -> None:
+      """
        Connect to the specified wireless network, using the specified password.
        If *bssid* is given then the connection will be restricted to the
        access-point with that MAC address (the *ssid* must also be specified
        in this case).
       """
-    def disconnect(self) -> None:
-        """
+
+   def disconnect(self) -> None:
+      """
        Disconnect from the currently connected wireless network.
       """
-    def scan(self) -> tuple[str, bytes, int, int, int]:
-        """
+
+   def scan(self) -> tuple[str, bytes, int, int, int]:
+      """
        Scan for the available wireless networks.
        Hidden networks -- where the SSID is not broadcast -- will also be scanned
        if the WLAN interface allows it.
@@ -365,9 +397,10 @@ class WLAN:
            * 0 -- visible
            * 1 -- hidden
       """
-    @overload
-    def status(self) -> int:
-        """
+
+   @overload
+   def status(self) -> int:
+      """
        Return the current status of the wireless connection.
        
        When called with no argument the return value describes the network link status.
@@ -383,9 +416,10 @@ class WLAN:
        When called with one argument *param* should be a string naming the status
        parameter to retrieve.  Supported parameters in WiFI STA mode are: ``'rssi'``.
       """
-    @overload
-    def status(self, param: str, /) -> int:
-        """
+
+   @overload
+   def status(self, param: str, /) -> int:
+      """
        Return the current status of the wireless connection.
        
        When called with no argument the return value describes the network link status.
@@ -401,15 +435,17 @@ class WLAN:
        When called with one argument *param* should be a string naming the status
        parameter to retrieve.  Supported parameters in WiFI STA mode are: ``'rssi'``.
       """
-    def isconnected(self) -> bool:
-        """
+
+   def isconnected(self) -> bool:
+      """
        In case of STA mode, returns ``True`` if connected to a WiFi access
        point and has a valid IP address.  In AP mode returns ``True`` when a
        station is connected. Returns ``False`` otherwise.
       """
-    @overload
-    def ifconfig(self) -> tuple[str, str, str, str]:
-        """
+
+   @overload
+   def ifconfig(self) -> tuple[str, str, str, str]:
+      """
       Get/set IP-level network interface parameters: IP address, subnet mask,
       gateway and DNS server. When called with no arguments, this method returns
       a 4-tuple with the above information. To set the above values, pass a
@@ -417,9 +453,10 @@ class WLAN:
       
        nic.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    def ifconfig(self, ip_mask_gateway_dns: tuple[str, str, str, str], /) -> None:
-        """
+
+   @overload
+   def ifconfig(self, ip_mask_gateway_dns: tuple[str, str, str, str], /) -> None:
+      """
       Get/set IP-level network interface parameters: IP address, subnet mask,
       gateway and DNS server. When called with no arguments, this method returns
       a 4-tuple with the above information. To set the above values, pass a
@@ -427,41 +464,11 @@ class WLAN:
       
        nic.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    def config(self, param: str, /) -> Any:
-        """
-      Get or set general network interface parameters. These methods allow to work
-      with additional parameters beyond standard IP configuration (as dealt with by
-      `WLAN.ifconfig()`). These include network-specific and hardware-specific
-      parameters. For setting parameters, keyword argument syntax should be used,
-      multiple parameters can be set at once. For querying, parameters name should
-      be quoted as a string, and only one parameter can be queries at time::
-      
-       # Set WiFi access point name (formally known as ESSID) and WiFi channel
-       ap.config(essid='My AP', channel=11)
-       # Query params one by one
-       print(ap.config('essid'))
-       print(ap.config('channel'))
-      
-      Following are commonly supported parameters (availability of a specific parameter
-      depends on network technology type, driver, and :term:`MicroPython port`).
-      
-      =============  ===========
-      Parameter      Description
-      =============  ===========
-      mac            MAC address (bytes)
-      essid          WiFi access point name (string)
-      channel        WiFi channel (integer)
-      hidden         Whether ESSID is hidden (boolean)
-      authmode       Authentication mode supported (enumeration, see module constants)
-      password       Access password (string)
-      dhcp_hostname  The DHCP hostname to use
-      reconnects     Number of reconnect attempts to make (integer, 0=none, -1=unlimited)
-      =============  ===========
+
+   
+   @overload
+   def config(self, param: str, /) -> Any:
       """
-    @overload
-    def config(self, **kwargs: Any) -> None:
-        """
       Get or set general network interface parameters. These methods allow to work
       with additional parameters beyond standard IP configuration (as dealt with by
       `WLAN.ifconfig()`). These include network-specific and hardware-specific
@@ -492,8 +499,43 @@ class WLAN:
       =============  ===========
       """
 
+   
+   @overload
+   def config(self, **kwargs: Any) -> None:
+      """
+      Get or set general network interface parameters. These methods allow to work
+      with additional parameters beyond standard IP configuration (as dealt with by
+      `WLAN.ifconfig()`). These include network-specific and hardware-specific
+      parameters. For setting parameters, keyword argument syntax should be used,
+      multiple parameters can be set at once. For querying, parameters name should
+      be quoted as a string, and only one parameter can be queries at time::
+      
+       # Set WiFi access point name (formally known as ESSID) and WiFi channel
+       ap.config(essid='My AP', channel=11)
+       # Query params one by one
+       print(ap.config('essid'))
+       print(ap.config('channel'))
+      
+      Following are commonly supported parameters (availability of a specific parameter
+      depends on network technology type, driver, and :term:`MicroPython port`).
+      
+      =============  ===========
+      Parameter      Description
+      =============  ===========
+      mac            MAC address (bytes)
+      essid          WiFi access point name (string)
+      channel        WiFi channel (integer)
+      hidden         Whether ESSID is hidden (boolean)
+      authmode       Authentication mode supported (enumeration, see module constants)
+      password       Access password (string)
+      dhcp_hostname  The DHCP hostname to use
+      reconnects     Number of reconnect attempts to make (integer, 0=none, -1=unlimited)
+      =============  ===========
+      """
+
+
 class WLANWiPy:
-    """
+   """
    .. note::
    
        This class is a non-standard WLAN implementation for the WiPy.
@@ -516,43 +558,54 @@ class WLANWiPy:
        ...
    """
 
-    STA: ClassVar[int] = ...
-    """
+   STA: ClassVar[int] = ...
+   """
 selects the WLAN mode
    """
 
-    AP: ClassVar[int] = ...
-    """
+
+   AP: ClassVar[int] = ...
+   """
 selects the WLAN mode
    """
 
-    WEP: ClassVar[int] = ...
-    """
+
+
+
+   WEP: ClassVar[int] = ...
+   """
 selects the network security
    """
 
-    WPA: ClassVar[int] = ...
-    """
+
+   WPA: ClassVar[int] = ...
+   """
 selects the network security
    """
 
-    WPA2: ClassVar[int] = ...
-    """
+
+   WPA2: ClassVar[int] = ...
+   """
 selects the network security
    """
 
-    INT_ANT: ClassVar[int] = ...
-    """
+
+
+
+   INT_ANT: ClassVar[int] = ...
+   """
 selects the antenna type
    """
 
-    EXT_ANT: ClassVar[int] = ...
-    """
+
+   EXT_ANT: ClassVar[int] = ...
+   """
 selects the antenna type
    """
-    @overload
-    def __init__(self, id: int = 0, /):
-        """
+
+   @overload
+   def __init__(self, id: int = 0, /):
+      """
       Create a WLAN object, and optionally configure it. See `init()` for params of configuration.
       
       .. note::
@@ -563,19 +616,10 @@ selects the antenna type
       initialized it will do the same as the other constructors an will initialize it with default
       values.
       """
-    @overload
-    def __init__(
-        self,
-        id: int,
-        /,
-        *,
-        mode: int,
-        ssid: str,
-        auth: tuple[str, str],
-        channel: int,
-        antenna: int,
-    ):
-        """
+
+   @overload
+   def __init__(self, id: int, /, *, mode: int, ssid: str, auth: tuple[str, str], channel: int, antenna: int):
+      """
       Create a WLAN object, and optionally configure it. See `init()` for params of configuration.
       
       .. note::
@@ -586,17 +630,9 @@ selects the antenna type
       initialized it will do the same as the other constructors an will initialize it with default
       values.
       """
-    def init(
-        self,
-        mode: int,
-        /,
-        *,
-        ssid: str,
-        auth: tuple[str, str],
-        channel: int,
-        antenna: int,
-    ) -> bool:
-        """
+
+   def init(self, mode: int, /, *, ssid: str, auth: tuple[str, str], channel: int, antenna: int) -> bool:
+      """
       Set or get the WiFi network processor configuration.
       
       Arguments are:
@@ -621,16 +657,18 @@ selects the antenna type
          # configure as an station
          wlan.init(mode=WLAN.STA)
       """
-    def connect(
-        self,
-        ssid: str,
-        /,
-        *,
-        auth: tuple[str, str] | None = None,
-        bssid: bytes | None = None,
-        timeout: int | None = None,
-    ) -> None:
-        """
+
+   
+   def connect(
+      self, 
+      ssid: str, 
+      /, 
+      *, 
+      auth: tuple[str, str] | None = None, 
+      bssid: bytes | None = None,
+      timeout: int | None = None,
+   ) -> None:
+      """
       Connect to a WiFi access point using the given SSID, and other security
       parameters.
       
@@ -642,23 +680,27 @@ selects the antenna type
            APs with the same ssid.
          - *timeout* is the maximum time in milliseconds to wait for the connection to succeed.
       """
-    def scan(self) -> tuple[str, bytes, int, int | None, int]:
-        """
+
+   def scan(self) -> tuple[str, bytes, int, int | None, int]:
+      """
       Performs a network scan and returns a list of named tuples with (ssid, bssid, sec, channel, rssi).
       Note that channel is always ``None`` since this info is not provided by the WiPy.
       """
-    def disconnect(self) -> None:
-        """
+
+   def disconnect(self) -> None:
+      """
       Disconnect from the WiFi access point.
       """
-    def isconnected(self) -> bool:
-        """
+
+   def isconnected(self) -> bool:
+      """
       In case of STA mode, returns ``True`` if connected to a WiFi access point and has a valid IP address.
       In AP mode returns ``True`` when a station is connected, ``False`` otherwise.
       """
-    @overload
-    def ifconfig(self, if_id: int = 0, /) -> tuple[str, str, str, str]:
-        """
+
+   @overload
+   def ifconfig(self, if_id: int = 0, /) -> tuple[str, str, str, str]:
+      """
       With no parameters given returns a 4-tuple of *(ip, subnet_mask, gateway, DNS_server)*.
       
       if ``'dhcp'`` is passed as a parameter then the DHCP client is enabled and the IP params
@@ -668,11 +710,10 @@ selects the antenna type
       
          wlan.ifconfig(config=('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    def ifconfig(
-        self, if_id: int = 0, /, *, config: str | tuple[str, str, str, str]
-    ) -> None:
-        """
+
+   @overload
+   def ifconfig(self, if_id: int = 0, /, *, config: str | tuple[str, str, str, str]) -> None:
+      """
       With no parameters given returns a 4-tuple of *(ip, subnet_mask, gateway, DNS_server)*.
       
       if ``'dhcp'`` is passed as a parameter then the DHCP client is enabled and the IP params
@@ -682,68 +723,81 @@ selects the antenna type
       
          wlan.ifconfig(config=('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    def mode(self) -> int:
-        """
+
+   @overload
+   def mode(self) -> int:
+      """
       Get or set the WLAN mode.
       """
-    @overload
-    def mode(self, mode: int, /) -> None:
-        """
+
+   @overload
+   def mode(self, mode: int, /) -> None:
+      """
       Get or set the WLAN mode.
       """
-    @overload
-    def ssid(self) -> str:
-        """
+
+   @overload
+   def ssid(self) -> str:
+      """
       Get or set the SSID when in AP mode.
       """
-    @overload
-    def ssid(self, ssid: str, /) -> None:
-        """
+
+   @overload
+   def ssid(self, ssid: str, /) -> None:
+      """
       Get or set the SSID when in AP mode.
       """
-    @overload
-    def auth(self) -> int:
-        """
+
+   @overload
+   def auth(self) -> int:
+      """
       Get or set the authentication type when in AP mode.
       """
-    @overload
-    def auth(self, auth: int, /) -> None:
-        """
+
+   @overload
+   def auth(self, auth: int, /) -> None:
+      """
       Get or set the authentication type when in AP mode.
       """
-    @overload
-    def channel(self) -> int:
-        """
+
+   @overload
+   def channel(self) -> int:
+      """
       Get or set the channel (only applicable in AP mode).
       """
-    @overload
-    def channel(self, channel: int, /) -> None:
-        """
+
+   @overload
+   def channel(self, channel: int, /) -> None:
+      """
       Get or set the channel (only applicable in AP mode).
       """
-    @overload
-    def antenna(self) -> int:
-        """
+
+   @overload
+   def antenna(self) -> int:
+      """
       Get or set the antenna type (external or internal).
       """
-    @overload
-    def antenna(self, antenna: int, /) -> None:
-        """
+
+   @overload
+   def antenna(self, antenna: int, /) -> None:
+      """
       Get or set the antenna type (external or internal).
       """
-    @overload
-    def mac(self) -> bytes:
-        """
+
+   @overload
+   def mac(self) -> bytes:
+      """
       Get or set a 6-byte long bytes object with the MAC address.
       """
-    @overload
-    def mac(self, mac: bytes, /) -> None:
-        """
+
+   @overload
+   def mac(self, mac: bytes, /) -> None:
+      """
       Get or set a 6-byte long bytes object with the MAC address.
       """
-    def irq(self, *, handler: Callable[[], None], wake: int) -> Any:
-        """
+
+   def irq(self, *, handler: Callable[[], None], wake: int) -> Any:
+      """
        Create a callback to be triggered when a WLAN event occurs during ``machine.SLEEP``
        mode. Events are triggered by socket activity or by WLAN connection/disconnection.
        
@@ -753,8 +807,9 @@ selects the antenna type
        Returns an IRQ object.
       """
 
+
 class CC3K:
-    """
+   """
    This class provides a driver for CC3000 WiFi modules.  Example usage::
    
        import network
@@ -779,24 +834,25 @@ class CC3K:
    It is possible to use other SPI buses and other pins for CS, VBEN and IRQ.
    """
 
-    WEP: ClassVar[int] = ...
-    """
+   WEP: ClassVar[int] = ...
+   """
 security type to use
    """
 
-    WPA: ClassVar[int] = ...
-    """
+
+   WPA: ClassVar[int] = ...
+   """
 security type to use
    """
 
-    WPA2: ClassVar[int] = ...
-    """
+
+   WPA2: ClassVar[int] = ...
+   """
 security type to use
    """
-    def __init__(
-        self, spi: pyb.SPI, pin_cs: pyb.Pin, pin_en: pyb.Pin, pin_irq: pyb.Pin, /
-    ):
-        """
+
+   def __init__(self, spi: pyb.SPI, pin_cs: pyb.Pin, pin_en: pyb.Pin, pin_irq: pyb.Pin, /):
+      """
       Create a CC3K driver object, initialise the CC3000 module using the given SPI bus
       and pins, and return the CC3K object.
       
@@ -813,45 +869,53 @@ security type to use
       
         nic = network.CC3K(pyb.SPI(2), pyb.Pin.board.Y5, pyb.Pin.board.Y4, pyb.Pin.board.Y3)
       """
-    def connect(
-        self,
-        ssid: str,
-        key: str | None = None,
-        /,
-        *,
-        security: int = WPA2,
-        bssid: bytes | None = None,
-    ) -> None:
-        """
+
+   
+   def connect(
+      self, 
+      ssid: str, 
+      key: str | None = None, 
+      /, 
+      *, 
+      security: int = WPA2,
+      bssid: bytes | None = None,
+   ) -> None:
+      """
       Connect to a WiFi access point using the given SSID, and other security
       parameters.
       """
-    def disconnect(self) -> None:
-        """
+
+   def disconnect(self) -> None:
+      """
       Disconnect from the WiFi access point.
       """
-    def isconnected(self) -> bool:
-        """
+
+   def isconnected(self) -> bool:
+      """
       Returns True if connected to a WiFi access point and has a valid IP address,
       False otherwise.
       """
-    def ifconfig(self) -> tuple[str, str, str, str, str, str, str]:
-        """
+
+   def ifconfig(self) -> tuple[str, str, str, str, str, str, str]:
+      """
       Returns a 7-tuple with (ip, subnet mask, gateway, DNS server, DHCP server,
       MAC address, SSID).
       """
-    def patch_version(self) -> str:
-        """
+
+   def patch_version(self) -> str:
+      """
       Return the version of the patch program (firmware) on the CC3000.
       """
-    def patch_program(self, cmd: str, /) -> None:
-        """
+
+   def patch_program(self, cmd: str, /) -> None:
+      """
       Upload the current firmware to the CC3000.  You must pass 'pgm' as the first
       argument in order for the upload to proceed.
       """
 
+
 class WIZNET5K:
-    """
+   """
    This class allows you to control WIZnet5x00 Ethernet adaptors based on
    the W5200 and W5500 chipsets.  The particular chipset that is supported
    by the firmware is selected at compile-time via the MICROPY_PY_WIZNET5K
@@ -877,8 +941,10 @@ class WIZNET5K:
    It is possible to use other SPI buses and other pins for nSS and nRESET.
    """
 
-    def __init__(self, spi: pyb.SPI, pin_cs: pyb.Pin, pin_rst: pyb.Pin, /):
-        """
+
+
+   def __init__(self, spi: pyb.SPI, pin_cs: pyb.Pin, pin_rst: pyb.Pin, /):
+      """
       Create a WIZNET5K driver object, initialise the WIZnet5x00 module using the given
       SPI bus and pins, and return the WIZNET5K object.
       
@@ -894,14 +960,16 @@ class WIZNET5K:
       
         nic = network.WIZNET5K(pyb.SPI(1), pyb.Pin.board.X5, pyb.Pin.board.X4)
       """
-    def isconnected(self) -> bool:
-        """
+
+   def isconnected(self) -> bool:
+      """
       Returns ``True`` if the physical Ethernet link is connected and up.
       Returns ``False`` otherwise.
       """
-    @overload
-    def ifconfig(self) -> tuple[str, str, str, str]:
-        """
+
+   @overload
+   def ifconfig(self) -> tuple[str, str, str, str]:
+      """
       Get/set IP address, subnet mask, gateway and DNS.
       
       When called with no arguments, this method returns a 4-tuple with the above information.
@@ -910,9 +978,10 @@ class WIZNET5K:
       
        nic.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    @overload
-    def ifconfig(self, config: tuple[str, str, str, str], /):
-        """
+
+   @overload
+   def ifconfig(self, config: tuple[str, str, str, str], /):
+      """
       Get/set IP address, subnet mask, gateway and DNS.
       
       When called with no arguments, this method returns a 4-tuple with the above information.
@@ -921,7 +990,8 @@ class WIZNET5K:
       
        nic.ifconfig(('192.168.0.4', '255.255.255.0', '192.168.0.1', '8.8.8.8'))
       """
-    def regs(self) -> Any:
-        """
+
+   def regs(self) -> Any:
+      """
       Dump the WIZnet5x00 registers.  Useful for debugging.
       """

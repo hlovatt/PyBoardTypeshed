@@ -16,11 +16,11 @@ __version__ = "7.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import TypeVar, overload, Callable, Any, Final
 
-_T: Final = TypeVar("_T")
+_T: Final = TypeVar('_T')
 _F: Final = TypeVar("_F", bound=Callable[..., Any])
 
 def native(func: _F) -> _F:
-    """
+   """
    This causes the MicroPython compiler to emit unoptimised native CPU opcodes
    rather than bytecode (normal) or optimised opcodes (viper) and is an optimisation,
    for more information see 
@@ -28,15 +28,16 @@ def native(func: _F) -> _F:
    """
 
 def viper(func: _F) -> _F:
-    """
+   """
    This causes the MicroPython compiler to emit optimised native CPU opcodes based on special typehints
    rather than bytecode (normal) or unoptimised opcodes (native) and is an optimisation,
    for more information see 
    https://docs.micropython.org/en/latest/reference/speed_python.html#the-viper-code-emitter.
    """
 
+
 def const(expr: _T, /) -> _T:
-    """
+   """
    Used to declare that the expression is a constant so that the compile can
    optimise it.  The use of this function should be as follows::
    
@@ -58,7 +59,7 @@ def const(expr: _T, /) -> _T:
 
 @overload
 def opt_level() -> int:
-    """
+   """
    If *level* is given then this function sets the optimisation level for subsequent
    compilation of scripts, and returns ``None``.  Otherwise it returns the current
    optimisation level.
@@ -78,7 +79,7 @@ def opt_level() -> int:
 
 @overload
 def opt_level(level: int, /) -> None:
-    """
+   """
    If *level* is given then this function sets the optimisation level for subsequent
    compilation of scripts, and returns ``None``.  Otherwise it returns the current
    optimisation level.
@@ -97,7 +98,7 @@ def opt_level(level: int, /) -> None:
    """
 
 def alloc_emergency_exception_buf(size: int, /) -> None:
-    """
+   """
    Allocate *size* bytes of RAM for the emergency exception buffer (a good
    size is around 100 bytes).  The buffer is used to create exceptions in cases
    when normal RAM allocation would fail (eg within an interrupt handler) and
@@ -110,7 +111,7 @@ def alloc_emergency_exception_buf(size: int, /) -> None:
 
 @overload
 def mem_info() -> None:
-    """
+   """
    Print information about currently used memory.  If the *verbose* argument
    is given then extra information is printed.
    
@@ -121,7 +122,7 @@ def mem_info() -> None:
 
 @overload
 def mem_info(verbose: Any, /) -> None:
-    """
+   """
    Print information about currently used memory.  If the *verbose* argument
    is given then extra information is printed.
    
@@ -132,7 +133,7 @@ def mem_info(verbose: Any, /) -> None:
 
 @overload
 def qstr_info() -> None:
-    """
+   """
    Print information about currently interned strings.  If the *verbose*
    argument is given then extra information is printed.
    
@@ -143,7 +144,7 @@ def qstr_info() -> None:
 
 @overload
 def qstr_info(verbose: bool, /) -> None:
-    """
+   """
    Print information about currently interned strings.  If the *verbose*
    argument is given then extra information is printed.
    
@@ -153,14 +154,14 @@ def qstr_info(verbose: bool, /) -> None:
    """
 
 def stack_use() -> int:
-    """
+   """
    Return an integer representing the current amount of stack that is being
    used.  The absolute value of this is not particularly useful, rather it
    should be used to compute differences in stack usage at different points.
    """
 
 def heap_lock() -> None:
-    """
+   """
    Lock or unlock the heap.  When locked no memory allocation can occur and a
    `MemoryError` will be raised if any heap allocation is attempted.
    `heap_locked()` returns a true value if the heap is currently locked.
@@ -181,7 +182,7 @@ def heap_lock() -> None:
    """
 
 def heap_unlock() -> None:
-    """
+   """
    Lock or unlock the heap.  When locked no memory allocation can occur and a
    `MemoryError` will be raised if any heap allocation is attempted.
    `heap_locked()` returns a true value if the heap is currently locked.
@@ -202,7 +203,7 @@ def heap_unlock() -> None:
    """
 
 def heap_locked() -> bool:
-    """
+   """
    Lock or unlock the heap.  When locked no memory allocation can occur and a
    `MemoryError` will be raised if any heap allocation is attempted.
    `heap_locked()` returns a true value if the heap is currently locked.
@@ -223,7 +224,7 @@ def heap_locked() -> bool:
    """
 
 def kbd_intr(chr: int) -> None:
-    """
+   """
    Set the character that will raise a `KeyboardInterrupt` exception.  By
    default this is set to 3 during script execution, corresponding to Ctrl-C.
    Passing -1 to this function will disable capture of Ctrl-C, and passing 3
@@ -235,7 +236,7 @@ def kbd_intr(chr: int) -> None:
    """
 
 def schedule(func: Callable[[_T], None], arg: _T, /) -> None:
-    """
+   """
    Schedule the function *func* to be executed "very soon".  The function
    is passed the value *arg* as its single argument.  "Very soon" means that
    the MicroPython runtime will do its best to execute the function at the

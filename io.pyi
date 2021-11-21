@@ -127,9 +127,7 @@ _OpenTextModeUpdating: Final = Literal[
     "+tx",
 ]
 _OpenTextModeWriting: Final = Literal["w", "wt", "tw", "a", "at", "ta", "x", "xt", "tx"]
-_OpenTextModeReading: Final = Literal[
-    "r", "rt", "tr", "U", "rU", "Ur", "rtU", "rUt", "Urt", "trU", "tUr", "Utr"
-]
+_OpenTextModeReading: Final = Literal["r", "rt", "tr", "U", "rU", "Ur", "rtU", "rUt", "Urt", "trU", "tUr", "Utr"]
 _OpenTextMode: Final = _OpenTextModeUpdating | _OpenTextModeWriting | _OpenTextModeReading
 
 _OpenBinaryModeUpdating: Final = Literal[
@@ -159,42 +157,44 @@ _OpenBinaryModeUpdating: Final = Literal[
     "+bx",
 ]
 _OpenBinaryModeWriting: Final = Literal["wb", "bw", "ab", "ba", "xb", "bx"]
-_OpenBinaryModeReading: Final = Literal[
-    "rb", "br", "rbU", "rUb", "Urb", "brU", "bUr", "Ubr"
-]
+_OpenBinaryModeReading: Final = Literal["rb", "br", "rbU", "rUb", "Urb", "brU", "bUr", "Ubr"]
 _OpenBinaryMode: Final = _OpenBinaryModeUpdating | _OpenBinaryModeReading | _OpenBinaryModeWriting
 
 AnyStr_co: Final = TypeVar("AnyStr_co", str, bytes, covariant=True)
 @runtime_checkable
 class PathLike(Protocol[AnyStr_co]):
-    def __fspath__(self) -> AnyStr_co: ...
+    def __fspath__(self) -> AnyStr_co: 
+        ...
 
 StrOrBytesPath: Final = str | bytes | PathLike[str] | PathLike[bytes]
 _OpenFile: Final = StrOrBytesPath | int
 
-AnyReadableBuf: Final = TypeVar("AnyReadableBuf", bytearray, array, memoryview, bytes)
+AnyReadableBuf: Final = TypeVar('AnyReadableBuf', bytearray, array, memoryview, bytes)
 """
 Type that allows bytearray, array, memoryview, or bytes, 
 but only one of these and not a mixture in a single declaration.
 """
 
-AnyWritableBuf: Final = TypeVar("AnyWritableBuf", bytearray, array, memoryview)
+AnyWritableBuf: Final = TypeVar('AnyWritableBuf', bytearray, array, memoryview)
 """
 Type that allows bytearray, array, or memoryview, but only one of these and not a mixture in a single declaration.
 """
 
-_Self: Final = TypeVar("_Self")  # The type that extends `IOBase`.
+_Self: Final = TypeVar('_Self')  # The type that extends `IOBase`.
+
 @runtime_checkable
 class IOBase(Protocol[AnyStr, _Self]):
     """A `Protocol` (structurally typed) for an IOStream."""
 
     __slots__ = ()
+    
     def __enter__(self) -> _Self:
         """
         Called on entry to a `with` block.
         The `with` statement will bind this method’s return value to the target(s) specified in the `as` clause 
         of the statement, if any.
         """
+        
     def __exit__(
         self,
         exc_type: Type[BaseException] | None,
@@ -213,14 +213,17 @@ class IOBase(Protocol[AnyStr, _Self]):
         *Note* that `__exit__()` methods should not re-raise the passed-in exception; 
         this is the caller’s responsibility.
         """
+        
     def __next__(self) -> AnyStr:
         """
         Next string.
         """
+    
     def __iter__(self) -> _Self:
         """
         Start new iteration.
         """
+
     def close(self) -> None:
         """
         Flushes the write buffers and closes the IO stream; best not called directly, use a `with` block instead.
@@ -230,6 +233,7 @@ class IOBase(Protocol[AnyStr, _Self]):
         Any operation which requires that the file be open will raise a `ValueError` after the file has been closed. 
         Calling `f.close()` more than once is allowed.
         """
+
     def flush(self) -> None:
         """
         Flushes the write buffers of the IO stream.
@@ -238,6 +242,7 @@ class IOBase(Protocol[AnyStr, _Self]):
         
         This method does nothing for read-only and non-blocking streams.
         """
+
     def read(self, size: int | None = -1) -> AnyStr | None:
         """
         Read up to `size` bytes from the object and return them as a `str` (text file) or `bytes` (binary file). 
@@ -248,6 +253,7 @@ class IOBase(Protocol[AnyStr, _Self]):
         If 0 bytes are returned, and `size` was not 0, this indicates end of file. 
         If `self` is in non-blocking mode and no bytes are available, `None` is returned.
         """
+
     def readinto(self, b: AnyWritableBuf) -> int | None:
         """
         Read bytes into a pre-allocated, writable bytes-like object b, and return the number of bytes read. 
@@ -255,6 +261,7 @@ class IOBase(Protocol[AnyStr, _Self]):
         
         If `self` is in non-blocking mode and no bytes are available, `None` is returned.
         """
+
     def readline(self, size: int = -1) -> AnyStr:
         """
         Read and return, as a `str` (text file) or `bytes` (binary file), one line from the stream. 
@@ -264,6 +271,7 @@ class IOBase(Protocol[AnyStr, _Self]):
 '` for binary files; 
         for text files, the newline argument to `open()` can be used to select the line terminator(s) recognized.
         """
+
     def readlines(self, hint: int | None = -1) -> list[AnyStr]:
         """
         Read and return a list of lines, as a `list[str]` (text file) or `list[bytes]` (binary file), from the stream. 
@@ -278,6 +286,7 @@ class IOBase(Protocol[AnyStr, _Self]):
         *Note* that it’s already possible to iterate on file objects using `for line in file: ...` 
         without calling `file.readlines()`.
         """
+
     def write(self, b: AnyReadableBuf) -> int | None:
         """
         Write the given bytes-like object, `b`, to the underlying raw stream, and return the number of bytes written. 
@@ -288,6 +297,7 @@ class IOBase(Protocol[AnyStr, _Self]):
         The caller may release or mutate `b` after this method returns, 
         so the implementation only access `b` during the method call.
         """
+
     def seek(self, offset: int, whence: int = 0) -> int:
         """
         Change the stream position to the given byte `offset`. 
@@ -302,14 +312,16 @@ class IOBase(Protocol[AnyStr, _Self]):
         
         Returns the new absolute position.
         """
+
     def tell(self) -> int:
         """
         Return the current stream position.
         """
 
+
 @overload
 def open(name: _OpenFile, /, **kwargs) -> "TextIOWrapper":
-    """
+   """
     Open a file. Builtin ``open()`` function is aliased to this function.
     All ports (which provide access to file system) are required to support
     *mode* parameter, but support for other arguments vary by port.
@@ -317,7 +329,7 @@ def open(name: _OpenFile, /, **kwargs) -> "TextIOWrapper":
 
 @overload
 def open(name: _OpenFile, mode: _OpenTextMode = ..., /, **kwargs) -> "TextIOWrapper":
-    """
+   """
     Open a file. Builtin ``open()`` function is aliased to this function.
     All ports (which provide access to file system) are required to support
     *mode* parameter, but support for other arguments vary by port.
@@ -325,42 +337,51 @@ def open(name: _OpenFile, mode: _OpenTextMode = ..., /, **kwargs) -> "TextIOWrap
 
 @overload
 def open(name: _OpenFile, mode: _OpenBinaryMode = ..., /, **kwargs) -> "FileIO":
-    """
+   """
     Open a file. Builtin ``open()`` function is aliased to this function.
     All ports (which provide access to file system) are required to support
     *mode* parameter, but support for other arguments vary by port.
    """
 
+
 class FileIO(IOBase[bytes, "FileIO"]):
-    """
+   """
 Bytes stream from a file.
    """
 
-    def __init__(self, name: _OpenFile, mode: str = ..., /, **kwargs):
-        """
+
+
+   def __init__(self, name: _OpenFile, mode: str = ..., /, **kwargs):
+      """
        This is type of a file open in binary mode, e.g. using ``open(name, "rb")``.
        You should not instantiate this class directly.
       """
 
+
 class TextIOWrapper(IOBase[str, "TextIOWrapper"]):
-    """
+   """
 Str stream from a file.
    """
 
-    def __init__(self, name: _OpenFile, mode: str = ..., /, **kwargs):
-        """
+
+
+   def __init__(self, name: _OpenFile, mode: str = ..., /, **kwargs):
+      """
        This is type of a file open in text mode, e.g. using ``open(name, "rt")``.
        You should not instantiate this class directly.
       """
 
+
 class StringIO(IOBase[str, "StringIO"]):
-    """
+   """
 Str stream from a str (wrapper).
    """
 
-    @overload
-    def __init__(self, string: str = "", /):
-        """
+
+
+   @overload
+   def __init__(self, string: str = "", /):
+      """
    
    In-memory file-like object for input/output.
    `StringIO` is used for text-mode I/O (similar to a normal file opened with "t" modifier).
@@ -378,9 +399,10 @@ Str stream from a str (wrapper).
 
         This constructor is a MicroPython extension.
       """
-    @overload
-    def __init__(self, alloc_size: int, /):
-        """
+
+   @overload
+   def __init__(self, alloc_size: int, /):
+      """
    
    In-memory file-like object for input/output.
    `StringIO` is used for text-mode I/O (similar to a normal file opened with "t" modifier).
@@ -398,17 +420,22 @@ Str stream from a str (wrapper).
 
         This constructor is a MicroPython extension.
       """
-    def getvalue(self) -> str:
-        """Get the current contents of the underlying buffer which holds data."""
+
+
+   def getvalue(self) -> str:
+      """Get the current contents of the underlying buffer which holds data."""
+
 
 class BytesIO(IOBase[bytes, "BytesIO"]):
-    """
+   """
 Bytes stream from a bytes array (wrapper).
    """
 
-    @overload
-    def __init__(self, string: bytes = "", /):
-        """
+
+
+   @overload
+   def __init__(self, string: bytes = "", /):
+      """
        In-memory file-like objects for input/output. `StringIO` is used for
        text-mode I/O (similar to a normal file opened with "t" modifier).
        `BytesIO` is used for binary-mode I/O (similar to a normal file
@@ -432,9 +459,10 @@ Bytes stream from a bytes array (wrapper).
 
         This constructor is a MicroPython extension.
       """
-    @overload
-    def __init__(self, alloc_size: int, /):
-        """
+
+   @overload
+   def __init__(self, alloc_size: int, /):
+      """
        In-memory file-like objects for input/output. `StringIO` is used for
        text-mode I/O (similar to a normal file opened with "t" modifier).
        `BytesIO` is used for binary-mode I/O (similar to a normal file
@@ -458,7 +486,8 @@ Bytes stream from a bytes array (wrapper).
 
         This constructor is a MicroPython extension.
       """
-    def getvalue(self) -> bytes:
-        """
+
+   def getvalue(self) -> bytes:
+      """
            Get the current contents of the underlying buffer which holds data.
       """

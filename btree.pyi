@@ -86,16 +86,18 @@ from typing import Any, Final, Iterable
 
 from uio import IOBase
 
+
+
 def open(
-    stream: IOBase[bytes, Any],
-    /,
-    *,
-    flags: int = 0,
-    pagesize: int = 0,
-    cachesize: int = 0,
-    minkeypage: int = 0,
+   stream: IOBase[bytes, Any], 
+   /, 
+   *, 
+   flags: int = 0, 
+   pagesize: int = 0, 
+   cachesize: int = 0, 
+   minkeypage: int = 0
 ) -> _BTree:
-    """
+   """
    Open a database from a random-access `stream` (like an open file). All
    other parameters are optional and keyword-only, and allow to tweak advanced
    parameters of the database operation (most users will not need them):
@@ -119,11 +121,15 @@ def open(
    of methods), and some additional methods described below.
    """
 
+
 INCL: Final[int] = ...
 """
 A flag for `keys()`, `values()`, `items()` methods to specify that
    scanning should be inclusive of the end key.
 """
+
+
+
 
 DESC: Final[int] = ...
 """
@@ -131,56 +137,70 @@ A flag for `keys()`, `values()`, `items()` methods to specify that
    scanning should be in descending direction of keys.
 """
 
+
+
+
 class _BTree:
-    """
+   """
 
    """
 
-    def close(self) -> None:
-        """
+
+
+   def close(self) -> None:
+      """
       Close the database. It's mandatory to close the database at the end of
       processing, as some unwritten data may be still in the cache. Note that
       this does not close underlying stream with which the database was opened,
       it should be closed separately (which is also mandatory to make sure that
       data flushed from buffer to the underlying storage).
       """
-    def flush(self) -> None:
-        """
+
+   def flush(self) -> None:
+      """
       Flush any data in cache to the underlying stream.
       """
-    def __getitem__(self, key: bytes, /) -> bytes:
-        """
+
+   def __getitem__(self, key: bytes, /) -> bytes:
+      """
       Standard dictionary methods.
       """
-    def get(self, key: bytes, default: bytes | None = None, /) -> bytes | None:
-        """
+
+   def get(self, key: bytes, default: bytes | None = None, /) -> bytes | None:
+      """
       Standard dictionary methods.
       """
-    def __setitem__(self, key: bytes, val: bytes, /) -> None:
-        """
+
+   def __setitem__(self, key: bytes, val: bytes, /) -> None:
+      """
       Standard dictionary methods.
       """
-    def __delitem__(self, key: bytes, /) -> None:
-        """
+
+   def __delitem__(self, key: bytes, /) -> None:
+      """
       Standard dictionary methods.
       """
-    def __contains__(self, key: bytes, /) -> bool:
-        """
+
+   def __contains__(self, key: bytes, /) -> bool:
+      """
       Standard dictionary methods.
       """
-    def __iter__(self) -> Iterable[bytes]:
-        """
+
+   def __iter__(self) -> Iterable[bytes]:
+      """
       A BTree object can be iterated over directly (similar to a dictionary)
       to get access to all keys in order.
       """
-    def keys(
-        self,
-        start_key: bytes | None = None,
-        end_key: bytes | None = None,
-        flags: int = 0,
-        /,
-    ) -> Iterable[bytes]:
-        """
+
+   
+   def keys(
+      self, 
+      start_key: bytes | None = None, 
+      end_key: bytes | None = None, 
+      flags: int = 0, 
+      /
+   ) -> Iterable[bytes]:
+      """
       These methods are similar to standard dictionary methods, but also can
       take optional parameters to iterate over a key sub-range, instead of
       the entire database. Note that for all 3 methods, *start_key* and
@@ -194,14 +214,16 @@ class _BTree:
       by passing *flags* of `btree.DESC`. The flags values can be ORed
       together.
       """
-    def values(
-        self,
-        start_key: bytes | None = None,
-        end_key: bytes | None = None,
-        flags: int = 0,
-        /,
-    ) -> Iterable[bytes]:
-        """
+
+   
+   def values(
+      self, 
+      start_key: bytes | None = None, 
+      end_key: bytes | None = None, 
+      flags: int = 0, 
+      /
+   ) -> Iterable[bytes]:
+      """
       These methods are similar to standard dictionary methods, but also can
       take optional parameters to iterate over a key sub-range, instead of
       the entire database. Note that for all 3 methods, *start_key* and
@@ -215,14 +237,16 @@ class _BTree:
       by passing *flags* of `btree.DESC`. The flags values can be ORed
       together.
       """
-    def items(
-        self,
-        start_key: bytes | None = None,
-        end_key: bytes | None = None,
-        flags: int = 0,
-        /,
-    ) -> Iterable[tuple[bytes, bytes]]:
-        """
+
+   
+   def items(
+      self, 
+      start_key: bytes | None = None, 
+      end_key: bytes | None = None, 
+      flags: int = 0, 
+      /
+   ) -> Iterable[tuple[bytes, bytes]]:
+      """
       These methods are similar to standard dictionary methods, but also can
       take optional parameters to iterate over a key sub-range, instead of
       the entire database. Note that for all 3 methods, *start_key* and

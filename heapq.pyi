@@ -26,13 +26,14 @@ from typing import TypeVar, Any, Final
 
 _T: Final = TypeVar("_T")
 
+
 def heappush(heap: list[_T], item: _T, /) -> None:
-    """
+   """
    Push the ``item`` onto the ``heap``.
    """
 
 def heappop(heap: list[_T], /) -> _T:
-    """
+   """
    Pop the first item from the ``heap``, and return it.  Raise ``IndexError`` if
    ``heap`` is empty.
    
@@ -40,6 +41,6 @@ def heappop(heap: list[_T], /) -> _T:
    """
 
 def heapify(x: list[Any], /) -> None:
-    """
+   """
    Convert the list ``x`` into a heap.  This is an in-place operation.
    """

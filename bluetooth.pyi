@@ -28,34 +28,40 @@ from uio import AnyReadableBuf, AnyWritableBuf
 
 # noinspection SpellCheckingInspection
 class BLE:
-    """
+   """
    class BLE
    ---------
    """
 
-    def __init__(self):
-        """
+
+
+   def __init__(self):
+      """
        Returns the singleton BLE object.
       """
-    @overload
-    def active(self) -> bool:
-        """
+
+   @overload
+   def active(self) -> bool:
+      """
        Optionally changes the active state of the BLE radio, and returns the
        current state.
        
        The radio must be made active before using any other methods on this class.
       """
-    @overload
-    def active(self, active: bool, /) -> None:
-        """
+
+   @overload
+   def active(self, active: bool, /) -> None:
+      """
        Optionally changes the active state of the BLE radio, and returns the
        current state.
        
        The radio must be made active before using any other methods on this class.
       """
-    @overload
-    def config(self, param: str, /) -> Any:
-        """
+
+   
+   @overload
+   def config(self, param: str, /) -> Any:
+      """
        Get or set configuration values of the BLE interface.  To get a value the
        parameter name should be quoted as a string, and just one parameter is
        queried at a time.  To set values use the keyword syntax, and one ore more
@@ -116,9 +122,11 @@ class BLE:
        - ``'le_secure'``: Sets whether "LE Secure" pairing is required. Default is
          false (i.e. allow "Legacy Pairing").
       """
-    @overload
-    def config(self, **kwargs) -> None:
-        """
+
+   
+   @overload
+   def config(self, **kwargs) -> None:
+      """
        Get or set configuration values of the BLE interface.  To get a value the
        parameter name should be quoted as a string, and just one parameter is
        queried at a time.  To set values use the keyword syntax, and one ore more
@@ -179,8 +187,9 @@ class BLE:
        - ``'le_secure'``: Sets whether "LE Secure" pairing is required. Default is
          false (i.e. allow "Legacy Pairing").
       """
-    def irq(self, handler: Callable[[int, tuple[memoryview, ...]], Any], /) -> None:
-        """
+
+   def irq(self, handler: Callable[[int, tuple[memoryview, ...]], Any], /) -> None:
+      """
        Registers a callback for events from the BLE stack. The *handler* takes two
        arguments, ``event`` (which will be one of the codes below) and ``data``
        (which is an event-specific tuple of values).
@@ -373,16 +382,18 @@ class BLE:
        :mod:`bluetooth` module. Add the ones that you need from the list above to your
        program.
       """
-    def gap_advertise(
-        self,
-        interval_us: int,
-        adv_data: AnyReadableBuf | None = None,
-        /,
-        *,
-        resp_data: AnyReadableBuf | None = None,
-        connectable: bool = True,
-    ) -> None:
-        """
+
+   
+   def gap_advertise(
+      self, 
+      interval_us: int, 
+      adv_data: AnyReadableBuf | None = None, 
+      /, 
+      *,
+      resp_data: AnyReadableBuf | None = None, 
+      connectable: bool = True
+   ) -> None:
+      """
        Starts advertising at the specified interval (in **micro**\ seconds). This
        interval will be rounded down to the nearest 625us. To stop advertising, set
        *interval_us* to ``None``.
@@ -396,15 +407,17 @@ class BLE:
        broadcaster to resume advertising with just ``gap_advertise(interval_us)``.
        To clear the advertising payload pass an empty ``bytes``, i.e. ``b''``.
       """
-    def gap_scan(
-        self,
-        duration_ms: int,
-        interval_us: int = 1280000,
-        window_us: int = 11250,
-        active: bool = False,
-        /,
-    ) -> None:
-        """
+
+   
+   def gap_scan(
+      self, 
+      duration_ms: int,
+      interval_us: int = 1280000, 
+      window_us: int = 11250, 
+      active: bool = False,
+      /,
+   ) -> None:
+      """
        Run a scan operation lasting for the specified duration (in **milli**\ seconds).
        
        To scan indefinitely, set *duration_ms* to ``0``.
@@ -437,16 +450,18 @@ class BLE:
        When scanning is stopped (either due to the duration finishing or when
        explicitly stopped), the ``_IRQ_SCAN_DONE`` event will be raised.
       """
-    def gap_connect(
-        self,
-        addr_type: int,
-        addr: bytes,
-        scan_duration_ms: int = 2000,
-        min_conn_interval_us: int | None = None,
-        max_conn_interval_us: int | None = None,
-        /,
-    ) -> None:
-        """
+
+   
+   def gap_connect(
+      self, 
+      addr_type: int,
+      addr: bytes, 
+      scan_duration_ms: int = 2000, 
+      min_conn_interval_us: int | None = None, 
+      max_conn_interval_us: int | None = None,
+      /,
+   ) -> None:
+      """
        Connect to a peripheral.
        
        See :meth:`gap_scan <BLE.gap_scan>` for details about address types.
@@ -469,8 +484,9 @@ class BLE:
        
        A central device can connect to peripherals that it has discovered using the observer role (see :meth:`gap_scan<BLE.gap_scan>`) or with a known address.
       """
-    def gap_disconnect(self, conn_handle: memoryview, /) -> bool:
-        """
+
+   def gap_disconnect(self, conn_handle: memoryview, /) -> bool:
+      """
        Disconnect the specified connection handle. This can either be a
        central that has connected to this device (if acting as a peripheral)
        or a peripheral that was previously connected to by this device (if acting
@@ -500,16 +516,18 @@ class BLE:
        
        When a central connects, the ``_IRQ_CENTRAL_CONNECT`` event will be raised.
       """
-    _Flag: Final = int
-    _Descriptor: Final = tuple["UUID", _Flag]
-    _Characteristic: Final = tuple["UUID", _Flag] | tuple[
-        "UUID", _Flag, tuple[_Descriptor, ...]
-    ]
-    _Service: Final = tuple["UUID", tuple[_Characteristic, ...]]
-    def gatts_register_services(
-        self, services_definition: tuple[_Service, ...], /
-    ) -> tuple[tuple[memoryview, ...], ...]:
-        """
+
+   _Flag: Final = int
+   _Descriptor: Final = tuple["UUID", _Flag]
+   _Characteristic: Final = tuple["UUID", _Flag] | tuple["UUID", _Flag, tuple[_Descriptor, ...]]
+   _Service: Final = tuple["UUID", tuple[_Characteristic, ...]]
+   
+   def gatts_register_services(
+      self, 
+      services_definition: tuple[_Service, ...], 
+      /
+   ) -> tuple[tuple[memoryview, ...], ...]:
+      """
        Configures the server with the specified services, replacing any
        existing services.
        
@@ -593,8 +611,9 @@ class BLE:
        :meth:`gatts_write<BLE.gatts_write>` after registration. e.g.
        ``gatts_write(char_handle, bytes(100))``.
       """
-    def gatts_read(self, value_handle: memoryview, /) -> bytes:
-        """
+
+   def gatts_read(self, value_handle: memoryview, /) -> bytes:
+      """
        Reads the local value for this handle (which has either been written by
        :meth:`gatts_write <BLE.gatts_write>` or by a remote client).
        
@@ -622,10 +641,9 @@ class BLE:
        :meth:`gatts_write<BLE.gatts_write>` after registration. e.g.
        ``gatts_write(char_handle, bytes(100))``.
       """
-    def gatts_write(
-        self, value_handle: memoryview, data: bytes, send_update: bool = False, /
-    ) -> None:
-        """
+
+   def gatts_write(self, value_handle: memoryview, data: bytes, send_update: bool = False, /) -> None:
+      """
        Writes the local value for this handle, which can be read by a client.
        
        If *send_update* is ``True``, then any subscribed clients will be notified
@@ -656,8 +674,9 @@ class BLE:
        :meth:`gatts_write<BLE.gatts_write>` after registration. e.g.
        ``gatts_write(char_handle, bytes(100))``.
       """
-    def gatts_notify(self, value_handle: memoryview, data: bytes, /) -> None:
-        """
+
+   def gatts_notify(self, value_handle: memoryview, data: bytes, /) -> None:
+      """
        Sends a notification request to a connected client.
        
        If *data* is not ``None``, then that value is sent to the client as part of
@@ -693,10 +712,9 @@ class BLE:
        :meth:`gatts_write<BLE.gatts_write>` after registration. e.g.
        ``gatts_write(char_handle, bytes(100))``.
       """
-    def gatts_indicate(
-        self, conn_handle: memoryview, value_handle: memoryview, /
-    ) -> None:
-        """
+
+   def gatts_indicate(self, conn_handle: memoryview, value_handle: memoryview, /) -> None:
+      """
        Sends an indication request containing the characteristic's current value to
        a connected client.
        
@@ -730,10 +748,9 @@ class BLE:
        :meth:`gatts_write<BLE.gatts_write>` after registration. e.g.
        ``gatts_write(char_handle, bytes(100))``.
       """
-    def gatts_set_buffer(
-        self, conn_handle: memoryview, len: int, append: bool = False, /
-    ) -> None:
-        """
+
+   def gatts_set_buffer(self, conn_handle: memoryview, len: int, append: bool = False, /) -> None:
+      """
        Sets the internal buffer size for a value in bytes. This will limit the
        largest possible write that can be received. The default is 20.
        
@@ -767,10 +784,9 @@ class BLE:
        :meth:`gatts_write<BLE.gatts_write>` after registration. e.g.
        ``gatts_write(char_handle, bytes(100))``.
       """
-    def gattc_discover_services(
-        self, conn_handle: memoryview, uuid: UUID | None = None, /
-    ) -> None:
-        """
+
+   def gattc_discover_services(self, conn_handle: memoryview, uuid: UUID | None = None, /) -> None:
+      """
        Query a connected server for its services.
        
        Optionally specify a service *uuid* to query for that service only.
@@ -789,15 +805,17 @@ class BLE:
        information about the central that has connected to it (e.g. to read the
        device name from the device information service).
       """
-    def gattc_discover_characteristics(
-        self,
-        conn_handle: memoryview,
-        start_handle: int,
-        end_handle: int,
-        uuid: UUID | None = None,
-        /,
-    ) -> None:
-        """
+
+   
+   def gattc_discover_characteristics(
+      self, 
+      conn_handle: memoryview, 
+      start_handle: int, 
+      end_handle: int, 
+      uuid: UUID | None = None, 
+      /
+   ) -> None:
+      """
        Query a connected server for characteristics in the specified range.
        
        Optionally specify a characteristic *uuid* to query for that
@@ -820,10 +838,16 @@ class BLE:
        information about the central that has connected to it (e.g. to read the
        device name from the device information service).
       """
-    def gattc_discover_descriptors(
-        self, conn_handle: memoryview, start_handle: int, end_handle: int, /
-    ) -> None:
-        """
+
+   
+   def gattc_discover_descriptors(
+      self, 
+      conn_handle: memoryview, 
+      start_handle: int, 
+      end_handle: int, 
+      /
+   ) -> None:
+      """
        Query a connected server for descriptors in the specified range.
        
        For each descriptor discovered, the ``_IRQ_GATTC_DESCRIPTOR_RESULT`` event
@@ -840,8 +864,9 @@ class BLE:
        information about the central that has connected to it (e.g. to read the
        device name from the device information service).
       """
-    def gattc_read(self, conn_handle: memoryview, value_handle: memoryview, /) -> None:
-        """
+
+   def gattc_read(self, conn_handle: memoryview, value_handle: memoryview, /) -> None:
+      """
        Issue a remote read to a connected server for the specified
        characteristic or descriptor handle.
        
@@ -859,15 +884,17 @@ class BLE:
        information about the central that has connected to it (e.g. to read the
        device name from the device information service).
       """
-    def gattc_write(
-        self,
-        conn_handle: memoryview,
-        value_handle: memoryview,
-        data: bytes,
-        mode: int = 0,
-        /,
-    ) -> None:
-        """
+
+   
+   def gattc_write(
+      self, 
+      conn_handle: memoryview, 
+      value_handle: memoryview, 
+      data: bytes, 
+      mode: int = 0,
+      /
+   ) -> None:
+      """
        Issue a remote write to a connected server for the specified
        characteristic or descriptor handle.
        
@@ -895,8 +922,9 @@ class BLE:
        information about the central that has connected to it (e.g. to read the
        device name from the device information service).
       """
-    def gattc_exchange_mtu(self, conn_handle: memoryview, /) -> None:
-        """
+
+   def gattc_exchange_mtu(self, conn_handle: memoryview, /) -> None:
+      """
        Initiate MTU exchange with a connected server, using the preferred MTU
        set using ``BLE.config(mtu=value)``.
        
@@ -919,8 +947,9 @@ class BLE:
        information about the central that has connected to it (e.g. to read the
        device name from the device information service).
       """
-    def l2cap_listen(self, psm: memoryview, mtu: memoryview, /) -> None:
-        """
+
+   def l2cap_listen(self, psm: memoryview, mtu: memoryview, /) -> None:
+      """
        Start listening for incoming L2CAP channel requests on the specified *psm*
        with the local MTU set to *mtu*.
        
@@ -955,10 +984,9 @@ class BLE:
           outstanding data that the remote device can send before it is fully consumed
           in :meth:`l2cap_recvinto <BLE.l2cap_recvinto>`.
       """
-    def l2cap_connect(
-        self, conn_handle: memoryview, psm: memoryview, mtu: memoryview, /
-    ) -> None:
-        """
+
+   def l2cap_connect(self, conn_handle: memoryview, psm: memoryview, mtu: memoryview, /) -> None:
+      """
        Connect to a listening peer on the specified *psm* with local MTU set to *mtu*.
        
        On successful connection, the the ``_IRQ_L2CAP_CONNECT`` event will be
@@ -988,8 +1016,9 @@ class BLE:
           outstanding data that the remote device can send before it is fully consumed
           in :meth:`l2cap_recvinto <BLE.l2cap_recvinto>`.
       """
-    def l2cap_disconnect(self, conn_handle: memoryview, cid: memoryview, /) -> None:
-        """
+
+   def l2cap_disconnect(self, conn_handle: memoryview, cid: memoryview, /) -> None:
+      """
        Disconnect an active L2CAP channel with the specified *conn_handle* and
        *cid*.
        
@@ -1014,8 +1043,9 @@ class BLE:
           outstanding data that the remote device can send before it is fully consumed
           in :meth:`l2cap_recvinto <BLE.l2cap_recvinto>`.
       """
-    def l2cap_send(self, conn_handle: memoryview, cid: memoryview, /) -> None:
-        """
+
+   def l2cap_send(self, conn_handle: memoryview, cid: memoryview, /) -> None:
+      """
        Send the specified *buf* (which must support the buffer protocol) on the
        L2CAP channel identified by *conn_handle* and *cid*.
        
@@ -1049,10 +1079,16 @@ class BLE:
           outstanding data that the remote device can send before it is fully consumed
           in :meth:`l2cap_recvinto <BLE.l2cap_recvinto>`.
       """
-    def l2cap_recvinto(
-        self, conn_handle: memoryview, cid: memoryview, buf: AnyWritableBuf | None, /
-    ) -> int:
-        """
+
+   
+   def l2cap_recvinto(
+      self, 
+      conn_handle: memoryview, 
+      cid: memoryview, 
+      buf: AnyWritableBuf | None, 
+      /
+   ) -> int:
+      """
        Receive data from the specified *conn_handle* and *cid* into the provided
        *buf* (which must support the buffer protocol, e.g. bytearray or
        memoryview).
@@ -1091,8 +1127,9 @@ class BLE:
           outstanding data that the remote device can send before it is fully consumed
           in :meth:`l2cap_recvinto <BLE.l2cap_recvinto>`.
       """
-    def gap_pair(self, conn_handle: memoryview, /) -> None:
-        """
+
+   def gap_pair(self, conn_handle: memoryview, /) -> None:
+      """
        Initiate pairing with the remote device.
        
        Before calling this, ensure that the ``io``, ``mitm``, ``le_secure``, and
@@ -1116,10 +1153,9 @@ class BLE:
           **Note:** This is currently only supported when using the NimBLE stack on
           STM32 and Unix (not ESP32).
       """
-    def gap_passkey(
-        self, conn_handle: memoryview, action: int, passkey: int, /
-    ) -> None:
-        """
+
+   def gap_passkey(self, conn_handle: memoryview, action: int, passkey: int, /) -> None:
+      """
        Respond to a ``_IRQ_PASSKEY_ACTION`` event for the specified *conn_handle*
        and *action*.
        
@@ -1152,14 +1188,17 @@ class BLE:
           STM32 and Unix (not ESP32).
       """
 
+
 class UUID:
-    """
+   """
    class UUID
    ----------
    """
 
-    def __init__(self, value: int | str, /):
-        """
+
+
+   def __init__(self, value: int | str, /):
+      """
        Creates a UUID instance with the specified **value**.
        
        The **value** can be either:

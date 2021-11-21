@@ -21,6 +21,8 @@ __version__ = "7.3.0"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Final, Dict
 
+
+
 EEXIST: Final[int] = ...
 """
 Error codes, based on ANSI C/POSIX standard. All error codes start with
@@ -35,6 +37,7 @@ Error codes, based on ANSI C/POSIX standard. All error codes start with
                 print("Directory already exists")
 """
 
+
 EAGAIN: Final[int] = ...
 """
 Error codes, based on ANSI C/POSIX standard. All error codes start with
@@ -48,6 +51,9 @@ Error codes, based on ANSI C/POSIX standard. All error codes start with
             if exc.errno == errno.EEXIST:
                 print("Directory already exists")
 """
+
+
+
 
 errorcode: Final[Dict[int, str]] = ...
 """
