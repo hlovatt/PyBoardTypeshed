@@ -10,7 +10,7 @@ def read_text(file_name: str) -> str:
 
 setuptools.setup(
     name="upytypesheds",
-    version="7.3.4",
+    version="7.3.5",
     url="https://github.com/hlovatt/PyBoardTypeshed",
     license="MIT License",  # Can only have one line `license`; setuptools bug.
     author="Howard C Lovatt",
@@ -22,7 +22,7 @@ setuptools.setup(
     platforms=["any"],
     classifiers=[
         "Intended Audience :: Developers",
-        "Programming Language :: MicroPython :: 1.17",
+        "Programming Language :: MicroPython",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
