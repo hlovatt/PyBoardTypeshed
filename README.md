@@ -1,9 +1,11 @@
-# PyBoardTypeshed
+# Micropython Typesheds (formerly known as Pyboard Typesheds)
 
-Typeshed (type hint interface stubs `.pyi`) for a
-[Pyboard D](https://store.micropython.org/category/pyboard%20D-series), 
-i.e. type hints and documentation for functions, classes, 
-and constants for [MicroPython](http://micropython.org). 
+Rich typeshed (a.k.a.: type hints, interface stubs, and `.pyi` files)
+for [MicroPython](http://micropython.org).
+They are *rich* typesheds because they give help document for
+functions/methods, function/method arguments, function/method return types,
+method overloads, classes, modules, protocols,
+and constants/fields/properties. 
 These typesheds are useful for IDEs that understand type hints,
 like PyCharm and VSCode, and for IDE plugins like the PyCharm's MicroPython plugin.
 
@@ -14,8 +16,9 @@ Once installed, see next section, the typesheds offer:
 1. Code completion (in this case prompting completion for `pyb`):\
    ![Code completion example](media/code.png "Possible code completions")
 
-2. Rich help text (in this case constructor for `LCD160CR` showing types and 
-   overloads as well as description):\
+2. Rich help text (in this case constructor for `LCD160CR`
+   showing argument types, argument defaults, return types and 
+   overloads as well as a description):\
    ![Rich help example](media/help.png "Rich help for overloaded constructor")
 
 3. Type errors (in this case a `float` instead of an `int`):\
@@ -27,15 +30,16 @@ Once installed, see next section, the typesheds offer:
 
 ## Using the typesheds
 
-There are three ways of installing the Typesheds:
-hopefully in the future via plugins, manually install into the IDE, 
-and copy the `.pyi` files into a project.
+There are four ways of installing the Typesheds:
+via an IDE plugin, manually install into the IDE, 
+use PyPI, copy the `.pyi` files into a project,
+and manually copy the `.pyi` files into a project.
 
 ### Via an IDE plugin
 
 #### For PyCharm
 
-Currently, October 2021, JetBrains have added many of these typesheds to their 
+Currently, December 2021, JetBrains have added many of these typesheds to their 
 MicroPython plugin (many thanks to JetBrains and in particular Andrey Vlasovskikh).
 Therefore, installing the JetBrains Micropython plugin
 will be the easiest solution and also 
@@ -53,7 +57,7 @@ the typesheds will get updated everytime the plugin is updated:
 The other options, below, unfortunately require manual updating and are more 
 involved (though not difficult).
 
-### Manually install in IDE
+### Manually install in an IDE
 
 #### For PyCharm
 
@@ -81,7 +85,16 @@ MicroPython plugin will pick up the typesheds.
    (so that it picks up the changes):\
    ![Re-enable MicroPython plugin](media/enable_pt2.png "Un-tick and OK back into preferences re-tick MicroPython support and OK")
 
-### Copy `.pyi` files into project
+### Use PyPI to copy the `.pyi` files into a project
+
+**Note:** The following procedure, below, needs to be done for *all* projects:
+
+```bash
+    cd <top level of project>
+    pip install --upgrade micropython-typesheds
+```
+
+### Copy `.pyi` files into a project
 
 **Note:** The following procedure, below, needs to be done for *all* projects:
 
@@ -101,17 +114,11 @@ from the MicroPython `.rst` doc files.
 
 The philosophy of generating the typesheds is to take a superset of what is 
 in the docs and what is listed by the `dir`
-command on a Pyboard
+command on a MicroPython board
 (the docs and `dir` don't agree!). 
 An example of the `dir` command having more information than the docs is the docs
 for `pyb.Pin` mentions `board` and `cpu` classes and implies they contain 
 declarations of available `Pin`s;
 `dir(pyb.Pin.cpu)` on the other hand lists the `Pin`s, 
-therefore the generated typeshed contains `board` and `cpu` *
-with* `Pin` definitions.
-
-**Note:** In the descriptions above, Pyboard means
-[Pyboard D](https://store.micropython.org/category/pyboard%20D-series), 
-not any other Pyboard. 
-Though the other Pyboards are
-similar and therefore the typesheds are still useful.
+therefore the generated typeshed contains `board` and `cpu`
+*with* `Pin` definitions.

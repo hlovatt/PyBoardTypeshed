@@ -16,7 +16,7 @@ ports.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.4"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Final, overload
 
@@ -31,11 +31,10 @@ SLEEP_MODEM: Final[int] = ...
 SLEEP_LIGHT: Final[int] = ...
 """Light sleep, shuts down the WiFi Modem circuit."""
 
-
 # noinspection PyShadowingNames
 @overload
 def sleep_type(sleep_type: int, /) -> None:
-   """
+    """
     **Note**: ESP8266 only
     
     Get or set the sleep type.
@@ -57,7 +56,7 @@ def sleep_type(sleep_type: int, /) -> None:
 # noinspection PyShadowingNames
 @overload
 def sleep_type() -> int:
-   """
+    """
     **Note**: ESP8266 only
     
     Get or set the sleep type.
@@ -77,7 +76,7 @@ def sleep_type() -> int:
    """
 
 def deepsleep(time_us: int = 0, /) -> None:
-   """
+    """
     **Note**: ESP8266 only - use `machine.deepsleep()` on ESP32
     
     Enter deep sleep.
@@ -89,25 +88,25 @@ def deepsleep(time_us: int = 0, /) -> None:
    """
 
 def flash_id() -> int:
-   """
+    """
     **Note**: ESP8266 only
     
     Read the device ID of the flash memory.
    """
 
 def flash_size() -> int:
-   """
+    """
     Read the total size of the flash memory.
    """
 
 def flash_user_start() -> int:
-   """
+    """
     Read the memory offset at which the user flash space begins.
    """
 
 @overload
 def flash_read(byte_offset: int, length_or_buffer: int, /) -> bytes:
-   """
+    """
    Reads bytes from the flash memory starting at the given byte offset.
    If length is specified: reads the given length of bytes and returns them as ``bytes``.
    If a buffer is given: reads the buf length of bytes and writes them into the buffer.
@@ -116,7 +115,7 @@ def flash_read(byte_offset: int, length_or_buffer: int, /) -> bytes:
 
 @overload
 def flash_read(byte_offset: int, length_or_buffer: AnyWritableBuf, /) -> None:
-   """
+    """
    Reads bytes from the flash memory starting at the given byte offset.
    If length is specified: reads the given length of bytes and returns them as ``bytes``.
    If a buffer is given: reads the buf length of bytes and writes them into the buffer.
@@ -124,18 +123,18 @@ def flash_read(byte_offset: int, length_or_buffer: AnyWritableBuf, /) -> None:
    """
 
 def flash_write(byte_offset: int, bytes: AnyReadableBuf, /) -> None:
-   """
+    """
    Writes given bytes buffer to the flash memory starting at the given byte offset.
    """
 
 def flash_erase(sector_no: int, /) -> None:
-   """
+    """
    Erases the given *sector* of flash memory.
    """
 
 @overload
 def set_native_code_location(start: None, length: None, /) -> None:
-   """
+    """
     **Note**: ESP8266 only
     
     Set the location that native code will be placed for execution after it is
@@ -175,7 +174,7 @@ def set_native_code_location(start: None, length: None, /) -> None:
 
 @overload
 def set_native_code_location(start: int, length: int, /) -> None:
-   """
+    """
     **Note**: ESP8266 only
     
     Set the location that native code will be placed for execution after it is

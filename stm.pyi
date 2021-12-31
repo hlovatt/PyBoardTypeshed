@@ -15,7 +15,7 @@ direct access to peripheral registers.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.4"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Final
 
@@ -29,7 +29,7 @@ class mem:
     Cannot make an instance of this class,
     but pre-made instances: `mem8`, `mem16`, and `mem32` are available for 8, 16, and 32 bit access respectively.
     """
-    
+
     def __getitem__(self, loc: int, /) -> int:
         """
         Get the contents of the given memory location using subscript notation e.g., `mem8[0]`.
@@ -40,7 +40,6 @@ class mem:
         constants to read registers of the MCU hardware peripherals, as well
         as all other areas of address space.
         """
-    
     def __setitem__(self, loc: int, value: int, /) -> None:
         """
         Set the contents of the given memory location to the given value using subscript notation e.g., `mem8[0] = 195`.
@@ -52,31 +51,20 @@ class mem:
         as all other areas of address space.
         """
 
-
-
 mem8: Final[mem] = ...
 """
 Read/write 8 bits of memory.
 """
-
-
-
 
 mem16: Final[mem] = ...
 """
 Read/write 16 bits of memory.
 """
 
-
-
-
 mem32: Final[mem] = ...
 """
 Read/write 32 bits of memory.
 """
-
-
-
 
 GPIOA: Final[int] = ...
 """
@@ -102,9 +90,6 @@ Example use:
     value = (stm.mem32[stm.GPIOA + stm.GPIO_IDR] >> 3) & 1
 """
 
-
-
-
 GPIOB: Final[int] = ...
 """
 Base address of the GPIOB peripheral.
@@ -128,9 +113,6 @@ Example use:
     # read PA3
     value = (stm.mem32[stm.GPIOA + stm.GPIO_IDR] >> 3) & 1
 """
-
-
-
 
 GPIO_BSRR: Final[int] = ...
 """
@@ -156,9 +138,6 @@ Example use:
     value = (stm.mem32[stm.GPIOA + stm.GPIO_IDR] >> 3) & 1
 """
 
-
-
-
 GPIO_IDR: Final[int] = ...
 """
 Offset of the GPIO input data register.
@@ -182,9 +161,6 @@ Example use:
     # read PA3
     value = (stm.mem32[stm.GPIOA + stm.GPIO_IDR] >> 3) & 1
 """
-
-
-
 
 GPIO_ODR: Final[int] = ...
 """
@@ -211,10 +187,8 @@ Example use:
     value = (stm.mem32[stm.GPIOA + stm.GPIO_IDR] >> 3) & 1
 """
 
-
-
 def rfcore_status() -> int:
-   """
+    """
     Returns the status of the second CPU as an integer (the first word of device
     info table).
     
@@ -223,7 +197,7 @@ def rfcore_status() -> int:
    """
 
 def rfcore_fw_version(id: int, /) -> tuple[int, int, int, int, int]:
-   """
+    """
     Get the version of the firmware running on the second CPU.  Pass in 0 for
     *id* to get the FUS version, and 1 to get the WS version.
     
@@ -234,7 +208,7 @@ def rfcore_fw_version(id: int, /) -> tuple[int, int, int, int, int]:
    """
 
 def rfcore_sys_hci(ogf: int, ocf: int, data: int, timeout_ms: int = 0, /) -> bytes:
-   """
+    """
     Execute a HCI command on the SYS channel.  The execution is synchronous.
     
     Returns a bytes object with the result of the SYS command.

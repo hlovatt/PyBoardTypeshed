@@ -14,7 +14,7 @@ https://raw.githubusercontent.com/micropython/micropython/master/docs/library/sy
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.0"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.4"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Callable, Final, Literal, NoReturn
 
@@ -29,16 +29,15 @@ class ModuleType:
     __class__: str
     __name__: str
 
-
 def exit(retval: object = 0, /) -> NoReturn:
-   """
+    """
    Terminate current program with a given exit code. Underlyingly, this
    function raise as `SystemExit` exception. If an argument is given, its
    value given as an argument to `SystemExit`.
    """
 
 def atexit(func: Callable[[], None] | None, /) -> Callable[[], None] | None:
-   """
+    """
    Register *func* to be called upon termination.  *func* must be a callable
    that takes no arguments, or ``None`` to disable the call.  The ``atexit``
    function will return the previous value set by this function, which is
@@ -51,8 +50,8 @@ def atexit(func: Callable[[], None] | None, /) -> Callable[[], None] | None:
       functionality to the :mod:`atexit` module in CPython.
    """
 
-def print_exception(exc: BaseException, file: IOBase[str] = 'stdout', /) -> None:
-   """
+def print_exception(exc: BaseException, file: IOBase[str] = "stdout", /) -> None:
+    """
    Print exception with a traceback to a file-like object *file* (or
    `sys.stdout` by default).
    
@@ -76,22 +75,15 @@ def print_exception(exc: BaseException, file: IOBase[str] = 'stdout', /) -> None
    configuration option is *MICROPY_PY_SYS_SETTRACE*.
    """
 
-
 argv: Final[list[str]] = ...
 """
 A mutable list of arguments the current program was started with.
 """
 
-
-
-
 byteorder: Final[Literal["little", "big"]] = ...
 """
 The byte order of the system (``"little"`` or ``"big"``).
 """
-
-
-
 
 implementation: Final[Implementation] = ...
 """
@@ -111,9 +103,6 @@ Object with information about the current Python implementation. For
       CPython mandates more attributes for this object, but the actual useful
       bare minimum is implemented in MicroPython.
 """
-
-
-
 
 maxsize: Final[int] = ...
 """
@@ -141,25 +130,16 @@ Maximum value which a native integer type can hold on the current platform,
         # "> 32", "> 64" style of comparisons.
 """
 
-
-
-
 modules: Final[dict[str, ModuleType]] = ...
 """
 Dictionary of loaded modules. On some ports, it may not include builtin
    modules.
 """
 
-
-
-
 path: Final[list[str]] = ...
 """
 A mutable list of directories to search for imported modules.
 """
-
-
-
 
 platform: Final[str] = ...
 """
@@ -171,40 +151,25 @@ The platform that MicroPython is running on. For OS/RTOS ports, this is
    Python implementation), use `sys.implementation` instead.
 """
 
-
-
-
 stderr: Final[IOBase[str]] = ...
 """
 Standard error `stream`.
 """
-
-
-
 
 stdin: Final[IOBase[str]] = ...
 """
 Standard input `stream`.
 """
 
-
-
-
 stdout: Final[IOBase[str]] = ...
 """
 Standard output `stream`.
 """
 
-
-
-
 version: Final[str] = ...
 """
 Python language version that this implementation conforms to, as a string.
 """
-
-
-
 
 version_info: Final[tuple[int, int, int]] = ...
 """
