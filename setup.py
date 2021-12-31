@@ -9,8 +9,8 @@ def read_text(file_name: str) -> str:
 
 
 setuptools.setup(
-    name="upytypesheds",
-    version="7.3.6",
+    name="micropython-typesheds",
+    version="7.3.7",
     url="https://github.com/hlovatt/PyBoardTypeshed",
     license="MIT License",  # Can only have one line `license`; setuptools bug.
     author="Howard C Lovatt",
