@@ -11,7 +11,7 @@ bitmap images, which can then be sent to a display.
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.7"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.8"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, Final
 

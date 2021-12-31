@@ -4,7 +4,7 @@ Not part of the typesheds project, i.e. not in git.
 Used for updating latest pyi files into my IntelliJ MicroPython fork (always there).
 """
 
-__version__ = "7.3.7"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.8"  # Version set by https://github.com/hlovatt/tag2ver
 
 from os import listdir
 from shutil import copyfile
