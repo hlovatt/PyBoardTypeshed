@@ -10,7 +10,7 @@ def read_text(file_name: str) -> str:
 
 setuptools.setup(
     name="micropython-typesheds",
-    version="7.3.9",
+    version="7.3.10",
     url="https://github.com/hlovatt/PyBoardTypeshed",
     license="MIT License",  # Can only have one line `license`; setuptools bug.
     author="Howard C Lovatt",
@@ -20,7 +20,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     packages=[""],  # Must be `[""]` not `[]`!
     platforms=["any"],
-    classifiers=[
+    classifiers=[  # These must have a space either side of `::`, despite PyPI website giving them without!
         "Intended Audience :: Developers",
         "Programming Language :: Python :: Implementation :: MicroPython",
         "License :: OSI Approved :: MIT License",

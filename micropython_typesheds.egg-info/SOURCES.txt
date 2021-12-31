@@ -1,4 +1,6 @@
 LICENSE
+MANIFEST.in
+README.md
 _thread.pyi
 array.pyi
 binascii.pyi
@@ -18,6 +20,7 @@ io.pyi
 json.pyi
 lcd160cr.pyi
 machine.pyi
+main.py
 math.pyi
 micropython.pyi
 neopixel.pyi
@@ -27,6 +30,7 @@ pyb.pyi
 random.pyi
 re.pyi
 select.pyi
+setup.py
 socket.pyi
 ssl.pyi
 stm.pyi
@@ -55,3 +59,7 @@ usys.pyi
 utime.pyi
 uzlib.pyi
 zlib.pyi
+micropython_typesheds.egg-info/PKG-INFO
+micropython_typesheds.egg-info/SOURCES.txt
+micropython_typesheds.egg-info/dependency_links.txt
+micropython_typesheds.egg-info/top_level.txt
