@@ -1,1 +1,2 @@
-include media/*, *.pyi
+include *.pyi
+recursive-include media

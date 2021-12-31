@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: micropython-typesheds
-Version: 7.3.11
+Version: 7.3.12
 Summary: Typesheds (a.k.a.: interface stubs, `pyi` files, and type hints) for MicroPython.
 Home-page: https://github.com/hlovatt/PyBoardTypeshed
 Author: Howard C Lovatt
