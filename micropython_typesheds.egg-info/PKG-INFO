@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: micropython-typesheds
-Version: 7.3.8
+Version: 7.3.9
 Summary: Typesheds (a.k.a.: interface stubs, `pyi` files, and type hints) for MicroPython.
 Home-page: https://github.com/hlovatt/PyBoardTypeshed
 Author: Howard C Lovatt
@@ -8,7 +8,7 @@ Author-email: howard.lovatt@gmail.com
 License: MIT License
 Platform: any
 Classifier: Intended Audience :: Developers
-Classifier: Programming Language:: Python:: Implementation:: MicroPython
+Classifier: Programming Language :: Python :: Implementation :: MicroPython
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Description-Content-Type: text/markdown
