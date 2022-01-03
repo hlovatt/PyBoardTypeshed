@@ -1,0 +1,7 @@
+LICENSE
+README.md
+setup.py
+micropython_typesheds.egg-info/PKG-INFO
+micropython_typesheds.egg-info/SOURCES.txt
+micropython_typesheds.egg-info/dependency_links.txt
+micropython_typesheds.egg-info/top_level.txt
