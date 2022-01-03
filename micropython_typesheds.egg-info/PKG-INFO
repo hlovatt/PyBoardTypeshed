@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: micropython-typesheds
-Version: 7.3.13
+Version: 7.3.14
 Summary: Typesheds (a.k.a.: interface stubs, `pyi` files, and type hints) for MicroPython.
 Home-page: https://github.com/hlovatt/PyBoardTypeshed
 Author: Howard C Lovatt
@@ -106,7 +106,7 @@ MicroPython plugin will pick up the typesheds.
   1. Download all the typesheds
 
 ```bash
-    pip install --upgrade micropython-typesheds
+    pip install --upgrade micropython_typesheds
 ```
 
   2. Copy the typesheds to where they are required.
@@ -116,7 +116,7 @@ MicroPython plugin will pick up the typesheds.
      to be done for *all* required locations:
 
 ```bash
-    python -m micropython-typesheds <destination-directory>
+    python -m micropython_typesheds <destination-directory>
 ```
 
 ### Copy `.pyi` files into a project

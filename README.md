@@ -90,7 +90,7 @@ MicroPython plugin will pick up the typesheds.
   1. Download all the typesheds
 
 ```bash
-    pip install --upgrade micropython-typesheds
+    pip install --upgrade micropython_typesheds
 ```
 
   2. Copy the typesheds to where they are required.
@@ -100,7 +100,7 @@ MicroPython plugin will pick up the typesheds.
      to be done for *all* required locations:
 
 ```bash
-    python -m micropython-typesheds <destination-directory>
+    python -m micropython_typesheds <destination-directory>
 ```
 
 ### Copy `.pyi` files into a project

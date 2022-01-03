@@ -1,2 +1,2 @@
 include *.pyi
-recursive-include media
+exclude main.py
