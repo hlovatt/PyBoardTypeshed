@@ -10,7 +10,7 @@ def read_text(file_name: str) -> str:
 
 setuptools.setup(
     name="micropython_typesheds",
-    version="7.3.15",
+    version="7.3.16",
     url="https://github.com/hlovatt/PyBoardTypeshed",
     license="MIT License",  # Can only have one line `license`; setuptools bug.
     author="Howard C Lovatt",
@@ -18,8 +18,9 @@ setuptools.setup(
     description="Typesheds (a.k.a.: interface stubs, `pyi` files, and type hints) for MicroPython.",
     long_description=read_text("README.md"),
     long_description_content_type="text/markdown",
-    packages=[""],  # Must be `[""]` not `[]`!
+    py_modules=["tag2ver"],
     platforms=["any"],
+    python_requires=">=3.6",
     classifiers=[  # These must have a space either side of `::`, despite PyPI website giving them without!
         "Intended Audience :: Developers",
         "Programming Language :: Python :: Implementation :: MicroPython",
