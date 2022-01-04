@@ -25,7 +25,7 @@ https://raw.githubusercontent.com/micropython/micropython/master/docs/library/lc
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.18"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.19"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, Any, Final
 
@@ -426,7 +426,7 @@ The width and height of the display, respectively, in pixels.  These
        specified by :meth:`LCD160CR.set_spi_win`, starting from the top-left corner.
        
        The `framebuf <framebuf.html>`_ module can be used to construct frame buffers
-       and provides drawing primitives. Using a frame buffer will improve 
+       and provides drawing primitives. Using a frame buffer will improve
        performance of animations when compared to drawing directly to the screen.
       """
     def set_scroll(self, on: bool, /) -> None:

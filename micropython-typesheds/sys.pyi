@@ -14,7 +14,7 @@ https://raw.githubusercontent.com/micropython/micropython/master/docs/library/sy
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.18"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.19"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Callable, Final, Literal, NoReturn
 
@@ -139,6 +139,14 @@ Dictionary of loaded modules. On some ports, it may not include builtin
 path: Final[list[str]] = ...
 """
 A mutable list of directories to search for imported modules.
+
+   .. admonition:: Difference to CPython
+      :class: attention
+
+      On MicroPython, an entry with the value ``".frozen"`` will indicate that import
+      should search :term:`frozen modules <frozen module>` at that point in the search.
+      If no frozen module is found then search will *not* look for a directory called
+      ``.frozen``, instead it will continue with the next entry in ``sys.path``.
 """
 
 platform: Final[str] = ...

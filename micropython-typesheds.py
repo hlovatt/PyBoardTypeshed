@@ -5,7 +5,7 @@ Copies the Micropython typesheds into the given directory (defaults to current d
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.18"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.19"  # Version set by https://github.com/hlovatt/tag2ver
 
 from argparse import ArgumentParser
 from io import BytesIO

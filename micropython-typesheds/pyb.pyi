@@ -85,7 +85,7 @@ https://raw.githubusercontent.com/micropython/micropython/master/docs/library/py
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.18"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.3.19"  # Version set by https://github.com/hlovatt/tag2ver
 
 from abc import ABC, abstractmethod
 from typing import NoReturn, overload, Sequence, runtime_checkable, Protocol
@@ -3007,7 +3007,7 @@ enable the pull-up resistor on the pin
         - *value* if not None will set the port output value before enabling the pin.
       
         - *alt* can be used when mode is ``Pin.AF_PP`` or ``Pin.AF_OD`` to set the
-          index or name of one of the alternate functions associated with a pin. 
+          index or name of one of the alternate functions associated with a pin.
           This arg was previously called *af* which can still be used if needed.
       
       Returns: ``None``.

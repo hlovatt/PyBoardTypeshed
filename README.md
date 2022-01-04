@@ -87,10 +87,10 @@ MicroPython plugin will pick up the typesheds.
 
 ### Use PyPI to copy the `.pyi` files into a project or IDE
 
-  1. Download all the typesheds
+  1. Install the typesheds' installer
 
 ```bash
-    pip install --upgrade micropython_typesheds
+    pip install --upgrade micropython-typesheds
 ```
 
   2. Copy the typesheds to where they are required.
@@ -100,7 +100,7 @@ MicroPython plugin will pick up the typesheds.
      to be done for *all* required locations:
 
 ```bash
-    python -m micropython_typesheds <destination-directory>
+    python -m micropython-typesheds <destination-directory>
 ```
 
 ### Copy `.pyi` files into a project
@@ -112,7 +112,7 @@ MicroPython plugin will pick up the typesheds.
 
 2. Unpack the ZIP file.
 
-3. Drag the `.pyi` (only) files into the top level of a project:\
+3. Drag the `.pyi` (only) files from directory `micropython-typesheds` into the top level of a project:\
    ![Drag `.pyi` files in top level of project](https://github.com/hlovatt/PyBoardTypeshed/blob/master/media/files.png?raw=true "`.pyi` files in top level of project")
 
 ## Philosophy
