@@ -29,7 +29,7 @@ https://raw.githubusercontent.com/micropython/micropython/master/docs/library/ma
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.20"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.5.3"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import overload, NoReturn, Callable
 from typing import Sequence, ClassVar, Any, Final
@@ -889,7 +889,7 @@ class ADC:
       underlying machine.
       .. note::
       
-      WiPy has a custom implementation of ADC, see ADCWiPY for details.
+      WiPy has a custom implementation of ADC, see ADCWiPy for details.
       """
     def read_u16(self) -> int:
         """

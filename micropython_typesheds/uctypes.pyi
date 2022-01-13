@@ -185,7 +185,7 @@ Following are encoding examples for various field types:
 __author__ = "Howard C Lovatt"
 __copyright__ = "Howard C Lovatt, 2020 onwards."
 __license__ = "MIT https://opensource.org/licenses/MIT (as used by MicroPython)."
-__version__ = "7.3.20"  # Version set by https://github.com/hlovatt/tag2ver
+__version__ = "7.5.3"  # Version set by https://github.com/hlovatt/tag2ver
 
 from typing import Final
 
