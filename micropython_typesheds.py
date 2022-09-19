@@ -43,7 +43,7 @@ def main():
         )
 
     with urlopen(
-        "https://github.com/hlovatt/PyBoardTypeshed/archive/master.zip"
+        "https://github.com/hlovatt/PyBoardTypeshed/archive/main.zip"
     ) as http_response:
         with ZipFile(BytesIO(http_response.read())) as zipfile:
             typesheds: Final = [f for f in zipfile.namelist() if f.endswith(".pyi")]
@@ -51,7 +51,7 @@ def main():
                 zipfile.extractall(path=temp_top_level, members=typesheds)
                 temp_typeshed_level = (
                     Path(temp_top_level)
-                    / "PyBoardTypeshed-master"
+                    / "PyBoardTypeshed-main"
                     / "micropython_typesheds"
                 )
                 for file in scandir(temp_typeshed_level):
